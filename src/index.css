@@ -1,0 +1,40 @@
+.login_left-side{
+  flex: 1 1 0%;
+  display: flex;
+  position: relative;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+}
+.login_right-side{
+  min-width: 380px;
+}
+.w_100{
+  width: 100%;
+}
+.login_right-side_container{
+  padding: 3rem;
+  height: 100%;
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+  background-color: rgb(255, 255, 255);
+}
+.user_inputs{
+  margin-bottom: 20px;
+}
+.text_center{
+  text-align: center;
+}
+.header_right_container{
+  display: flex;
+  gap: 10px;
+  justify-content: end;
+  align-items: center;
+}
+.m-2{
+  margin: 20px;
+}
