@@ -2,7 +2,11 @@ import { useState, ChangeEvent, FormEvent } from 'react';
 import LabelValue from '../components/LabelValue';
 import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
-const LoginPage = () => {
+import axios, { AxiosResponse, AxiosError } from 'axios';
+import { oxyDetailInstance } from '../utils/NetworkInstance';
+import { loginDetails } from '../types/loginTypes';
+import { fetchToken } from '../utils/APIs';
+const LoginPage = ({ setAuthToken }: { setAuthToken: any }) => {
   const navigate = useNavigate();
   const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
@@ -14,11 +18,25 @@ const LoginPage = () => {
     let value = e.target.value;
     setPassword(value);
   };
-  const handleLogin = (e: FormEvent<HTMLFormElement>) => {
+  const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    localStorage.setItem('token', 'Mahesh');
-    navigate('/MrPage', { replace: true });
+    const payload = {
+      emailId: userName,
+      password: password
+    };
+    await fetchToken(payload)
+      .then(res => {
+        if (res.statusCode === 1) {
+          setAuthToken(res);
+          navigate('/MrPage', { replace: true });
+        }
+      })
+      .catch(err => {
+        alert('err');
+        console.log(err, 'err');
+      });
   };
+
   return (
     <div style={{ display: 'flex', minHeight: '100vh', overflowX: 'hidden', position: 'relative' }}>
       <aside className="login_left-side"></aside>

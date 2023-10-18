@@ -4,10 +4,10 @@ import MRPage from '../pages/MRPage';
 import ProductPage from '../pages/ProductPage';
 import AddOrEditProduct from '../pages/AddOrEditProduct';
 import AddOrEditMRPage from '../pages/AddOrEditMRPage';
-const AuthorizeRoutes = () => {
+const AuthorizeRoutes = ({removeAuthToken}:{removeAuthToken:any}) => {
   return (
     <BrowserRouter>
-      <Header />
+      <Header removeAuthToken={removeAuthToken}/>
       <Routes>
         <Route path="/MrPage" Component={MRPage}/>
         <Route path='/MrPage/addMr' Component={AddOrEditMRPage} />

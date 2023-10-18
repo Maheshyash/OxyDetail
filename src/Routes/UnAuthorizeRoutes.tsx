@@ -1,11 +1,11 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import LoginPage from '../pages/LoginPage';
 
-const UnAuthorizeRoutes = () => {
+const UnAuthorizeRoutes = ({setAuthToken}:{setAuthToken:any}) => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route Component={LoginPage} path="/" />
+        <Route path = '/' element={<LoginPage setAuthToken={setAuthToken} />}/>
       </Routes>
     </BrowserRouter>
   );

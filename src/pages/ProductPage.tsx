@@ -1,11 +1,21 @@
-import { MouseEvent } from 'react';
-import Button from '@mui/material/Button';
+import { MouseEvent, useEffect, useMemo, useState } from 'react';
+import { useTable, useFilters, useSortBy, usePagination } from 'react-table';
 import { useNavigate } from 'react-router-dom';
 const ProductPage = () => {
     const navigate = useNavigate();
+    const [productData, setProductData] = useState<ProductDetails>([]);
   const handleAddProduct = (e: MouseEvent<HTMLButtonElement>) => {
     navigate('addProduct');
   };
+  useEffect(()=>{
+    fetchProductList().then(res=>{
+      console.log(res,'res')
+      setProductData(res)
+    }).catch(err=>{
+      alert('err');
+      console.log(err,'err')
+    })
+  },[])
   return (
     <div className="m-2">
       <div style={{ textAlign: 'end', marginBottom: 10 }}>
@@ -13,10 +23,87 @@ const ProductPage = () => {
           Add
         </CustomButton>
       </div>
-      <BasicTable />
+      {/* <BasicTable /> */}
+      <ProductTable data = {productData}/>
     </div>
   )
 }
+// columns.js
+
+
+export const COLUMNS = [
+  {
+      Header: 'productName',
+      accessor: 'productName',
+  },
+  {
+      Header: 'productCode',
+      accessor: 'productCode',
+  },
+  {
+      Header: 'categoryId',
+      accessor: 'categoryId',
+  },
+  {
+      Header: 'subCategoryId',
+      accessor: 'subCategoryId',
+  },
+  {
+      Header: 'isNewProduct',
+      accessor: 'isNewProduct',
+  },
+  {
+      Header: 'activationDate',
+      accessor: 'activationDate',
+  },
+];
+const ProductTable = ({data}:{data:ProductDetails})=>{
+  const columns = useMemo(() => COLUMNS, []);
+  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
+  useTable({ columns, data },useSortBy);
+  return (
+    <div className="container">
+            <table {...getTableProps()}>
+                <thead>
+                    {headerGroups.map((headerGroup:any) => (
+                        <tr {...headerGroup.getHeaderGroupProps()}>
+                            {headerGroup.headers.map((column:any) => (
+                                <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                                    {column.render('Header')}
+                                    <span>
+                                        {column.isSorted
+                                            ? column.isSortedDesc
+                                                ?' 🔽'
+                                                : ' 🔼'
+                                            :""}
+                                          </span>
+                                </th>
+                            ))}
+                        </tr>
+                    ))}
+                </thead>
+                <tbody {...getTableBodyProps()}>
+                    {rows.map((row:any) => {
+                        prepareRow(row);
+                        return (
+                            <tr {...row.getRowProps()}>
+                                {row.cells.map((cell:any) => {
+                                    return (
+                                        <td {...cell.getCellProps()}>
+                                            {cell.render('Cell')}
+                                        </td>
+                                    );
+                                })}
+                            </tr>
+                        );
+                    })}
+                </tbody>
+            </table>
+        </div>
+    );
+}
+
+// export default ProductTable;
 
 export default ProductPage
 import Table from '@mui/material/Table';
@@ -27,6 +114,8 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { CustomButton } from '../components/styledComponents/InputBox.styles';
+import { fetchProductList } from '../utils/APIs';
+import { ProductDetails } from '../types/productTypes';
 
 function createData(name: string, calories: number, fat: number, carbs: number, protein: number) {
   return { name, calories, fat, carbs, protein };

@@ -1,17 +1,13 @@
 import { useEffect, useState } from 'react';
 import UnAuthorizeRoutes from './Routes/UnAuthorizeRoutes';
 import AuthorizeRoutes from './Routes/AuthorizeRoutes';
+import { useAuth } from './Routes/useAuth';
 
 const App = () => {
-  const [isLogin, setIsLogin] = useState(false);
-  useEffect(() => {
-    let token = localStorage.getItem('token');
-    if (token) {
-      setIsLogin(true)
-    }
-  }, []);
-  if(isLogin) return <AuthorizeRoutes />
-  return <UnAuthorizeRoutes />;
+  const { token ,setAuthToken, removeAuthToken} = useAuth();
+  console.log(token)
+  if(token) return <AuthorizeRoutes removeAuthToken={removeAuthToken}/>
+  return <UnAuthorizeRoutes setAuthToken={setAuthToken} />;
 };
 
 export default App;

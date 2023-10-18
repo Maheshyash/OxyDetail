@@ -1,15 +1,15 @@
 import { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import user from '../assets/user.png';
 import Avatar from '@mui/material/Avatar';
 import Popover from '@mui/material/Popover';
-import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
-import { PlainButton , HeaderTag, CustomButton} from './styledComponents/InputBox.styles';
-const Header = () => {
+import { PlainButton, CustomButton } from './styledComponents/InputBox.styles';
+import { CustomNavLink, HeaderBody, HeaderContainer, OxyDetailHeaderText } from './styledComponents/Header.styles';
+const Header = ({ removeAuthToken }: { removeAuthToken: any }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-
+  const navigate = useNavigate();
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -17,20 +17,29 @@ const Header = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-
+  const handleLogout = () => {
+    removeAuthToken();
+    navigate('./#', { replace: true });
+  };
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
   return (
-    <HeaderTag>
-      <Paper>
-        <section></section>
+    <HeaderContainer>
+      <HeaderBody>
+        <section>
+          <OxyDetailHeaderText>OxyDetail</OxyDetailHeaderText>
+        </section>
         <section className="header_right">
           <div className="header_right_container">
             <div>
-              <NavLink to={'/MrPage'}>MR Page</NavLink>
+              <CustomNavLink to={'/MrPage'} className={({ isActive }) => (isActive ? 'active' : '')}>
+                MR
+              </CustomNavLink>
             </div>
             <div>
-              <NavLink to={'/Product'}>Product Page</NavLink>
+              <CustomNavLink to={'/Product'} className={({ isActive }) => (isActive ? 'active' : '')}>
+                Product
+              </CustomNavLink>
             </div>
             <div>
               <PlainButton aria-describedby={id} onClick={handleClick}>
@@ -48,15 +57,17 @@ const Header = () => {
               >
                 <Box>
                   <Paper elevation={0}>
-                    <CustomButton variant="text">Log out</CustomButton>
+                    <CustomButton variant="text" onClick={() => handleLogout()}>
+                      Log out
+                    </CustomButton>
                   </Paper>
                 </Box>
               </Popover>
             </div>
           </div>
         </section>
-      </Paper>
-    </HeaderTag>
+      </HeaderBody>
+    </HeaderContainer>
   );
 };
 

@@ -1,4 +1,4 @@
-import { MouseEvent } from 'react';
+import { MouseEvent, useEffect } from 'react';
 import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
 const MRPage = () => {
@@ -6,6 +6,14 @@ const MRPage = () => {
   const handleAddMR = (e: MouseEvent<HTMLButtonElement>) => {
     navigate('addMR');
   };
+  useEffect(()=>{
+    fetchMrList().then(res=>{
+      console.log(res,'res')
+    }).catch(err=>{ 
+      alert('err');
+      console.log(err,'err')
+    })
+  },[])
   return (
     <div className="m-2">
       <div style={{ textAlign: 'end', marginBottom: 10 }}>
@@ -28,6 +36,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { CustomButton } from '../components/styledComponents/InputBox.styles';
+import { fetchMrList } from '../utils/APIs';
 
 function createData(name: string, calories: number, fat: number, carbs: number, protein: number) {
   return { name, calories, fat, carbs, protein };
