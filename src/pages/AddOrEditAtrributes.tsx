@@ -1,25 +1,27 @@
 import { BodyContainer } from '../components/styledComponents/Body.styles';
-import {
-  ActionButtonGroup,
-  CustomButton,
-  CustomeAutoSelect,
-  Label,
-  PhoneNumber
-} from '../components/styledComponents/InputBox.styles';
+import { ActionButtonGroup, CustomButton, Label } from '../components/styledComponents/InputBox.styles';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Grid from '@mui/material/Grid';
 import LabelValue from '../components/LabelValue';
-import React, { useState, ChangeEvent, useRef, useEffect } from 'react';
-import Input from '@mui/material/Input';
+import { useState, ChangeEvent, useRef, useEffect } from 'react';
 import IconButton from '@mui/material/IconButton';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
-import { StyledInput } from '../components/styledComponents/Common.styles';
-import { TextField } from '@mui/material';
+import { CustomSwitch, CustomeFileUpload, StyledInput } from '../components/styledComponents/Common.styles';
 import { insertOrUpdateAttributes } from '../utils/APIs';
+import { toaster } from '../components/Toaster/Toaster';
+interface formDetailsType {
+  AttributeName: string;
+  AttributeIconUpload: any;
+  IsActive: boolean;
+}
 const AddOrEditAttributes = () => {
   const location = useLocation();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [formDetails, setFormDetails] = useState({ AttributeName: '', AttributeIconUpload: '', IsActive: true });
+  const [formDetails, setFormDetails] = useState<formDetailsType>({
+    AttributeName: '',
+    AttributeIconUpload: '',
+    IsActive: true
+  });
   const [fileName, setFileName] = useState('');
   const navigate = useNavigate();
   const handleAttribute = (e: ChangeEvent<HTMLInputElement>) => {
@@ -33,7 +35,7 @@ const AddOrEditAttributes = () => {
     if (file) {
       // You can perform additional validation here if needed
       console.log(`Selected file: ${file.name}`);
-      setFormDetails({...formDetails, AttributeIconUpload:file})
+      setFormDetails({ ...formDetails, AttributeIconUpload: file });
     }
   };
   const handleButtonClick = () => {
@@ -45,33 +47,40 @@ const AddOrEditAttributes = () => {
     { label: 'true', value: true },
     { label: 'false', value: false }
   ];
-  useEffect(()=>{
-    console.log(location.state,'location.state')
-    if(location?.state){
-      const {attributeDetails} = location.state
-      setFormDetails({...formDetails, AttributeName:attributeDetails.attributeName,IsActive:attributeDetails.isActive })
+  useEffect(() => {
+    if (location?.state) {
+      const { attributeDetails } = location.state;
+      setFormDetails({
+        ...formDetails,
+        AttributeName: attributeDetails.attributeName,
+        IsActive: attributeDetails.isActive,
+        AttributeIconUpload: ''
+      });
       // setFileName(attributeDetails.)
     }
-  },[])
-  const handleAddOrUpdateAttribute = async (e) => {
+  }, []);
+  const handleAddOrUpdateAttribute = async e => {
     e.preventDefault();
-    console.log(formDetails,'formDetails')
-    const formData = new FormData()
-    formData.append('AttributeName', formDetails.AttributeName)
-    formData.append('AttributeIconUpload', formDetails.AttributeIconUpload)
-    formData.append('IsActive',formDetails.IsActive);
-    console.log(formData,'formdata')
-    await insertOrUpdateAttributes(formData).then(res=>console.log(res,'res')).catch(err=> console.log(err,'err'))
+    console.log(formDetails, 'formDetails');
+    const formData = new FormData();
+    formData.append('AttributeName', formDetails.AttributeName);
+    formData.append('AttributeIconUpload', formDetails.AttributeIconUpload);
+    formData.append('IsActive', formDetails.IsActive);
+    console.log(formData, 'formdata');
+    if (location.state?.attributeDetails) {
+      formData.append('AttributeId', location.state.attributeDetails.attributeId);
+    }
+    await insertOrUpdateAttributes(formData)
+      .then(res => {
+        if (res.statusCode === 1) {
+          toaster('success', res.statusMessage);
+          navigate(-1);
+        } else {
+          toaster('error', res.statusMessage);
+        }
+      })
+      .catch(err => {});
   };
-  const getDefaultIsActiveValue = (value) => {
-    console.log(value,)
-      const result = options.find(ele=> ele.value === value)
-      if(result){
-        return result;
-      }else{
-        return {}
-      }
-  }
   return (
     <BodyContainer>
       <Grid container spacing={2}>
@@ -85,7 +94,7 @@ const AddOrEditAttributes = () => {
         </Grid>
         <Grid item xs={12} md={3}>
           <Label>Attribute Icon</Label>
-          <Input
+          <CustomeFileUpload
             id="image-upload"
             type="text"
             readOnly
@@ -104,20 +113,19 @@ const AddOrEditAttributes = () => {
             ref={fileInputRef}
           />
         </Grid>
-        <Grid item xs={12} md={3}>
-          <Label>IsActive</Label>
-          <CustomeAutoSelect
-            options={options}
-            onChange={(event, data) => {
-              setFormDetails({...formDetails, IsActive:data.value});
-              console.log(data,'data')
-            }}
-            value={getDefaultIsActiveValue(formDetails.IsActive)}
-            getOptionLabel={option => option.label}
-            size="small"
-            renderInput={params => <TextField {...params} placeholder={'Pleas Select'} />}
-          />
-        </Grid>
+        {location.state?.attributeDetails && (
+          <Grid item xs={12} md={3}>
+            <Label>IsActive</Label>
+            <CustomSwitch
+              checked={formDetails.IsActive}
+              onChange={() =>
+                setFormDetails(props => {
+                  return { ...formDetails, IsActive: !props.IsActive };
+                })
+              }
+            />
+          </Grid>
+        )}
       </Grid>
       <ActionButtonGroup>
         <CustomButton variant="outlined" onClick={() => navigate(-1)}>

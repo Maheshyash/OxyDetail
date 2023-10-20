@@ -1,9 +1,14 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { loginDetails } from '../types/loginTypes';
 import { OxyDetailInstaceWithToken, oxyDetailInstance } from './NetworkInstance';
-import { ProductDetails, categoryListArray, deleteProductResponse, subCategoryListTypeArray } from '../types/productTypes';
+import {
+  ProductDetails,
+  categoryListArray,
+  deleteProductResponse,
+  subCategoryListTypeArray
+} from '../types/productTypes';
 import { AttributeURLs, ProductURLs, mrURLs } from '../Constants';
-import { AttributeList, deleteAttributeAction } from '../types/attributeTypes';
+import { AttributeList, deleteAttributeAction, insertUpdateAtrributeResponse } from '../types/attributeTypes';
 
 export const fetchToken = (payload: { emailId: string; password: string }): Promise<loginDetails> => {
   const headers = {
@@ -55,9 +60,19 @@ export const fetchMrList = (): Promise<any> => {
       });
   });
 };
-export const fetchProductList = (payload?: { ProductCode?: string, CategoryId?: number, SubCategoryId?: number }): Promise<ProductDetails> => {
+export const fetchProductList = (payload?: {
+  ProductCode?: string;
+  CategoryId?: number;
+  SubCategoryId?: number;
+}): Promise<ProductDetails> => {
   return new Promise<ProductDetails>((resolve, reject) => {
-    OxyDetailInstaceWithToken.get(ProductURLs.PRODUCTLIST, { params: { ProductCode: payload?.ProductCode, CategoryId: payload?.CategoryId, SubCategoryId: payload?.SubCategoryId } })
+    OxyDetailInstaceWithToken.get(ProductURLs.PRODUCTLIST, {
+      params: {
+        ProductCode: payload?.ProductCode,
+        CategoryId: payload?.CategoryId,
+        SubCategoryId: payload?.SubCategoryId
+      }
+    })
       .then((response: AxiosResponse<ProductDetails>) => {
         // Handle the successful response here
         const responseData = response.data;
@@ -76,9 +91,9 @@ export const fetchProductList = (payload?: { ProductCode?: string, CategoryId?: 
   });
 };
 
-export const deleteProductItem = (ProductCode?: { ProductCode:string}): Promise<deleteProductResponse> => {
+export const deleteProductItem = (ProductCode?: { ProductCode: string }): Promise<deleteProductResponse> => {
   return new Promise<deleteProductResponse>((resolve, reject) => {
-    OxyDetailInstaceWithToken.delete(ProductURLs.DELETEPRODUCTITEM, { params: { ProductCode: ProductCode} })
+    OxyDetailInstaceWithToken.delete(ProductURLs.DELETEPRODUCTITEM, { params: { ProductCode: ProductCode } })
       .then((response: AxiosResponse<deleteProductResponse>) => {
         // Handle the successful response here
         const responseData = response.data;
@@ -138,16 +153,15 @@ export const fetchSubCategoryList = (categoryId: number | null): Promise<subCate
       });
   });
 };
-export const insertOrUpdateAttributes = (payload: any) => {
+export const insertOrUpdateAttributes = (payload: any): Promise<insertUpdateAtrributeResponse> => {
   const headers = {
     headers: {
       'Content-Type': 'multipart/form-data'
-      // 'Content-Type': 'application/x-www-form-urlencoded'
     }
   };
-  return new Promise<any>((resolve, reject) => {
+  return new Promise<insertUpdateAtrributeResponse>((resolve, reject) => {
     OxyDetailInstaceWithToken.post(AttributeURLs.INSERTORUPDATE, payload, headers)
-      .then((response) => {
+      .then((response: AxiosResponse<insertUpdateAtrributeResponse>) => {
         // Handle the successful response here
         const responseData = response.data;
         resolve(responseData);

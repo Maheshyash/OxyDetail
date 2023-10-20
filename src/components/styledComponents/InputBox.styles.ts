@@ -36,7 +36,8 @@ PhoneNumber.defaultProps = {
   };
 export const Label = styled('label')(({theme})=>({
     color:theme.palette.text.secondary,
-    fontSize:`${theme.typography.subtitle1.fontSize}px`
+    fontSize:`${theme.typography.subtitle1.fontSize}px`,
+    display:'block'
 }));
 
 export const ActionButtonGroup = styled('section')(({theme})=>({

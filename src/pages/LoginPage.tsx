@@ -3,10 +3,14 @@ import LabelValue from '../components/LabelValue';
 import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
 import { fetchToken } from '../utils/APIs';
+import { toaster } from '../components/Toaster/Toaster';
+import Loader from '../components/Loader/Loader';
 const LoginPage = ({ setAuthToken }: { setAuthToken: any }) => {
   const navigate = useNavigate();
   const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
+  const [isSubmit, setIsSubmit] = useState<boolean>(false);
+  const [isLoader, setIsLoader] = useState<boolean>(false);
   const handleUserName = (e: ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value;
     setUserName(value);
@@ -21,21 +25,26 @@ const LoginPage = ({ setAuthToken }: { setAuthToken: any }) => {
       emailId: userName,
       password: password
     };
+    setIsLoader(true);
     await fetchToken(payload)
       .then(res => {
         if (res.statusCode === 1) {
           setAuthToken(res);
+          toaster('success', 'Successfully Logged in.');
+          setIsLoader(false);
           navigate('/MrPage', { replace: true });
         }
       })
       .catch(err => {
         alert('err');
+        setIsLoader(false);
         console.log(err, 'err');
       });
   };
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', overflowX: 'hidden', position: 'relative' }}>
+      {isLoader && <Loader />}
       <aside className="login_left-side"></aside>
       <aside className="login_right-side">
         <div className="login_right-side_container">

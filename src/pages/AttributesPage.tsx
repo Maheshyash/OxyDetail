@@ -9,11 +9,11 @@ import { TD, TH, TableContainer } from '../components/styledComponents/Table.sty
 import { useTable, useSortBy } from 'react-table';
 import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
-import {Button} from '@mui/material'
+import Loader from '../components/Loader/Loader';
 const AttributesPage = () => {
   const navigate = useNavigate();
   const [attributeList, setAttributeList] = useState<AttributeList | []>([]);
+  const [isLoader, setIsLoader] = useState<boolean>(false)
   const handleAddMR = (e: MouseEvent<HTMLButtonElement>) => {
     navigate('addAttributes');
   };
@@ -21,15 +21,16 @@ const AttributesPage = () => {
     fetchAttributeDetails();
   }, []);
   const fetchAttributeDetails = (AttributeId=null) =>{
+    setIsLoader(true)
     fetchAttributeList(AttributeId)
       .then(res => {
-        console.log(res, 'res');
-        // setMrList(res.data);
         setAttributeList(res);
+        setIsLoader(false);
       })
       .catch(err => {
         alert('err');
         console.log(err, 'err');
+        setIsLoader(false);
       });
   }
   return (
@@ -42,6 +43,7 @@ const AttributesPage = () => {
         </Button>
       </FilterContainer>
     </NormalContainer> */}
+    {isLoader && <Loader/>}
     <BodyContainer>
       <AddButtonContainer>
         <CustomButton variant="outlined" onClick={handleAddMR}>

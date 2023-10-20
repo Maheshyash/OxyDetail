@@ -13,7 +13,6 @@ const MRPage = () => {
   useEffect(() => {
     fetchMrList()
       .then(res => {
-        console.log(res, 'res');
         setMrList(res.data);
       })
       .catch(err => {
@@ -21,9 +20,6 @@ const MRPage = () => {
         console.log(err, 'err');
       });
   }, []);
-  useEffect(() => {
-    console.log(MrList, 'mrlist');
-  }, [MrList]);
   return (
     <BodyContainer>
       <AddButtonContainer>
@@ -31,7 +27,7 @@ const MRPage = () => {
           Add
         </CustomButton>
       </AddButtonContainer>
-      {MrList.length === 0 ? <NoRecordsFound>No records found</NoRecordsFound> : ""}
+      {MrList.length === 0 ? <NoRecordsFound>No records found</NoRecordsFound> : ''}
     </BodyContainer>
   );
 };

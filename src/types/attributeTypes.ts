@@ -1,15 +1,19 @@
-
-export type AttributeList = Array<AttributeDetails> | []
+export type AttributeList = Array<AttributeDetails> | [];
 
 export interface AttributeDetails {
-    attributeId: number,
-    attributeName: string,
-    attributeIconUpload: null,
-    attributeIcon: string,
-    isActive: boolean
+  attributeId: number;
+  attributeName: string;
+  attributeIconUpload: null;
+  attributeIcon: string;
+  isActive: boolean;
 }
 
 export interface deleteAttributeAction {
-    statusCode: number,
-    statusMessage: string
+  statusCode: number;
+  statusMessage: string;
+}
+
+export interface insertUpdateAtrributeResponse {
+  statusCode: number;
+  statusMessage: string;
 }
