@@ -1,28 +1,36 @@
-import { MouseEvent, useEffect } from 'react';
-import Button from '@mui/material/Button';
+import { MouseEvent, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { BodyContainer } from '../components/styledComponents/Body.styles';
+import { AddButtonContainer, NoRecordsFound } from '../components/styledComponents/Common.styles';
 const MRPage = () => {
   const navigate = useNavigate();
+  const [MrList, setMrList] = useState<Array<any> | []>([]);
   const handleAddMR = (e: MouseEvent<HTMLButtonElement>) => {
     navigate('addMR');
   };
-  useEffect(()=>{
-    fetchMrList().then(res=>{
-      console.log(res,'res')
-    }).catch(err=>{ 
-      alert('err');
-      console.log(err,'err')
-    })
-  },[])
+  useEffect(() => {
+    fetchMrList()
+      .then(res => {
+        console.log(res, 'res');
+        setMrList(res.data);
+      })
+      .catch(err => {
+        alert('err');
+        console.log(err, 'err');
+      });
+  }, []);
+  useEffect(() => {
+    console.log(MrList, 'mrlist');
+  }, [MrList]);
   return (
-    <div className="m-2">
-      <div style={{ textAlign: 'end', marginBottom: 10 }}>
+    <BodyContainer>
+      <AddButtonContainer>
         <CustomButton variant="outlined" onClick={handleAddMR}>
           Add
         </CustomButton>
-      </div>
-      <BasicTable />
-    </div>
+      </AddButtonContainer>
+      {MrList.length === 0 ? <NoRecordsFound>No records found</NoRecordsFound> : <BasicTable />}
+    </BodyContainer>
   );
 };
 

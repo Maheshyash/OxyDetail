@@ -1,6 +1,9 @@
 import Paper from '@mui/material/Paper';
+import { BodyContainer } from '../components/styledComponents/Body.styles';
 const AddOrEditProduct = () => {
-  return <Paper></Paper>;
+  return <BodyContainer>
+    
+  </BodyContainer>
 };
 
 export default AddOrEditProduct;

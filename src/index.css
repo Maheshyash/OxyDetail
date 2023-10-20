@@ -55,3 +55,27 @@ th {
 tr:nth-child(even) {
   background-color: #dddddd;
 }
+
+.table-header-sticky {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: #ccd3e1; /* Adjust the background color as needed */
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #000; /* Change the background color to black on hover */
+}

@@ -5,14 +5,13 @@ import {
   CustomButton,
   CustomeAutoSelect,
   Label,
-  Layout,
   PaperContainer,
   PhoneNumber
 } from '../components/styledComponents/InputBox.styles';
 import LabelValue from '../components/LabelValue';
-import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import { useNavigate } from 'react-router-dom';
+import { BodyContainer } from '../components/styledComponents/Body.styles';
 const AddOrEditMRPage = () => {
   const navigate = useNavigate();
   const [formDetails, setFormDetails] = useState({
@@ -169,56 +168,57 @@ const AddOrEditMRPage = () => {
     };
   });
   return (
-    <Layout>
-      <PaperContainer>
-        <Grid container spacing={2}>
-          <Grid item xs={12} md={3}>
-            <LabelValue label="Name" value={formDetails.mrName} onChange={handleName} placeholder="Enter Name"/>
-          </Grid>
-          <Grid item xs={12} md={3}>
-            <LabelValue label="Email Id" value={formDetails.email} onChange={handleEmail} placeholder="Enter Name"/>
-          </Grid>
-          <Grid item xs={12} md={3}>
-            <Label>Phone Number</Label>
-            <PhoneNumber value={formDetails.phone} onChange={handlePhone} type="number"></PhoneNumber>
-            {/* <LabelValue label="Phone Number" value={formDetails.phone} onChange={handlePhone} type="tel" /> */}`
-          </Grid>
-          <Grid item xs={12} md={3}>
-            <LabelValue label="Photo" value={formDetails.photo} onChange={handleFile} type="file" placeholder='Enter Mobile Number'/>
-          </Grid>
-          <Grid item xs={12} md={3}>
-            <Label>Role</Label>
-            <CustomeAutoSelect
-              options={options}
-              onChange={(event, data) => {
-                console.log(event, data);
-              }}
-              
-              getOptionLabel={option => option.title}
-              size="small"
-              renderInput={params => <TextField {...params} placeholder={'Select Role'} />}
-            />
-          </Grid>
-          <Grid item xs={3} md={3}>
-            <Label>Product Category</Label>
-            <CustomeAutoSelect
-              options={options}
-              
-              getOptionLabel={option => option.title}
-              size="small"
-              renderInput={params => <TextField {...params} placeholder={'Select Product Category'} />}
-            />
-          </Grid>
+    <BodyContainer>
+      <Grid container spacing={2}>
+        <Grid item xs={12} md={3}>
+          <LabelValue label="Name" value={formDetails.mrName} onChange={handleName} placeholder="Enter Name" />
         </Grid>
-        <ActionButtonGroup>
-          <CustomButton variant="outlined" onClick={() => navigate(-1)}>
-            Cancel
-          </CustomButton>
-          <CustomButton variant="contained">Submit</CustomButton>
-        </ActionButtonGroup>
-      </PaperContainer>
-      `
-    </Layout>
+        <Grid item xs={12} md={3}>
+          <LabelValue label="Email Id" value={formDetails.email} onChange={handleEmail} placeholder="Enter Name" />
+        </Grid>
+        <Grid item xs={12} md={3}>
+          <Label>Phone Number</Label>
+          <PhoneNumber value={formDetails.phone} onChange={handlePhone} type="number"></PhoneNumber>
+          {/* <LabelValue label="Phone Number" value={formDetails.phone} onChange={handlePhone} type="tel" /> */}`
+        </Grid>
+        <Grid item xs={12} md={3}>
+          <LabelValue
+            label="Photo"
+            value={formDetails.photo}
+            onChange={handleFile}
+            type="file"
+            placeholder="Enter Mobile Number"
+          />
+        </Grid>
+        <Grid item xs={12} md={3}>
+          <Label>Role</Label>
+          <CustomeAutoSelect
+            options={options}
+            onChange={(event, data) => {
+              console.log(event, data);
+            }}
+            getOptionLabel={option => option.title}
+            size="small"
+            renderInput={params => <TextField {...params} placeholder={'Select Role'} />}
+          />
+        </Grid>
+        <Grid item xs={3} md={3}>
+          <Label>Product Category</Label>
+          <CustomeAutoSelect
+            options={options}
+            getOptionLabel={option => option.title}
+            size="small"
+            renderInput={params => <TextField {...params} placeholder={'Select Product Category'} />}
+          />
+        </Grid>
+      </Grid>
+      <ActionButtonGroup>
+        <CustomButton variant="outlined" onClick={() => navigate(-1)}>
+          Cancel
+        </CustomButton>
+        <CustomButton variant="contained">Submit</CustomButton>
+      </ActionButtonGroup>
+    </BodyContainer>
   );
 };
 

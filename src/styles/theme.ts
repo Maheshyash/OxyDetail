@@ -8,6 +8,7 @@ const customTheme = createTheme({
     grey: {
       50: "#dedede",
     },
+    divider:'#dedede',
     background: {
       default: "#f4f5fa",
     },

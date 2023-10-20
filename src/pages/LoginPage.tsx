@@ -2,9 +2,6 @@ import { useState, ChangeEvent, FormEvent } from 'react';
 import LabelValue from '../components/LabelValue';
 import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
-import axios, { AxiosResponse, AxiosError } from 'axios';
-import { oxyDetailInstance } from '../utils/NetworkInstance';
-import { loginDetails } from '../types/loginTypes';
 import { fetchToken } from '../utils/APIs';
 const LoginPage = ({ setAuthToken }: { setAuthToken: any }) => {
   const navigate = useNavigate();
