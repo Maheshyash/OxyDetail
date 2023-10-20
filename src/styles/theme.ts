@@ -3,14 +3,15 @@ import { createTheme } from "@mui/material/styles";
 const customTheme = createTheme({
   palette: {
     primary: {
-      main: "#9155fd",
+      main: "#C66965",
+      dark:"#df5959"//table header
     },
     grey: {
       50: "#dedede",
     },
     divider:'#dedede',
     background: {
-      default: "#f4f5fa",
+      default: "#f3f6f8",
     },
     text: {
       // primary: "#000000d9",
@@ -19,6 +20,7 @@ const customTheme = createTheme({
       disabled:"#00000061"
     },
   },
+    
   typography: {
     fontFamily: "Whitney, sans-serif",
     h6: {
@@ -32,7 +34,7 @@ const customTheme = createTheme({
     subtitle1:{
       fontSize:14,
     },
-    fontSize:16
+    fontSize:12
     
   },
 });

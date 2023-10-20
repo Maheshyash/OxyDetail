@@ -3,13 +3,15 @@ import { NavLink } from "react-router-dom";
 
 export const HeaderContainer = styled('header')(({theme})=>({
     borderBottom:`1px solid ${theme.palette.divider}`,
+    background:'#ffffff'
 }));
 
 export const HeaderBody = styled(Grid)(({theme})=>({
     padding:theme.spacing(0.5),
     display:'flex',
     justifyContent:'space-between',
-    alignItems:'center'
+    alignItems:'center',
+    background:'#ffffff'
 }))
 export const OxyDetailHeaderText = styled('h2')(({theme})=>({
     margin:0,

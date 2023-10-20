@@ -42,6 +42,11 @@ const Header = ({ removeAuthToken }: { removeAuthToken: any }) => {
               </CustomNavLink>
             </div>
             <div>
+              <CustomNavLink to={'/attributes'} className={({ isActive }) => (isActive ? 'active' : '')}>
+                Attributes
+              </CustomNavLink>
+            </div>
+            <div>
               <PlainButton aria-describedby={id} onClick={handleClick}>
                 <Avatar alt="Remy Sharp" src={user} />
               </PlainButton>

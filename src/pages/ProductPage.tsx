@@ -5,7 +5,7 @@ import { ProductDetails } from '../types/productTypes';
 import { BodyContainer } from '../components/styledComponents/Body.styles';
 import { CustomButton } from '../components/styledComponents/InputBox.styles';
 import { fetchCategoryList, fetchProductList, fetchSubCategoryList } from '../utils/APIs';
-import { TableContainer } from '../components/styledComponents/Table.styles';
+import { TD, TH, TableContainer } from '../components/styledComponents/Table.styles';
 import { AddButtonContainer, NoRecordsFound } from '../components/styledComponents/Common.styles';
 import LabelValue from '../components/LabelValue';
 const ProductPage = () => {
@@ -104,10 +104,10 @@ const ProductTable = ({ data }: { data: ProductDetails }) => {
           {headerGroups.map((headerGroup: any) => (
             <tr {...headerGroup.getHeaderGroupProps()} className="table-header-sticky">
               {headerGroup.headers.map((column: any) => (
-                <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                <TH {...column.getHeaderProps(column.getSortByToggleProps())}>
                   {column.render('Header')}
                   <span>{column.isSorted ? (column.isSortedDesc ? ' 🔽' : ' 🔼') : ''}</span>
-                </th>
+                </TH>
               ))}
             </tr>
           ))}
@@ -118,7 +118,7 @@ const ProductTable = ({ data }: { data: ProductDetails }) => {
             return (
               <tr {...row.getRowProps()}>
                 {row.cells.map((cell: any) => {
-                  return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>;
+                  return <TD {...cell.getCellProps()}>{cell.render('Cell')}</TD>;
                 })}
               </tr>
             );

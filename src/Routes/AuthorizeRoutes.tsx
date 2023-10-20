@@ -4,6 +4,8 @@ import MRPage from '../pages/MRPage';
 import ProductPage from '../pages/ProductPage';
 import AddOrEditProduct from '../pages/AddOrEditProduct';
 import AddOrEditMRPage from '../pages/AddOrEditMRPage';
+import AttributesPage from '../pages/AttributesPage';
+import AddOrEditAttributes from '../pages/AddOrEditAtrributes';
 const AuthorizeRoutes = ({removeAuthToken}:{removeAuthToken:any}) => {
   return (
     <BrowserRouter>
@@ -13,6 +15,9 @@ const AuthorizeRoutes = ({removeAuthToken}:{removeAuthToken:any}) => {
         <Route path='/MrPage/addMr' Component={AddOrEditMRPage} />
         <Route path="/product" Component={ProductPage}/>
         <Route path="/product/addProduct" Component={AddOrEditProduct}/>
+        <Route path="/attributes" Component={AttributesPage}/>
+        <Route path="/attributes/addAttributes" Component={AddOrEditAttributes}/>
+
       </Routes>
     </BrowserRouter>
   );
