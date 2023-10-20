@@ -1,20 +1,29 @@
 import { ChangeEvent, MouseEvent, useEffect, useMemo, useState } from 'react';
 import { useTable, useSortBy } from 'react-table';
+import { Button, Grid, TextField } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { ProductDetails } from '../types/productTypes';
-import { BodyContainer } from '../components/styledComponents/Body.styles';
-import { CustomButton } from '../components/styledComponents/InputBox.styles';
-import { fetchCategoryList, fetchProductList, fetchSubCategoryList } from '../utils/APIs';
+import { ProductDetails, categoryListArray, subCategoryListType, subCategoryListTypeArray } from '../types/productTypes';
+import { BodyContainer, NormalContainer } from '../components/styledComponents/Body.styles';
+import { CustomButton, CustomeAutoSelect, InputBox, Label } from '../components/styledComponents/InputBox.styles';
+import { deleteProductItem, fetchCategoryList, fetchProductList, fetchSubCategoryList } from '../utils/APIs';
 import { TD, TH, TableContainer } from '../components/styledComponents/Table.styles';
-import { AddButtonContainer, NoRecordsFound } from '../components/styledComponents/Common.styles';
-import LabelValue from '../components/LabelValue';
+import {
+  ActionButtons,
+  AddButtonContainer,
+  FilterContainer,
+  NoRecordsFound
+} from '../components/styledComponents/Common.styles';
+import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
+import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import dayjs from 'dayjs';
 const ProductPage = () => {
   const navigate = useNavigate();
   const [productList, setProductList] = useState<ProductDetails>([]);
-  const [categoryList, setCategoryList] = useState<Array<any>>([]);
-  const [subategoryList, setSubCategoryList] = useState<Array<any>>([]);
-  const [categoryId, setCategoryId] = useState<number|null>(null);
-  const [subCategoryId, setSubCategoryId] = useState<string>("");
+  const [categoryList, setCategoryList] = useState<categoryListArray>([]);
+  const [subCategoryList, setSubCategoryList] = useState<subCategoryListTypeArray>([]);
+  const [categoryId, setCategoryId] = useState<number | null>(null);
+  const [subCategoryId, setSubCategoryId] = useState<subCategoryListType| null>(null);
   const handleAddProduct = (e: MouseEvent<HTMLButtonElement>) => {
     navigate('addProduct');
   };
@@ -22,24 +31,27 @@ const ProductPage = () => {
     fetchProductDetails();
     fetchCategoryDetails();
   }, []);
-  const fetchCategoryDetails = async () =>{
+
+  const fetchCategoryDetails = async () => {
     await fetchCategoryList()
-    .then(res=>{
-      setCategoryList(res)
-    }).catch(err => {
-      alert('err');
-    })
-  }
-  const fetchSubCategoryDetails = async (categoryId:number) =>{
+      .then(res => {
+        setCategoryList(res);
+      })
+      .catch(err => {
+        alert('err');
+      });
+  };
+  const fetchSubCategoryDetails = async (categoryId: number) => {
     await fetchSubCategoryList(categoryId)
-    .then(res=>{
-      setSubCategoryList(res)
-    }).catch(err => {
-      alert('err');
-    })
-  }
-  const fetchProductDetails = async () => {
-    await fetchProductList()
+      .then(res => {
+        setSubCategoryList(res);
+      })
+      .catch(err => {
+        alert('err');
+      });
+  };
+  const fetchProductDetails = async (payload?:any) => {
+    await fetchProductList(payload)
       .then(res => {
         setProductList(res);
       })
@@ -48,53 +60,129 @@ const ProductPage = () => {
         console.log(err, 'err');
       });
   };
+  const handleSearch = async () => {
+    const payload = {
+      CategoryId : categoryId,
+      SubCategoryId:subCategoryId?.subCategoryId
+    }
+    await fetchProductDetails(payload)
+  }
   return (
-    <BodyContainer>
-      <div>
-        {/* <LabelValue label='Product Name' value ={productName} onChange={handleProductName}/> */}
-
-      </div>
-      <AddButtonContainer>
-        <CustomButton variant="outlined" onClick={handleAddProduct}>
-          Add
-        </CustomButton>
-      </AddButtonContainer>
-      {productList.length === 0 ? (
-        <NoRecordsFound>No records found</NoRecordsFound>
-      ) : (
-        <ProductTable data={productList} />
-      )}
-    </BodyContainer>
+    <>
+      <NormalContainer>
+        <FilterContainer>
+          <Grid container spacing={2}>
+            <Grid item xs={12} md={3}>
+              <Label>Category</Label>
+              <CustomeAutoSelect
+                options={categoryList}
+                onChange={(event, data) => {
+                  setCategoryId(data.categoryId);
+                  fetchSubCategoryDetails(data.categoryId);
+                  setSubCategoryId(null)
+                  console.log(data, 'data');
+                }}
+                getOptionLabel={option => option.categoryName}
+                size="small"
+                renderInput={params => <TextField {...params} placeholder={'Pleas Select'} />}
+              />
+            </Grid>
+            <Grid item xs={12} md={3}>
+              <Label>Sub Category Name</Label>
+              <CustomeAutoSelect
+                options={subCategoryList}
+                onChange={(event, data) => {
+                  setSubCategoryId(data);
+                }}
+                value ={subCategoryId}
+                getOptionLabel={option => option.subCategoryName}
+                size="small"
+                renderInput={params => <TextField {...params} placeholder={'Pleas Select'} />}
+              />
+            </Grid>
+            <Grid item xs={12} md={1} style={{display:'flex',alignItems:'end'}}>
+              <Button>
+                <SearchRoundedIcon onClick={handleSearch}/>
+              </Button>
+            </Grid>
+          </Grid>
+        </FilterContainer>
+      </NormalContainer>
+      <BodyContainer>
+        <AddButtonContainer>
+          <CustomButton variant="outlined" onClick={handleAddProduct}>
+            Add
+          </CustomButton>
+        </AddButtonContainer>
+        {productList.length === 0 ? (
+          <NoRecordsFound>No records found</NoRecordsFound>
+        ) : (
+          <ProductTable data={productList} callBackProductList={fetchProductDetails} />
+        )}
+      </BodyContainer>
+    </>
   );
 };
 
-export const COLUMNS = [
-  {
-    Header: 'productName',
-    accessor: 'productName'
-  },
-  {
-    Header: 'productCode',
-    accessor: 'productCode'
-  },
-  {
-    Header: 'categoryId',
-    accessor: 'categoryId'
-  },
-  {
-    Header: 'subCategoryId',
-    accessor: 'subCategoryId'
-  },
-  {
-    Header: 'isNewProduct',
-    accessor: 'isNewProduct'
-  },
-  {
-    Header: 'activationDate',
-    accessor: 'activationDate'
-  }
-];
-const ProductTable = ({ data }: { data: ProductDetails }) => {
+const ProductTable = ({ data, callBackProductList }: { data: ProductDetails; callBackProductList: any }) => {
+  const navigate = useNavigate();
+  const COLUMNS = [
+    {
+      Header: 'Product Name',
+      accessor: 'productName'
+    },
+    {
+      Header: 'Product Code',
+      accessor: 'productCode'
+    },
+    {
+      Header: 'Category',
+      accessor: 'categoryId'
+    },
+    {
+      Header: 'Sub Category',
+      accessor: 'subCategoryId'
+    },
+    {
+      Header: 'Is New Product',
+      accessor: 'isNewProduct'
+    },
+    {
+      Header: 'Activation Date',
+      accessor: 'activationDate',
+      Cell: ({ row }: { row: any }) => (
+        <>
+          <div>{dayjs(row.values.activationDate).format('YYYY-MM-DD')}</div>
+        </>
+      )
+    },
+    {
+      Header: 'Actions',
+      accessor: 'actions',
+      Cell: ({ row }: { row: any }) => (
+        <>
+          <ActionButtons>
+            <ModeEditOutlineIcon onClick={() => handleAction(row)} />
+            <DeleteForeverIcon onClick={() => handleDeleteAttribute(row)} />
+          </ActionButtons>
+        </>
+      )
+    }
+  ];
+  const handleDeleteAttribute = async (row: any) => {
+    debugger;
+    await deleteProductItem(row.original.productCode).then(res => {
+      if (res.statusCode === 1) {
+        alert(res.statusMessage);
+        callBackProductList();
+      } else {
+        alert(res.statusMessage);
+      }
+    });
+  };
+  const handleAction = (row: any) => {
+    navigate('addProduct', { state: { productDetails: row.original } });
+  };
   const columns = useMemo(() => COLUMNS, []);
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({ columns, data }, useSortBy);
   return (

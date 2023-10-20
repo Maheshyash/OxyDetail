@@ -7,7 +7,10 @@ export const InputBox = styled(TextField)(({theme})=>({
     border:`1px light ${theme.palette.grey['50']}`,
     color:theme.palette.text.primary,
     fontSize:`${theme.typography.fontSize}px`,
-    width:"100%"
+    width:"100%",
+    '& .MuiInputBase-input': {
+        fontSize: `${theme.typography.fontSize}px`, // Apply the font size to the input field
+      },
 }))
 // Provide default values for InputLabelProps
 InputBox.defaultProps = {
@@ -18,7 +21,6 @@ InputBox.defaultProps = {
 export const PhoneNumber = styled(InputBox)(({theme})=>({
     border:`1px light ${theme.palette.grey['50']}`,
     color:theme.palette.text.primary,
-    fontSize:`${theme.typography.fontSize}px`,
     width:"100%"
 }));
 export const PaperContainer = styled(Paper)(()=>({
@@ -53,6 +55,12 @@ export const CustomeAutoSelect = styled(Autocomplete)(({theme})=>({
         transform: 'scale(1)',
         transformOrigin: 'top left',
     },
+    '& .MuiInputBase-input': {
+        fontSize: `${theme.typography.fontSize}px`
+      },
+      '& .MuiAutocomplete-popper': {
+        fontSize: `${theme.typography.fontSize}px`
+      },
 }));
 
 export const PlainButton = styled('button')(({theme})=>({

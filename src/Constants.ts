@@ -5,5 +5,12 @@ export const mrURLs ={
 export const ProductURLs = {
     PRODUCTLIST:'Product/Product_GetList',
     CATEGORYLIST:'Product/Product_GetCategoryList',
-    SUBCATEGORYLIST:'Product_GetSubCategoryList'
+    SUBCATEGORYLIST:'Product/Product_GetSubCategoryList',
+    DELETEPRODUCTITEM:'Product/Product_Delete'
+}
+
+export const AttributeURLs = {
+    INSERTORUPDATE:'Attribute/Attribute_InsertUpdate',
+    GETATTRIBUTELIST:'Attribute/Attribute_GetList',
+    DELETEATTRIBUTE:'Attribute/Attribute_Delete'
 }

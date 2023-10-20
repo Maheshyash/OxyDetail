@@ -3,7 +3,10 @@ import { NavLink } from "react-router-dom";
 
 export const HeaderContainer = styled('header')(({theme})=>({
     borderBottom:`1px solid ${theme.palette.divider}`,
-    background:'#ffffff'
+    background:'#ffffff',
+    position:'sticky',
+    top:0,
+    zIndex:999
 }));
 
 export const HeaderBody = styled(Grid)(({theme})=>({

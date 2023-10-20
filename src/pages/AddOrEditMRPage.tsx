@@ -174,7 +174,7 @@ const AddOrEditMRPage = () => {
           <LabelValue label="Name" value={formDetails.mrName} onChange={handleName} placeholder="Enter Name" />
         </Grid>
         <Grid item xs={12} md={3}>
-          <LabelValue label="Email Id" value={formDetails.email} onChange={handleEmail} placeholder="Enter Name" />
+          <LabelValue label="Email Id" value={formDetails.email} onChange={handleEmail} placeholder="Enter Email Id" />
         </Grid>
         <Grid item xs={12} md={3}>
           <Label>Phone Number</Label>
