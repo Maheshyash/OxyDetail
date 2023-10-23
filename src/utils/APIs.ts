@@ -132,6 +132,26 @@ export const fetchCategoryList = (): Promise<categoryListArray> => {
       });
   });
 };
+export const insertOrUpdateProductDetail = (payload: any): Promise<insertUpdateAtrributeResponse> => {
+  return new Promise<insertUpdateAtrributeResponse>((resolve, reject) => {
+    OxyDetailInstaceWithToken.post(ProductURLs.INSERTORUPDATE, payload)
+      .then((response: AxiosResponse<insertUpdateAtrributeResponse>) => {
+        // Handle the successful response here
+        const responseData = response.data;
+        resolve(responseData);
+      })
+      .catch((error: AxiosError) => {
+        if (axios.isAxiosError(error)) {
+          // Axios error (e.g., network error)
+          console.error('Axios error:', error);
+        } else {
+          // Non-Axios error (e.g., JSON parsing error)
+          console.error('Non-Axios error:', error);
+        }
+        reject(error); // Reject the Promise to propagate the error
+      });
+  });
+};
 
 export const fetchSubCategoryList = (categoryId: number | null): Promise<subCategoryListTypeArray> => {
   return new Promise<subCategoryListTypeArray>((resolve, reject) => {

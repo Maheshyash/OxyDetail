@@ -1,5 +1,6 @@
 import { Input, styled, keyframes, Switch, alpha } from '@mui/material';
-
+import { MultiSelect } from 'react-multi-select-component';
+import { TextareaAutosize } from '@mui/base/TextareaAutosize';
 export const NoRecordsFound = styled('div')(({ theme }) => ({
   textAlign: 'center',
   fontSize: `${theme.typography.fontSize}px`
@@ -85,5 +86,32 @@ export const CustomSwitch = styled(Switch)(({ theme }) => ({
     '&:hover': {
       backgroundColor: alpha(`${theme.palette.error.light}`, theme.palette.action.hoverOpacity)
     }
+  }
+}));
+
+export const CustomMultiSelect = styled(MultiSelect)(({ theme }) => ({
+  '& .dropdown-heading': {
+    fontSize: `${theme.typography.fontSize}px`,
+    height: '33px'
+  },
+  '& .dropdown-container:focus-within': {
+    boxShadow: `${theme.palette.primary.main} 0 0 0 1px`,
+    borderColor: `${theme.palette.primary.main}`
+  },
+  '& .dropdown-content': {
+    fontSize: `${theme.typography.fontSize}px`
+  }
+}));
+export const CustomTextArea = styled(TextareaAutosize)(({ theme }) => ({
+  fontSize: `${theme.typography.fontSize}px`,
+  width: '100%',
+  borderRadius: '4px',
+  fontFamily: `${theme.typography.fontFamily}`,
+  color: `${theme.palette.text.primary}`,
+  '&:focus-visible': {
+    borderColor: theme.palette.primary.main,
+    borderWidth: 2,
+    outline: 'none',
+    borderRadius: '4px'
   }
 }));

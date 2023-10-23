@@ -79,3 +79,9 @@ tr:nth-child(even) {
 ::-webkit-scrollbar-thumb:hover {
   background: #000; /* Change the background color to black on hover */
 }
+.MuiAutocomplete-listbox{
+  font-size: 12px
+}
+.MuiAutocomplete-noOptions{
+  font-size: 12px
+}
