@@ -2,7 +2,7 @@ import { ChangeEvent, MouseEvent, useEffect, useMemo, useState } from 'react';
 import { useTable, useSortBy } from 'react-table';
 import { Button, Grid, TextField } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { ProductDetails, categoryListArray, subCategoryListType, subCategoryListTypeArray } from '../types/productTypes';
+import { ProductDetails, categoryListArray, categoryListType, subCategoryListType, subCategoryListTypeArray } from '../types/productTypes';
 import { BodyContainer, NormalContainer } from '../components/styledComponents/Body.styles';
 import { CustomButton, CustomeAutoSelect, InputBox, Label } from '../components/styledComponents/InputBox.styles';
 import { deleteProductItem, fetchCategoryList, fetchProductList, fetchSubCategoryList } from '../utils/APIs';
@@ -16,6 +16,7 @@ import {
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import AccountTreeRoundedIcon from '@mui/icons-material/AccountTreeRounded';
 import dayjs from 'dayjs';
 const ProductPage = () => {
   const navigate = useNavigate();
@@ -76,13 +77,13 @@ const ProductPage = () => {
               <Label>Category</Label>
               <CustomeAutoSelect
                 options={categoryList}
-                onChange={(event, data) => {
+                onChange={(event:React.SyntheticEvent<Element, Event>, data:any) => {
                   setCategoryId(data.categoryId);
                   fetchSubCategoryDetails(data.categoryId);
                   setSubCategoryId(null)
                   console.log(data, 'data');
                 }}
-                getOptionLabel={option => option.categoryName}
+                getOptionLabel={(option:any) => option.categoryName}
                 size="small"
                 renderInput={params => <TextField {...params} placeholder={'Pleas Select'} />}
               />
@@ -91,11 +92,11 @@ const ProductPage = () => {
               <Label>Sub Category Name</Label>
               <CustomeAutoSelect
                 options={subCategoryList}
-                onChange={(event, data) => {
+                onChange={(event:React.SyntheticEvent<Element, Event>, data:any) => {
                   setSubCategoryId(data);
                 }}
                 value ={subCategoryId}
-                getOptionLabel={option => option.subCategoryName}
+                getOptionLabel={(option:any) => option.subCategoryName}
                 size="small"
                 renderInput={params => <TextField {...params} placeholder={'Pleas Select'} />}
               />
@@ -137,15 +138,20 @@ const ProductTable = ({ data, callBackProductList }: { data: ProductDetails; cal
     },
     {
       Header: 'Category',
-      accessor: 'categoryId'
+      accessor: 'categoryName'
     },
     {
       Header: 'Sub Category',
-      accessor: 'subCategoryId'
+      accessor: 'subCategoryName'
     },
     {
       Header: 'Is New Product',
-      accessor: 'isNewProduct'
+      accessor: 'isNewProduct',
+      Cell: ({ row }: { row: any }) => (
+        <>
+          <div>{row.values.isNewProduct?"Yes":"No"}</div>
+        </>
+      )
     },
     {
       Header: 'Activation Date',
@@ -164,13 +170,13 @@ const ProductTable = ({ data, callBackProductList }: { data: ProductDetails; cal
           <ActionButtons>
             <ModeEditOutlineIcon onClick={() => handleAction(row)} />
             <DeleteForeverIcon onClick={() => handleDeleteAttribute(row)} />
+            <AccountTreeRoundedIcon onClick={()=> handleAttributeMapping(row)}/>
           </ActionButtons>
         </>
       )
     }
   ];
   const handleDeleteAttribute = async (row: any) => {
-    debugger;
     await deleteProductItem(row.original.productCode).then(res => {
       if (res.statusCode === 1) {
         alert(res.statusMessage);
@@ -180,6 +186,10 @@ const ProductTable = ({ data, callBackProductList }: { data: ProductDetails; cal
       }
     });
   };
+  const handleAttributeMapping = async (row:any) => {
+    console.log(row,'rows')
+    navigate('attributeMapping',{state:{attributeDetails:row.original.attributes}})
+  }
   const handleAction = (row: any) => {
     navigate('addProduct', { state: { productDetails: row.original } });
   };

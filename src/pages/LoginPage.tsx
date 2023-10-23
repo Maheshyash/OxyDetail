@@ -36,7 +36,6 @@ const LoginPage = ({ setAuthToken }: { setAuthToken: any }) => {
         }
       })
       .catch(err => {
-        alert('err');
         setIsLoader(false);
         console.log(err, 'err');
       });

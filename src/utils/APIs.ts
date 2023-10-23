@@ -9,6 +9,7 @@ import {
 } from '../types/productTypes';
 import { AttributeURLs, ProductURLs, mrURLs } from '../Constants';
 import { AttributeList, deleteAttributeAction, insertUpdateAtrributeResponse } from '../types/attributeTypes';
+import { toaster } from '../components/Toaster/Toaster';
 
 export const fetchToken = (payload: { emailId: string; password: string }): Promise<loginDetails> => {
   const headers = {
@@ -30,6 +31,7 @@ export const fetchToken = (payload: { emailId: string; password: string }): Prom
         if (axios.isAxiosError(error)) {
           // Axios error (e.g., network error)
           console.error('Axios error:', error);
+          toaster('error', error.response?.data?.message);
         } else {
           // Non-Axios error (e.g., JSON parsing error)
           console.error('Non-Axios error:', error);

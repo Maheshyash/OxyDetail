@@ -15,54 +15,69 @@ import {
   fetchSubCategoryList,
   insertOrUpdateProductDetail
 } from '../utils/APIs';
-import {
-  ProductDetails,
-  categoryListArray,
-  subCategoryListType,
-  subCategoryListTypeArray
-} from '../types/productTypes';
+import { categoryListArray, subCategoryListType, subCategoryListTypeArray } from '../types/productTypes';
 import { CustomMultiSelect, CustomSwitch, CustomTextArea } from '../components/styledComponents/Common.styles';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Loader from '../components/Loader/Loader';
 interface productTypes {
+  productCode: string;
   productName: string;
-  description: null | string;
-  category: null | number;
-  subCategory: null | number;
+  description: string;
+  category: null | any;
+  subCategory: null | any;
+  categoryId: any;
   attributes: Array<attributeTypes>;
   isNewProduct: boolean;
   isFocusedProduct: boolean;
 }
 interface attributeTypes {
   label: string;
-  value: number;
+  value: number | string;
 }
 const AddOrEditProduct = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [formDetails, setFormDetails] = useState<productTypes>({
+    productCode: '',
     productName: '',
-    description: null,
+    description: '',
     category: null,
     subCategory: null,
     attributes: [{ label: '', value: 0 }],
     isNewProduct: false,
-    isFocusedProduct: false
+    isFocusedProduct: false,
+    categoryId: null
   });
   const [categoryList, setCategoryList] = useState<categoryListArray>([]);
   const [subCategoryList, setSubCategoryList] = useState<subCategoryListTypeArray>([]);
   const [categoryId, setCategoryId] = useState<number | null>(null);
   const [subCategoryId, setSubCategoryId] = useState<subCategoryListType | null>(null);
-  const [attributeList, setAttributeList] = useState<attributeTypes | []>([]);
+  const [attributeList, setAttributeList] = useState<Array<attributeTypes> | []>([]);
   const [isLoader, setIsLoader] = useState<boolean>(false);
   const handleProductName = (e: ChangeEvent<HTMLInputElement>) => {
     setFormDetails({ ...formDetails, productName: e.target.value });
   };
-  const fetchAttributeDetails = (AttributeId = null) => {
+  const handleProductCode = (e: ChangeEvent<HTMLInputElement>) => {
+    setFormDetails({ ...formDetails, productCode: e.target.value });
+  };
+  const fetchAttributeDetails = async (AttributeId = null) => {
     setIsLoader(true);
-    fetchAttributeList(AttributeId)
+    await fetchAttributeList(AttributeId)
       .then(res => {
         // setAttributeList(res.map(ele=>{label:ele.attributeId, value:ele.attributeName}));
-        setAttributeList(res.map(ele => ({ label: ele.attributeName, value: ele.attributeId })));
+        const list = res.map(ele => ({ label: ele.attributeName, value: ele.attributeId }));
+        console.log(list, 'list');
+        if (location.state) {
+          const list1 = location.state.productDetails.attributes.map(ele => ele.attributeId);
+          console.log(list1, 'list1');
+          const info = list1
+            .map(ele => (list.find(ele1 => ele1.value === ele) ? list.find(ele1 => ele1.value === ele) : null))
+            .filter(ele => ele !== null && ele !== undefined);
+          // const info = list.filter(ele => list.findIndex(ele1 => ele1.value === ele) && list.find(ele1 => ele1.value === ele) );
+          console.log(info, 'info');
+          setSelected(info);
+        }
+        setAttributeList(list);
         setIsLoader(false);
       })
       .catch(err => {
@@ -92,33 +107,39 @@ const AddOrEditProduct = () => {
   useEffect(() => {
     fetchCategoryDetails();
     fetchAttributeDetails();
+    console.log(location.state);
+    if (location?.state) {
+      const {
+        categoryId,
+        categoryName,
+        subCategoryId,
+        subCategoryName,
+        isFocusedProduct,
+        isNewProduct,
+        productDescription,
+        productName,
+        productCode
+      } = location.state.productDetails;
+      fetchSubCategoryDetails(categoryId);
+      setFormDetails({
+        ...formDetails,
+        productCode: productCode,
+        productName: productName,
+        description: productDescription,
+        isFocusedProduct: isFocusedProduct,
+        isNewProduct: isNewProduct,
+        categoryId: { categoryId: categoryId, categoryName: categoryName }
+      });
+      setSubCategoryId({ subCategoryId: subCategoryId, subCategoryName: subCategoryName });
+    }
   }, []);
+
   const handleProductSubmittion = () => {
-    // {
-    //   "productCode": "string",
-    //   "productName": "string",
-    //   "productDescription": "string",
-    //   "categoryId": 0,
-    //   "categoryName": "string",
-    //   "subCategoryId": 0,
-    //   "subCategoryName": "string",
-    //   "isisNewProduct": true,
-    //   "isisFocusedProduct": true,
-    //   "isActive": true,
-    //   "activationDate": "2023-10-23T06:31:31.709Z",
-    //   "attributes": [
-    //     {
-    //       "productCode": "string",
-    //       "attributeId": 0,
-    //       "productAttributeOrder": 0
-    //     }
-    //   ]
-    // }
     const payload = {
-      productCode: null,
+      productCode: formDetails.productCode,
       productName: formDetails.productName,
       productDescription: formDetails.description,
-      categoryId: categoryId,
+      categoryId: formDetails.categoryId?.categoryId,
       subCategoryId: subCategoryId?.subCategoryId,
       categoryName: '',
       subCategoryName: '',
@@ -126,7 +147,7 @@ const AddOrEditProduct = () => {
       isFocusedProduct: formDetails.isFocusedProduct,
       isActive: true,
       attributes: selected.map((ele, index) => ({
-        productCode: null,
+        productCode: formDetails.productCode,
         attributeId: ele.value,
         productAttributeOrder: index
       }))
@@ -144,22 +165,32 @@ const AddOrEditProduct = () => {
       <Grid container spacing={2}>
         <Grid item xs={12} md={3}>
           <LabelValue
+            label="Product Code"
+            value={formDetails.productCode}
+            onChange={handleProductCode}
+            placeholder="Enter Product Code"
+          />
+        </Grid>
+        <Grid item xs={12} md={3}>
+          <LabelValue
             label="Product Name"
             value={formDetails.productName}
             onChange={handleProductName}
-            placeholder="Enter Attribute Name"
+            placeholder="Enter Product Name"
           />
         </Grid>
         <Grid item xs={12} md={3}>
           <Label>Category</Label>
           <CustomeAutoSelect
             options={categoryList}
-            onChange={(event, data) => {
+            onChange={(event: React.SyntheticEvent<Element, Event>, data: any) => {
               setCategoryId(data.categoryId);
+              setFormDetails({ ...formDetails, categoryId: data });
               fetchSubCategoryDetails(data.categoryId);
               setSubCategoryId(null);
               console.log(data, 'data');
             }}
+            value={formDetails.categoryId}
             getOptionLabel={option => option.categoryName}
             size="small"
             renderInput={params => <TextField {...params} placeholder={'Pleas Select'} />}
@@ -169,7 +200,7 @@ const AddOrEditProduct = () => {
           <Label>Sub Category Name</Label>
           <CustomeAutoSelect
             options={subCategoryList}
-            onChange={(event, data) => {
+            onChange={(event: React.SyntheticEvent<Element, Event>, data: any) => {
               setSubCategoryId(data);
             }}
             value={subCategoryId}
@@ -216,7 +247,14 @@ const AddOrEditProduct = () => {
         </Grid>
         <Grid item xs={12} md={3}>
           <Label>Product Description</Label>
-          <CustomTextArea minRows={4} maxRows={4} />
+          <CustomTextArea
+            minRows={4}
+            maxRows={4}
+            value={formDetails.description}
+            onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
+              setFormDetails({ ...formDetails, description: e.target.value })
+            }
+          />
         </Grid>
       </Grid>
       <ActionButtonGroup>
