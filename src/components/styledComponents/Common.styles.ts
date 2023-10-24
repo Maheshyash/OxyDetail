@@ -115,3 +115,20 @@ export const CustomTextArea = styled(TextareaAutosize)(({ theme }) => ({
     borderRadius: '4px'
   }
 }));
+
+export const FlexItemBetweenContent = styled('div')(({theme})=>({
+  backgroundColor:`${theme.palette.primary.main}`,
+  display:'flex',
+  justifyContent:'space-between',
+  alignItems:'center',
+  padding:'5px',
+  borderRadius:'5px',
+  margin:'10px 0',
+  '& h5':{
+    margin:0,
+    color:'#fff'
+  },
+  '& svg':{
+    cursor:'pointer'
+  }
+}))

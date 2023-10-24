@@ -6,7 +6,8 @@ export const ProductURLs = {
   CATEGORYLIST: 'Product/Product_GetCategoryList',
   SUBCATEGORYLIST: 'Product/Product_GetSubCategoryList',
   DELETEPRODUCTITEM: 'Product/Product_Delete',
-  INSERTORUPDATE: 'Product/Product_InsertUpdate'
+  INSERTORUPDATE: 'Product/Product_InsertUpdate',
+  MEDIAPUSH:'Product/Media_Push'
 };
 
 export const AttributeURLs = {

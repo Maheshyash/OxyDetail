@@ -1,16 +1,40 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import IconButton from '@mui/material/IconButton';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import AudioFileIcon from '@mui/icons-material/AudioFile';
 import { BodyContainer } from '../components/styledComponents/Body.styles';
 import Grid from '@mui/material/Grid';
-import { Label } from '../components/styledComponents/InputBox.styles';
-import { CustomMultiSelect, CustomeFileUpload, StyledInput } from '../components/styledComponents/Common.styles';
+import { ActionButtonGroup, CustomButton, Label } from '../components/styledComponents/InputBox.styles';
+import {
+  CustomMultiSelect,
+  CustomeFileUpload,
+  FlexItemBetweenContent,
+  StyledInput
+} from '../components/styledComponents/Common.styles';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
+import { fetchAttributeList, insertOrUpdateDataMapping } from '../utils/APIs';
+import AddCircleOutlinedIcon from '@mui/icons-material/AddCircleOutlined';
+interface attributeTypes {
+  label: string;
+  value: number;
+}
+interface listItem {
+  AttributeId: number;
+  AttributeName:string;
+  Image: any;
+  ImageName: string;
+  Audio: any;
+  AudioName: string;
+}
 const AttributeMappingPage = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [array, setArray] = useState<Array<{ Image: any; ImageName: string; Audio: any; AudioName: string }> | []>([]);
+  const [attributeListArray, setAttributeListArray] = useState<Array<Array<listItem>> | []>([]);
+  const [attributeList, setAttributeList] = useState<Array<attributeTypes> | []>([]);
+  const [selected, setSelected] = useState<Array<any> | []>([]);
+  const [isLoader, setIsLoader] = useState<boolean>(false);
   const fileRefs = Array.from({ length: location.state.attributeDetails.length }, () =>
     Array(5)
       .fill(null)
@@ -27,50 +51,147 @@ const AttributeMappingPage = () => {
     if (location.state) {
       //  fileRef = location.state.attributeDetails.map(() => React.createRef());
       console.log(location.state.attributeDetails, 'attributeDetails');
+      fetchAttributeDetails();
+      // const res = location.state.attributeDetails.map(ele=> {label:ele.attributeId, value:ele.attribute })
     }
   }, []);
-  const handleAddAdditionalAttributeFiles = () => {
-    console.log('hii');
-    setArray([...array, { Image: '', ImageName: '', Audio: '', AudioName: '' }]);
-  };
-
-  const handleFileChange = (e, index) => {
-    const file = e.target.files[0];
-    const filename = file.name;
-    setArray(prevArray => {
+  // const handleAddAdditionalAttributeFiles = () => {
+  //   setArray([...array, { Image: '', ImageName: '', Audio: '', AudioName: '' }]);
+  // };
+  const handleAddAdditionalAttributeFiles = (attributeName:string, attributeId:number, listItemIndex: number) => {
+    setAttributeListArray(prevArray => {
       const newArray = [...prevArray];
-      if (!newArray[index]) {
-        newArray[index] = { ImageName: filename, Image: file, AudioName: '', Audio: null };
-      } else {
-        newArray[index].ImageName = filename;
-        newArray[index].Image = file;
+      console.log(newArray[listItemIndex], 'newArray[listItemIndex]');
+      if (newArray[listItemIndex].length < 5) {
+        newArray[listItemIndex] = [...newArray[listItemIndex], {AttributeId:attributeId,AttributeName:attributeName, Image: '', ImageName: '', Audio: '', AudioName: '' }];
       }
       return newArray;
     });
-    // setFileName(filename);
+    // setArray([...array, { Image: '', ImageName: '', Audio: '', AudioName: '' }]);
+  };
 
-    if (file) {
-      // You can perform additional validation here if needed
-      console.log(`Selected file: ${file.name}`);
-      //   setFormDetails({ ...formDetails, AttributeIconUpload: file });
-    }
+  const handleImageIconClick = (listItemIndex: number, index: number) => {
+    fileRefs[listItemIndex][index].current.click();
   };
-  console.log(array, 'array');
-  const handleButtonClick = index => {
-    fileRefs[0][index].current.click();
+
+  const handleAudioIconClick = (event, listItemIndex: number, index: number) => {
+    audioRefs[listItemIndex][index].current.click();
   };
-  const handleAudioFiles = (event, index) => {};
-  const handleAudioFileChange = (event, index) => {
-    audioRefs[0][index].current.click();
+
+  const handleFileChange = (e, listItemIndex: number, index: number) => {
+    const file = e.target.files[0];
+    const filename = file.name;
+    // setArray(prevArray => {
+    //   const newArray = [...prevArray];
+    //   if (!newArray[index]) {
+    //     newArray[index] = { ...newArray[index], ImageName: filename, Image: file };
+    //   } else {
+    //     newArray[index].ImageName = filename;
+    //     newArray[index].Image = file;
+    //   }
+    //   return newArray;
+    // });
+    setAttributeListArray(prevArray => {
+      // const newArray = JSON.parse(JSON.stringify(prevArray));
+      const newArray = [...prevArray];
+      if (!newArray[listItemIndex][index]) {
+        
+        newArray[listItemIndex][index] = [{ ImageName: filename, Image: file, AudioName: '', Audio: '' }]; //...newArray[index], ImageName: filename, Image: file };
+      } else {
+        
+        newArray[listItemIndex][index].ImageName = filename;
+        newArray[listItemIndex][index].Image = file;
+      }
+      
+      return newArray;
+    });
   };
-  const removeItem = index => {
-    const dummyArray = JSON.parse(JSON.stringify(array));
-    dummyArray.splice(index, 1);
-    setArray(dummyArray);
+
+  const handleAudioFiles = (event: ChangeEvent<HTMLInputElement>, listItemIndex: number, index: number) => {
+    const file = event.target.files[0];
+    const filename = file.name;
+    setAttributeListArray(prevArray => {
+      // const newArray = JSON.parse(JSON.stringify(prevArray));
+      const newArray = [...prevArray];
+      if (!newArray[listItemIndex][index]) {
+        
+        newArray[listItemIndex][index] = [{ AudioName: filename, Audio: file, ImageName: '', Image: '' }]; //...newArray[index], ImageName: filename, Image: file };
+      } else {
+        
+        newArray[listItemIndex][index].AudioName = filename;
+        newArray[listItemIndex][index].Audio = file;
+      }
+      
+      return newArray;
+    });
+    // setArray(prevArray => {
+    //   const newArray = [...prevArray];
+    //   if (!newArray[index]) {
+    //     newArray[index] = { ...newArray[index], AudioName: filename, Audio: file };
+    //   } else {
+    //     newArray[index].AudioName = filename;
+    //     newArray[index].Audio = file;
+    //   }
+    //   return newArray;
+    // });
   };
+
+  const removeItem = (listItemIndex: number, index: number) => {
+    const dummyArray = JSON.parse(JSON.stringify(attributeListArray));
+    dummyArray[listItemIndex].splice(index, 1);
+    setAttributeListArray(dummyArray);
+  };
+
+  const fetchAttributeDetails = async (AttributeId = null) => {
+    setIsLoader(true);
+    await fetchAttributeList(AttributeId)
+      .then(res => {
+        // setAttributeList(res.map(ele=>{label:ele.attributeId, value:ele.attributeName}));
+        const filteredArray = res.filter(obj =>
+          location.state.attributeDetails.some(ele => ele.attributeId === obj.attributeId)
+        );
+        const list = filteredArray.map(ele => ({ label: ele.attributeName, value: ele.attributeId }));
+        setAttributeList(list);
+        setIsLoader(false);
+      })
+      .catch(err => {
+        alert('err');
+        console.log(err, 'err');
+        setIsLoader(false);
+      });
+  };
+  const handleProductSubmittion = async e => {
+    e.preventDefault();
+    const ProductCode = location.state.attributeDetails[0].productCode;
+    const Data = {
+      ProductCode: ProductCode,
+      MediaData:attributeListArray.map((ele:any)=> ele.map((ele1:any)=>{
+        console.log(ele1,'ele1')
+        return ({AttributeId:ele1.AttributeId, Image:ele1.ImageName, Audio:ele1.AudioName })
+      }))
+    };
+    console.log(Data,'data')
+
+    var formData = new FormData();
+    formData.append('Data',JSON.stringify(Data));
+    attributeListArray.map((ele:any)=> ele.map((ele1:any,index:number)=> {
+      
+      return formData.append(`File${index+1}`,ele1.Image);
+    }))
+    attributeListArray.map((ele:any)=> ele.map((ele1:any,index:number)=> {
+      
+      return formData.append(`Audio${index+1}`,ele1.Audio);
+    }))
+    console.log(formData,'formData')
+    insertOrUpdateDataMapping(formData).then(res=>console.log(res)).catch(err=>console.log(err))
+  };
+  useEffect(()=>{
+    console.log(attributeListArray,'attributeListArray')
+  },[attributeListArray])
   return (
     <BodyContainer>
-        {/* <Grid item xs={12} md={3}>
+      <Grid container spacing={2}>
+        <Grid item xs={12} md={3}>
           <Label>Product Attributes</Label>
           <CustomMultiSelect
             hasSelectAll={false}
@@ -79,64 +200,105 @@ const AttributeMappingPage = () => {
             onChange={(data: Array<attributeTypes>) => {
               if (data.length <= 5) {
                 setSelected(data);
+                const attributeIds = data.map(ele=> ele.value);
+                const filteredArray = attributeListArray.map((innerArray,index) =>
+                  innerArray.filter(obj => attributeIds.some(ele=> ele === obj.AttributeId))
+                );
+                const filteredArrayWithoutEmpty = filteredArray.filter(innerArray => innerArray.length > 0);
+                  setAttributeListArray(prev=>{
+                    var result = [...filteredArrayWithoutEmpty];
+                    if(prev.length !== data.length+1 &&data.length !==0){
+                      result = [...result, [{AttributeId:data[data.length-1].value,AttributeName:data[data.length-1].label, Image: '', ImageName: '', Audio: '', AudioName: '' }]]
+                    }
+                    return result;
+                  })
               }
             }}
             labelledBy="Select"
           />
-        </Grid> */}
-      <button onClick={handleAddAdditionalAttributeFiles}>Add</button>
-      {array.map((ele, index) => {
+        </Grid>
+      </Grid>
+      {/* <button onClick={handleAddAdditionalAttributeFiles}>Add</button> */}
+      {attributeListArray.map((listArrayItem, listItemIndex) => {
+        const attributeId = listArrayItem[0].AttributeId;
+        const attributeName = listArrayItem[0].AttributeName;
         return (
-          <Grid container spacing={2} key={index}>
-            <Grid item xs={12} md={3}>
-              <Label>Attribute Image</Label>
-              <CustomeFileUpload
-                id="image-upload"
-                type="text"
-                readOnly
-                // value={fileName}
-                endAdornment={
-                  <IconButton color="primary" component="span" onClick={() => handleButtonClick(index)}>
-                    <PhotoCamera />
-                  </IconButton>
-                }
-              />
-              <StyledInput
-                id="image-upload-input"
-                type="file"
-                accept="image/*"
-                onChange={e => handleFileChange(event, index)}
-                ref={fileRefs[0][index]}
-              />
-            </Grid>
-            <Grid item xs={12} md={3}>
-              <Label>Attribute Audio</Label>
-              <CustomeFileUpload
-                id="image-upload"
-                type="text"
-                readOnly
-                // value={fileName}
-                endAdornment={
-                  <IconButton color="primary" component="span" onClick={event => handleAudioFileChange(event, index)}>
-                    <AudioFileIcon />
-                  </IconButton>
-                }
-              />
-              <StyledInput
-                id="image-upload-input"
-                type="file"
-                accept="audio/*"
-                onChange={event => handleAudioFiles(event, index)}
-                ref={audioRefs[0][index]}
-              />
-            </Grid>
-            <Grid item xs={3}>
-              <RemoveCircleIcon onClick={() => removeItem(index)} color='red'/>
+          <div key={listItemIndex}>
+            <FlexItemBetweenContent>
+              <h5>{attributeName}</h5>
+              <AddCircleOutlinedIcon onClick={() => handleAddAdditionalAttributeFiles(attributeName,attributeId, listItemIndex)} />
+            </FlexItemBetweenContent>
 
-            </Grid>
-          </Grid>
+            {listArrayItem.map((ele, index) => {
+              return (
+                <Grid container spacing={2} key={index}>
+                  <Grid item xs={12} md={3}>
+                    <Label>Attribute Image</Label>
+                    <CustomeFileUpload
+                      id="image-upload"
+                      type="text"
+                      readOnly
+                      value={ele.ImageName}
+                      endAdornment={
+                        <IconButton
+                          color="primary"
+                          component="span"
+                          onClick={() => handleImageIconClick(listItemIndex, index)}
+                        >
+                          <PhotoCamera />
+                        </IconButton>
+                      }
+                    />
+                    <StyledInput
+                      id="image-upload-input"
+                      type="file"
+                      accept="image/*"
+                      onChange={e => handleFileChange(event, listItemIndex, index)}
+                      ref={fileRefs[listItemIndex][index]}
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={3}>
+                    <Label>Attribute Audio</Label>
+                    <CustomeFileUpload
+                      id="image-upload"
+                      type="text"
+                      readOnly
+                      value={ele.AudioName}
+                      endAdornment={
+                        <IconButton
+                          color="primary"
+                          component="span"
+                          onClick={event => handleAudioIconClick(event, listItemIndex, index)}
+                        >
+                          <AudioFileIcon />
+                        </IconButton>
+                      }
+                    />
+                    <StyledInput
+                      id="image-upload-input"
+                      type="file"
+                      accept="audio/*"
+                      onChange={event => handleAudioFiles(event, listItemIndex, index)}
+                      ref={audioRefs[listItemIndex][index]}
+                    />
+                  </Grid>
+                  {index !==0 && <Grid item xs={3} sx={{ alignSelf: 'flex-end' }}>
+                    <RemoveCircleIcon onClick={() => removeItem(listItemIndex, index)} />
+                  </Grid>}
+                </Grid>
+              );
+            })}
+          </div>
         );
       })}
+      <ActionButtonGroup>
+        <CustomButton variant="outlined" onClick={() => navigate(-1)}>
+          Cancel
+        </CustomButton>
+        <CustomButton variant="contained" onClick={handleProductSubmittion}>
+          Submit
+        </CustomButton>
+      </ActionButtonGroup>
     </BodyContainer>
   );
 };
