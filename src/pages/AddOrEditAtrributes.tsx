@@ -6,7 +6,7 @@ import LabelValue from '../components/LabelValue';
 import { useState, ChangeEvent, useRef, useEffect } from 'react';
 import IconButton from '@mui/material/IconButton';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
-import { CustomSwitch, CustomeFileUpload, StyledInput } from '../components/styledComponents/Common.styles';
+import { CustomSwitch, CustomeFileUpload, ErrorMessage, StyledInput } from '../components/styledComponents/Common.styles';
 import { insertOrUpdateAttributes } from '../utils/APIs';
 import { toaster } from '../components/Toaster/Toaster';
 interface formDetailsType {
@@ -22,7 +22,8 @@ const AddOrEditAttributes = () => {
     AttributeIconUpload: '',
     IsActive: true
   });
-  const [fileName, setFileName] = useState('');
+  const [fileName, setFileName] = useState<string>('');
+  const [isSubmit, setIsSubmit] = useState<boolean>(false);
   const navigate = useNavigate();
   const handleAttribute = (e: ChangeEvent<HTMLInputElement>) => {
     setFormDetails({ ...formDetails, AttributeName: e.target.value });
@@ -60,7 +61,13 @@ const AddOrEditAttributes = () => {
     }
   }, []);
   const handleAddOrUpdateAttribute = async e => {
+    debugger;
     e.preventDefault();
+    if((fileName.trim()==="" && !location.state)|| formDetails.AttributeName.trim()===""){
+      setIsSubmit(true);
+      return;
+    }
+    
     console.log(formDetails, 'formDetails');
     const formData = new FormData();
     formData.append('AttributeName', formDetails.AttributeName);
@@ -72,15 +79,18 @@ const AddOrEditAttributes = () => {
     }
     await insertOrUpdateAttributes(formData)
       .then(res => {
-        if (res.statusCode === 1) {
+        if (res.statusCode === 1 || res.statusCode ===0) {
           toaster('success', res.statusMessage);
           navigate(-1);
         } else {
           toaster('error', res.statusMessage);
         }
       })
-      .catch(err => {});
+      .catch(err => {
+        toaster('error', 'Something went wrong');
+      });
   };
+  console.log(formDetails.AttributeName,'AttributeName')
   return (
     <BodyContainer>
       <Grid container spacing={2}>
@@ -91,6 +101,7 @@ const AddOrEditAttributes = () => {
             onChange={handleAttribute}
             placeholder="Enter Attribute Name"
           />
+           {formDetails.AttributeName.trim()==="" && isSubmit &&<ErrorMessage>Please enter Attribute Name</ErrorMessage>}
         </Grid>
         <Grid item xs={12} md={3}>
           <Label>Attribute Icon</Label>
@@ -112,6 +123,7 @@ const AddOrEditAttributes = () => {
             onChange={handleFileChange}
             ref={fileInputRef}
           />
+          {fileName.trim()==="" && !location.state && isSubmit &&<ErrorMessage>Please enter Attribute Name</ErrorMessage>}
         </Grid>
         {location.state?.attributeDetails && (
           <Grid item xs={12} md={3}>

@@ -15,7 +15,7 @@ const AttributesPage = () => {
   const [attributeList, setAttributeList] = useState<AttributeList | []>([]);
   const [isLoader, setIsLoader] = useState<boolean>(false)
   const handleAddMR = (e: MouseEvent<HTMLButtonElement>) => {
-    navigate('addAttributes');
+    navigate('addAttribute');
   };
   useEffect(() => {
     fetchAttributeDetails();
@@ -81,7 +81,7 @@ const AttributeTable = ({ data, callBackAttributeList }: { data: AttributeList, 
         <>
           <ActionButtons>
             <ModeEditOutlineIcon onClick={() => handleAction(row)} />
-            <DeleteForeverIcon onClick={() => handleDeleteAttribute(row)} />
+            {/* <DeleteForeverIcon onClick={() => handleDeleteAttribute(row)} /> */}
           </ActionButtons>
         </>
       )
@@ -90,7 +90,7 @@ const AttributeTable = ({ data, callBackAttributeList }: { data: AttributeList, 
   const handleAction = (row: AttributeDetails) => {
     console.log(row);
     // navigate('addAttributes',{state:{row}});
-    navigate('addAttributes', { state: { attributeDetails: row.original } });
+    navigate('addAttribute', { state: { attributeDetails: row.original } });
   };
   const handleDeleteAttribute = async (row: AttributeDetails) => {
     await deleteAttributeItem(row.original.attributeId)

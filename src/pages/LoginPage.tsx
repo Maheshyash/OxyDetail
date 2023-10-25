@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import { fetchToken } from '../utils/APIs';
 import { toaster } from '../components/Toaster/Toaster';
 import Loader from '../components/Loader/Loader';
+import Logo from '../assets/logo.png';
+import { ErrorMessage, ImgLogo } from '../components/styledComponents/Common.styles';
 const LoginPage = ({ setAuthToken }: { setAuthToken: any }) => {
   const navigate = useNavigate();
   const [userName, setUserName] = useState('');
@@ -21,6 +23,10 @@ const LoginPage = ({ setAuthToken }: { setAuthToken: any }) => {
   };
   const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if(userName.trim()==="" || password.trim()===""){
+      setIsSubmit(true);
+      return;
+    }
     const payload = {
       emailId: userName,
       password: password
@@ -49,7 +55,7 @@ const LoginPage = ({ setAuthToken }: { setAuthToken: any }) => {
         <div className="login_right-side_container">
           <form className="w_100" onSubmit={handleLogin}>
             <section className="logo">
-              <img src="" alt="OxyDetailLogo" />
+              <ImgLogo src={Logo} alt="OxyDetailLogo" />
             </section>
             <section>
               <h3 style={{ marginBottom: 0 }}>Welcome to OxyDetail</h3>
@@ -57,7 +63,9 @@ const LoginPage = ({ setAuthToken }: { setAuthToken: any }) => {
             </section>
             <section className="user_inputs">
               <LabelValue label="UserName" value={userName} onChange={handleUserName} />
+              {userName.trim() === "" && isSubmit && <ErrorMessage>Please enter UserName</ErrorMessage>}
               <LabelValue label="Password" value={password} onChange={handlePassword} type="password" />
+              {password.trim() === "" && isSubmit && <ErrorMessage>Please enter Password</ErrorMessage>}
             </section>
             <section>
               <Button variant="contained" fullWidth type="submit">

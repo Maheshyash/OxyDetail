@@ -132,3 +132,13 @@ export const FlexItemBetweenContent = styled('div')(({theme})=>({
     cursor:'pointer'
   }
 }))
+
+export const ErrorMessage = styled('span')(({theme})=>({
+  display:'block',
+  color:`${theme.palette.error.main}`,
+  fontSize:`${theme.typography.fontSize}px`
+}))
+
+export const ImgLogo = styled('img')(({theme})=>({
+  width:200,
+}))

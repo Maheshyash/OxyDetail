@@ -16,9 +16,10 @@ import {
   insertOrUpdateProductDetail
 } from '../utils/APIs';
 import { categoryListArray, subCategoryListType, subCategoryListTypeArray } from '../types/productTypes';
-import { CustomMultiSelect, CustomSwitch, CustomTextArea } from '../components/styledComponents/Common.styles';
+import { CustomMultiSelect, CustomSwitch, CustomTextArea, ErrorMessage } from '../components/styledComponents/Common.styles';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Loader from '../components/Loader/Loader';
+import { toaster } from '../components/Toaster/Toaster';
 interface productTypes {
   productCode: string;
   productName: string;
@@ -29,6 +30,7 @@ interface productTypes {
   attributes: Array<attributeTypes>;
   isNewProduct: boolean;
   isFocusedProduct: boolean;
+  isActive:boolean;
 }
 interface attributeTypes {
   label: string;
@@ -46,7 +48,8 @@ const AddOrEditProduct = () => {
     attributes: [{ label: '', value: 0 }],
     isNewProduct: false,
     isFocusedProduct: false,
-    categoryId: null
+    categoryId: null,
+    isActive:true
   });
   const [categoryList, setCategoryList] = useState<categoryListArray>([]);
   const [subCategoryList, setSubCategoryList] = useState<subCategoryListTypeArray>([]);
@@ -87,21 +90,27 @@ const AddOrEditProduct = () => {
       });
   };
   const fetchCategoryDetails = async () => {
+    setIsLoader(true);
     await fetchCategoryList()
       .then(res => {
         setCategoryList(res);
+        setIsLoader(false);
       })
       .catch(err => {
         alert('err');
+        setIsLoader(false);
       });
   };
   const fetchSubCategoryDetails = async (categoryId: number) => {
+    setIsLoader(true);
     await fetchSubCategoryList(categoryId)
       .then(res => {
         setSubCategoryList(res);
+        setIsLoader(false);
       })
       .catch(err => {
         alert('err');
+        setIsLoader(false);
       });
   };
   useEffect(() => {
@@ -118,7 +127,8 @@ const AddOrEditProduct = () => {
         isNewProduct,
         productDescription,
         productName,
-        productCode
+        productCode,
+        isActive
       } = location.state.productDetails;
       fetchSubCategoryDetails(categoryId);
       setFormDetails({
@@ -128,35 +138,53 @@ const AddOrEditProduct = () => {
         description: productDescription,
         isFocusedProduct: isFocusedProduct,
         isNewProduct: isNewProduct,
+        isActive:isActive,
         categoryId: { categoryId: categoryId, categoryName: categoryName }
       });
       setSubCategoryId({ subCategoryId: subCategoryId, subCategoryName: subCategoryName });
     }
   }, []);
-
+  const [isSubmit, setIsSubmit] = useState<boolean>(false);
   const handleProductSubmittion = () => {
+    const {productCode, productName, description, categoryId, isNewProduct, isFocusedProduct, isActive} = formDetails;
+    if(productCode.trim() ==="" || productName.trim()==="" || description.trim()==="" || selected.length===0){
+      setIsSubmit(true);
+      return;
+    }
     const payload = {
-      productCode: formDetails.productCode,
-      productName: formDetails.productName,
-      productDescription: formDetails.description,
-      categoryId: formDetails.categoryId?.categoryId,
+      productCode: productCode,
+      productName: productName,
+      productDescription: description,
+      categoryId: categoryId?.categoryId,
       subCategoryId: subCategoryId?.subCategoryId,
       categoryName: '',
       subCategoryName: '',
-      isNewProduct: formDetails.isNewProduct,
-      isFocusedProduct: formDetails.isFocusedProduct,
-      isActive: true,
+      isNewProduct: isNewProduct,
+      isFocusedProduct: isFocusedProduct,
+      isActive: isActive,
       attributes: selected.map((ele, index) => ({
-        productCode: formDetails.productCode,
+        productCode: productCode,
         attributeId: ele.value,
         productAttributeOrder: index
       }))
     };
+    setIsLoader(true);
     insertOrUpdateProductDetail(JSON.stringify(payload))
       .then(res => {
         console.log(res, 'res');
+        if (res.statusCode === 1 || res.statusCode === 0) {
+          toaster('success', res.statusMessage);
+          setIsLoader(false);
+          navigate(-1);
+        } else {
+          toaster('error', res.statusMessage);
+          setIsLoader(false);
+        }
       })
-      .catch(err => console.log(err));
+      .catch(err => {
+        console.log(err);
+        setIsLoader(false);
+      });
   };
   const [selected, setSelected] = useState<Array<any> | []>([]);
   return (
@@ -170,6 +198,7 @@ const AddOrEditProduct = () => {
             onChange={handleProductCode}
             placeholder="Enter Product Code"
           />
+          {formDetails.productCode.trim() ==="" && isSubmit &&<ErrorMessage>Please enter Product Code</ErrorMessage>}
         </Grid>
         <Grid item xs={12} md={3}>
           <LabelValue
@@ -178,6 +207,7 @@ const AddOrEditProduct = () => {
             onChange={handleProductName}
             placeholder="Enter Product Name"
           />
+          {formDetails.productName.trim() ==="" && isSubmit &&<ErrorMessage>Please enter Product Name</ErrorMessage>}
         </Grid>
         <Grid item xs={12} md={3}>
           <Label>Category</Label>
@@ -195,6 +225,7 @@ const AddOrEditProduct = () => {
             size="small"
             renderInput={params => <TextField {...params} placeholder={'Pleas Select'} />}
           />
+          {formDetails.categoryId === null && isSubmit && <ErrorMessage>Please select Category</ErrorMessage>}
         </Grid>
         <Grid item xs={12} md={3}>
           <Label>Sub Category Name</Label>
@@ -208,6 +239,19 @@ const AddOrEditProduct = () => {
             size="small"
             renderInput={params => <TextField {...params} placeholder={'Pleas Select'} />}
           />
+          {subCategoryId === null && isSubmit &&<ErrorMessage>Please select Sub Category</ErrorMessage>}
+        </Grid>
+        <Grid item xs={12} md={3}>
+          <Label>Product Description</Label>
+          <CustomTextArea
+            minRows={4}
+            maxRows={4}
+            value={formDetails.description}
+            onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
+              setFormDetails({ ...formDetails, description: e.target.value })
+            }
+          />
+          {formDetails.description.trim() ==="" && isSubmit &&<ErrorMessage>Please enter Product Description</ErrorMessage>}
         </Grid>
         <Grid item xs={12} md={3}>
           <Label>Product Attributes</Label>
@@ -222,6 +266,7 @@ const AddOrEditProduct = () => {
             }}
             labelledBy="Select"
           />
+          {selected.length === 0 && isSubmit &&<ErrorMessage>Please select Product Attributes</ErrorMessage>}
         </Grid>
         <Grid item xs={12} md={3}>
           <Label>New Product</Label>
@@ -245,17 +290,17 @@ const AddOrEditProduct = () => {
             }
           />
         </Grid>
-        <Grid item xs={12} md={3}>
-          <Label>Product Description</Label>
-          <CustomTextArea
-            minRows={4}
-            maxRows={4}
-            value={formDetails.description}
-            onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
-              setFormDetails({ ...formDetails, description: e.target.value })
+        {location.state &&<Grid item xs={12} md={3}>
+          <Label>Is Active</Label>
+          <CustomSwitch
+            checked={formDetails.isActive}
+            onChange={() =>
+              setFormDetails(props => {
+                return { ...formDetails, isActive: !props.isActive };
+              })
             }
           />
-        </Grid>
+        </Grid>}
       </Grid>
       <ActionButtonGroup>
         <CustomButton variant="outlined" onClick={() => navigate(-1)}>

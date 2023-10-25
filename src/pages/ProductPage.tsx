@@ -18,6 +18,8 @@ import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import AccountTreeRoundedIcon from '@mui/icons-material/AccountTreeRounded';
 import dayjs from 'dayjs';
+import Loader from '../components/Loader/Loader';
+import { toaster } from '../components/Toaster/Toaster';
 const ProductPage = () => {
   const navigate = useNavigate();
   const [productList, setProductList] = useState<ProductDetails>([]);
@@ -25,6 +27,7 @@ const ProductPage = () => {
   const [subCategoryList, setSubCategoryList] = useState<subCategoryListTypeArray>([]);
   const [categoryId, setCategoryId] = useState<number | null>(null);
   const [subCategoryId, setSubCategoryId] = useState<subCategoryListType| null>(null);
+  const [isLoader, setIsLoader] = useState<boolean>(false);
   const handleAddProduct = (e: MouseEvent<HTMLButtonElement>) => {
     navigate('addProduct');
   };
@@ -43,22 +46,28 @@ const ProductPage = () => {
       });
   };
   const fetchSubCategoryDetails = async (categoryId: number) => {
+    setIsLoader(true);
     await fetchSubCategoryList(categoryId)
       .then(res => {
         setSubCategoryList(res);
+        setIsLoader(false);
       })
       .catch(err => {
+        setIsLoader(false);
         alert('err');
       });
   };
   const fetchProductDetails = async (payload?:any) => {
+    setIsLoader(true);
     await fetchProductList(payload)
       .then(res => {
         setProductList(res);
+        setIsLoader(false);
       })
       .catch(err => {
         alert('err');
         console.log(err, 'err');
+        setIsLoader(false);
       });
   };
   const handleSearch = async () => {
@@ -71,6 +80,7 @@ const ProductPage = () => {
   return (
     <>
       <NormalContainer>
+        {isLoader && <Loader />}
         <FilterContainer>
           <Grid container spacing={2}>
             <Grid item xs={12} md={3}>
@@ -169,7 +179,7 @@ const ProductTable = ({ data, callBackProductList }: { data: ProductDetails; cal
         <>
           <ActionButtons>
             <ModeEditOutlineIcon onClick={() => handleAction(row)} />
-            <DeleteForeverIcon onClick={() => handleDeleteAttribute(row)} />
+            {/* <DeleteForeverIcon onClick={() => handleDeleteAttribute(row)} /> */}
             <AccountTreeRoundedIcon onClick={()=> handleAttributeMapping(row)}/>
           </ActionButtons>
         </>
@@ -179,10 +189,10 @@ const ProductTable = ({ data, callBackProductList }: { data: ProductDetails; cal
   const handleDeleteAttribute = async (row: any) => {
     await deleteProductItem(row.original.productCode).then(res => {
       if (res.statusCode === 1) {
-        alert(res.statusMessage);
+        toaster('success',res.statusMessage);
         callBackProductList();
       } else {
-        alert(res.statusMessage);
+        toaster('error',res.statusMessage);
       }
     });
   };

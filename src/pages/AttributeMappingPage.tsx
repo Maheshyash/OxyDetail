@@ -166,7 +166,6 @@ const AttributeMappingPage = () => {
     const Data = {
       ProductCode: ProductCode,
       MediaData:attributeListArray.map((ele:any)=> ele.map((ele1:any)=>{
-        console.log(ele1,'ele1')
         return ({AttributeId:ele1.AttributeId, Image:ele1.ImageName, Audio:ele1.AudioName })
       }))
     };

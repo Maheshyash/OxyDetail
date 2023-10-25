@@ -42,8 +42,8 @@ const Header = ({ removeAuthToken }: { removeAuthToken: any }) => {
               </CustomNavLink>
             </div>
             <div>
-              <CustomNavLink to={'/attributes'} className={({ isActive }) => (isActive ? 'active' : '')}>
-                Attributes
+              <CustomNavLink to={'/attribute'} className={({ isActive }) => (isActive ? 'active' : '')}>
+                Attribute
               </CustomNavLink>
             </div>
             <div>

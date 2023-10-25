@@ -17,8 +17,8 @@ const AuthorizeRoutes = ({removeAuthToken}:{removeAuthToken:any}) => {
         <Route path="/product" Component={ProductPage}/>
         <Route path="/product/addProduct" Component={AddOrEditProduct}/>
         <Route path="/product/attributeMapping" Component={AttributeMappingPage}/>
-        <Route path="/attributes" Component={AttributesPage}/>
-        <Route path="/attributes/addAttributes" Component={AddOrEditAttributes}/>
+        <Route path="/attribute" Component={AttributesPage}/>
+        <Route path="/attribute/addAttribute" Component={AddOrEditAttributes}/>
 
       </Routes>
     </BrowserRouter>
