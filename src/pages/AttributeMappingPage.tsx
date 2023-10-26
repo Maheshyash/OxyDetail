@@ -164,29 +164,48 @@ const AttributeMappingPage = () => {
     e.preventDefault();
     const ProductCode = location.state.attributeDetails[0].productCode;
     const Data = {
-      ProductCode: ProductCode,
-      MediaData:attributeListArray.map((ele:any)=> ele.map((ele1:any)=>{
-        return ({AttributeId:ele1.AttributeId, Image:ele1.ImageName, Audio:ele1.AudioName })
+      productCode: ProductCode,
+      Media:attributeListArray.flatMap((ele:any)=> ele.map((ele1:any,index:number)=>{
+        return ({AttributeId:ele1.AttributeId, Image:ele1.ImageName, Voice:ele1.AudioName, ProductAttributeOrder:index, OldImage:'',OldVoice:'',IsDeleted:false })
       }))
     };
     console.log(Data,'data')
 
     var formData = new FormData();
     formData.append('Data',JSON.stringify(Data));
-    attributeListArray.map((ele:any)=> ele.map((ele1:any,index:number)=> {
-      
-      return formData.append(`File${index+1}`,ele1.Image);
+    attributeListArray.map((ele:any,eleIndex:number)=> ele.map((ele1:any,index:number)=> {
+      debugger
+      return formData.append(`File${(eleIndex+1)*index+1}`,ele1.Image);
     }))
-    attributeListArray.map((ele:any)=> ele.map((ele1:any,index:number)=> {
+    attributeListArray.map((ele:any,eleIndex:number)=> ele.map((ele1:any,index:number)=> {
       
-      return formData.append(`Audio${index+1}`,ele1.Audio);
+      return formData.append(`Audio${(eleIndex+1)*index+1}`,ele1.Audio);
     }))
     console.log(formData,'formData')
+    // let data = {"productCode":"asdf",
+    // "Media":[{"AttributeId":10,"Image":"image","Voice":"audio","ProductAttributeOrder":4,"OldImage":"image123.avif","OldVoice":"Voice123.mp3" ,"IsDeleted":false}]}
     insertOrUpdateDataMapping(formData).then(res=>console.log(res)).catch(err=>console.log(err))
   };
   useEffect(()=>{
     console.log(attributeListArray,'attributeListArray')
-  },[attributeListArray])
+  },[attributeListArray]);
+  const handleAttributeSelection = (data:Array<attributeTypes>) => {
+    if (data.length <= 5) {
+      setSelected(data);
+      const attributeIds = data.map(ele=> ele.value);
+      const filteredArray = attributeListArray.map((innerArray,index) =>
+        innerArray.filter(obj => attributeIds.some(ele=> ele === obj.AttributeId))
+      );
+      const filteredArrayWithoutEmpty = filteredArray.filter(innerArray => innerArray.length > 0);
+        setAttributeListArray(prev=>{
+          var result = [...filteredArrayWithoutEmpty];
+          if(prev.length !== data.length+1 &&data.length !==0){
+            result = [...result, [{AttributeId:data[data.length-1].value,AttributeName:data[data.length-1].label, Image: '', ImageName: '', Audio: '', AudioName: '' }]]
+          }
+          return result;
+        })
+    }
+  }
   return (
     <BodyContainer>
       <Grid container spacing={2}>
@@ -196,23 +215,7 @@ const AttributeMappingPage = () => {
             hasSelectAll={false}
             options={attributeList}
             value={selected}
-            onChange={(data: Array<attributeTypes>) => {
-              if (data.length <= 5) {
-                setSelected(data);
-                const attributeIds = data.map(ele=> ele.value);
-                const filteredArray = attributeListArray.map((innerArray,index) =>
-                  innerArray.filter(obj => attributeIds.some(ele=> ele === obj.AttributeId))
-                );
-                const filteredArrayWithoutEmpty = filteredArray.filter(innerArray => innerArray.length > 0);
-                  setAttributeListArray(prev=>{
-                    var result = [...filteredArrayWithoutEmpty];
-                    if(prev.length !== data.length+1 &&data.length !==0){
-                      result = [...result, [{AttributeId:data[data.length-1].value,AttributeName:data[data.length-1].label, Image: '', ImageName: '', Audio: '', AudioName: '' }]]
-                    }
-                    return result;
-                  })
-              }
-            }}
+            onChange={(data: Array<attributeTypes>) => handleAttributeSelection(data)}
             labelledBy="Select"
           />
         </Grid>

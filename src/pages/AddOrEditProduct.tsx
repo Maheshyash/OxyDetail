@@ -194,7 +194,6 @@ const AddOrEditProduct = () => {
       .catch(err => {
         console.log(err);
         setIsLoader(false);
-        setIsConfirmPopUp(true);
       });
   };
   const [selected, setSelected] = useState<Array<any> | []>([]);
@@ -325,7 +324,7 @@ const AddOrEditProduct = () => {
           Submit
         </CustomButton>
       </ActionButtonGroup>
-      {!isConfirmPopUp && (
+      {isConfirmPopUp && (
         <StyledModalBackdrop>
           <StyledModalContent>
             <h5>Confirm Popup</h5>
