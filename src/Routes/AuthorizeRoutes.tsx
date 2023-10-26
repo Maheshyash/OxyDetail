@@ -6,7 +6,8 @@ import AddOrEditProduct from '../pages/AddOrEditProduct';
 import AddOrEditMRPage from '../pages/AddOrEditMRPage';
 import AttributesPage from '../pages/AttributesPage';
 import AddOrEditAttributes from '../pages/AddOrEditAtrributes';
-import AttributeMappingPage from '../pages/AttributeMappingPage';
+// import AttributeMappingPage from '../pages/AttributeMappingPage';
+import AttributeMappingPage1 from '../pages/AttributeMappingPage1';
 const AuthorizeRoutes = ({removeAuthToken}:{removeAuthToken:any}) => {
   return (
     <BrowserRouter>
@@ -16,7 +17,7 @@ const AuthorizeRoutes = ({removeAuthToken}:{removeAuthToken:any}) => {
         <Route path='/MrPage/addMr' Component={AddOrEditMRPage} />
         <Route path="/product" Component={ProductPage}/>
         <Route path="/product/addProduct" Component={AddOrEditProduct}/>
-        <Route path="/product/attributeMapping" Component={AttributeMappingPage}/>
+        <Route path="/product/attributeMapping" Component={AttributeMappingPage1}/>
         <Route path="/attribute" Component={AttributesPage}/>
         <Route path="/attribute/addAttribute" Component={AddOrEditAttributes}/>
 
