@@ -142,3 +142,21 @@ export const ErrorMessage = styled('span')(({theme})=>({
 export const ImgLogo = styled('img')(({theme})=>({
   width:200,
 }))
+
+export const StyledModalBackdrop = styled('div')(({ theme }) => ({
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+}));
+
+export const StyledModalContent = styled('div')(({ theme }) => ({
+  background: '#fff',
+  padding: '20px',
+  borderRadius: '4px',
+  boxShadow: theme.shadows[10],
+  width: '400px',
+}));
+
+export const CustomParagraph = styled('p')(({ theme }) => ({
+  fontSize:theme.typography.fontSize
+}));

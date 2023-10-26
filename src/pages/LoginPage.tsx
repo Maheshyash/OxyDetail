@@ -23,7 +23,7 @@ const LoginPage = ({ setAuthToken }: { setAuthToken: any }) => {
   };
   const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if(userName.trim()==="" || password.trim()===""){
+    if (userName.trim() === '' || password.trim() === '') {
       setIsSubmit(true);
       return;
     }
@@ -63,9 +63,9 @@ const LoginPage = ({ setAuthToken }: { setAuthToken: any }) => {
             </section>
             <section className="user_inputs">
               <LabelValue label="UserName" value={userName} onChange={handleUserName} />
-              {userName.trim() === "" && isSubmit && <ErrorMessage>Please enter UserName</ErrorMessage>}
+              {userName.trim() === '' && isSubmit && <ErrorMessage>Please enter UserName</ErrorMessage>}
               <LabelValue label="Password" value={password} onChange={handlePassword} type="password" />
-              {password.trim() === "" && isSubmit && <ErrorMessage>Please enter Password</ErrorMessage>}
+              {password.trim() === '' && isSubmit && <ErrorMessage>Please enter Password</ErrorMessage>}
             </section>
             <section>
               <Button variant="contained" fullWidth type="submit">

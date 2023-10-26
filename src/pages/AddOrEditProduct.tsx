@@ -2,7 +2,6 @@ import { Grid, TextField } from '@mui/material';
 import { BodyContainer } from '../components/styledComponents/Body.styles';
 import LabelValue from '../components/LabelValue';
 import { ChangeEvent, useEffect, useState } from 'react';
-import { TextareaAutosize } from '@mui/base/TextareaAutosize';
 import {
   ActionButtonGroup,
   CustomButton,
@@ -16,7 +15,15 @@ import {
   insertOrUpdateProductDetail
 } from '../utils/APIs';
 import { categoryListArray, subCategoryListType, subCategoryListTypeArray } from '../types/productTypes';
-import { CustomMultiSelect, CustomSwitch, CustomTextArea, ErrorMessage } from '../components/styledComponents/Common.styles';
+import {
+  CustomMultiSelect,
+  CustomParagraph,
+  CustomSwitch,
+  CustomTextArea,
+  ErrorMessage,
+  StyledModalBackdrop,
+  StyledModalContent
+} from '../components/styledComponents/Common.styles';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Loader from '../components/Loader/Loader';
 import { toaster } from '../components/Toaster/Toaster';
@@ -30,7 +37,7 @@ interface productTypes {
   attributes: Array<attributeTypes>;
   isNewProduct: boolean;
   isFocusedProduct: boolean;
-  isActive:boolean;
+  isActive: boolean;
 }
 interface attributeTypes {
   label: string;
@@ -49,7 +56,7 @@ const AddOrEditProduct = () => {
     isNewProduct: false,
     isFocusedProduct: false,
     categoryId: null,
-    isActive:true
+    isActive: true
   });
   const [categoryList, setCategoryList] = useState<categoryListArray>([]);
   const [subCategoryList, setSubCategoryList] = useState<subCategoryListTypeArray>([]);
@@ -57,6 +64,7 @@ const AddOrEditProduct = () => {
   const [subCategoryId, setSubCategoryId] = useState<subCategoryListType | null>(null);
   const [attributeList, setAttributeList] = useState<Array<attributeTypes> | []>([]);
   const [isLoader, setIsLoader] = useState<boolean>(false);
+  const [isConfirmPopUp, setIsConfirmPopUp] = useState<boolean>(false);
   const handleProductName = (e: ChangeEvent<HTMLInputElement>) => {
     setFormDetails({ ...formDetails, productName: e.target.value });
   };
@@ -69,10 +77,8 @@ const AddOrEditProduct = () => {
       .then(res => {
         // setAttributeList(res.map(ele=>{label:ele.attributeId, value:ele.attributeName}));
         const list = res.map(ele => ({ label: ele.attributeName, value: ele.attributeId }));
-        console.log(list, 'list');
         if (location.state) {
           const list1 = location.state.productDetails.attributes.map(ele => ele.attributeId);
-          console.log(list1, 'list1');
           const info = list1
             .map(ele => (list.find(ele1 => ele1.value === ele) ? list.find(ele1 => ele1.value === ele) : null))
             .filter(ele => ele !== null && ele !== undefined);
@@ -138,16 +144,16 @@ const AddOrEditProduct = () => {
         description: productDescription,
         isFocusedProduct: isFocusedProduct,
         isNewProduct: isNewProduct,
-        isActive:isActive,
+        isActive: isActive,
         categoryId: { categoryId: categoryId, categoryName: categoryName }
       });
       setSubCategoryId({ subCategoryId: subCategoryId, subCategoryName: subCategoryName });
     }
   }, []);
   const [isSubmit, setIsSubmit] = useState<boolean>(false);
-  const handleProductSubmittion = () => {
-    const {productCode, productName, description, categoryId, isNewProduct, isFocusedProduct, isActive} = formDetails;
-    if(productCode.trim() ==="" || productName.trim()==="" || description.trim()==="" || selected.length===0){
+  const handleProductSubmittion = (isForceUpdate = false) => {
+    const { productCode, productName, description, categoryId, isNewProduct, isFocusedProduct, isActive } = formDetails;
+    if (productCode.trim() === '' || productName.trim() === '' || description.trim() === '' || selected.length === 0) {
       setIsSubmit(true);
       return;
     }
@@ -166,24 +172,29 @@ const AddOrEditProduct = () => {
         productCode: productCode,
         attributeId: ele.value,
         productAttributeOrder: index
-      }))
+      })),
+      forceUpdateIfExists: location.state ? true : isForceUpdate
     };
     setIsLoader(true);
     insertOrUpdateProductDetail(JSON.stringify(payload))
       .then(res => {
+        const { statusCode, statusMessage } = res;
         console.log(res, 'res');
-        if (res.statusCode === 1 || res.statusCode === 0) {
-          toaster('success', res.statusMessage);
+        if (statusCode === 1 || statusCode === 0) {
+          toaster('success', statusMessage);
           setIsLoader(false);
           navigate(-1);
+        } else if (statusCode === -1) {
+          setIsConfirmPopUp(true);
         } else {
-          toaster('error', res.statusMessage);
+          toaster('error', statusMessage);
           setIsLoader(false);
         }
       })
       .catch(err => {
         console.log(err);
         setIsLoader(false);
+        setIsConfirmPopUp(true);
       });
   };
   const [selected, setSelected] = useState<Array<any> | []>([]);
@@ -198,7 +209,7 @@ const AddOrEditProduct = () => {
             onChange={handleProductCode}
             placeholder="Enter Product Code"
           />
-          {formDetails.productCode.trim() ==="" && isSubmit &&<ErrorMessage>Please enter Product Code</ErrorMessage>}
+          {formDetails.productCode.trim() === '' && isSubmit && <ErrorMessage>Please enter Product Code</ErrorMessage>}
         </Grid>
         <Grid item xs={12} md={3}>
           <LabelValue
@@ -207,7 +218,7 @@ const AddOrEditProduct = () => {
             onChange={handleProductName}
             placeholder="Enter Product Name"
           />
-          {formDetails.productName.trim() ==="" && isSubmit &&<ErrorMessage>Please enter Product Name</ErrorMessage>}
+          {formDetails.productName.trim() === '' && isSubmit && <ErrorMessage>Please enter Product Name</ErrorMessage>}
         </Grid>
         <Grid item xs={12} md={3}>
           <Label>Category</Label>
@@ -239,7 +250,7 @@ const AddOrEditProduct = () => {
             size="small"
             renderInput={params => <TextField {...params} placeholder={'Pleas Select'} />}
           />
-          {subCategoryId === null && isSubmit &&<ErrorMessage>Please select Sub Category</ErrorMessage>}
+          {subCategoryId === null && isSubmit && <ErrorMessage>Please select Sub Category</ErrorMessage>}
         </Grid>
         <Grid item xs={12} md={3}>
           <Label>Product Description</Label>
@@ -251,7 +262,9 @@ const AddOrEditProduct = () => {
               setFormDetails({ ...formDetails, description: e.target.value })
             }
           />
-          {formDetails.description.trim() ==="" && isSubmit &&<ErrorMessage>Please enter Product Description</ErrorMessage>}
+          {formDetails.description.trim() === '' && isSubmit && (
+            <ErrorMessage>Please enter Product Description</ErrorMessage>
+          )}
         </Grid>
         <Grid item xs={12} md={3}>
           <Label>Product Attributes</Label>
@@ -266,7 +279,7 @@ const AddOrEditProduct = () => {
             }}
             labelledBy="Select"
           />
-          {selected.length === 0 && isSubmit &&<ErrorMessage>Please select Product Attributes</ErrorMessage>}
+          {selected.length === 0 && isSubmit && <ErrorMessage>Please select Product Attributes</ErrorMessage>}
         </Grid>
         <Grid item xs={12} md={3}>
           <Label>New Product</Label>
@@ -290,26 +303,50 @@ const AddOrEditProduct = () => {
             }
           />
         </Grid>
-        {location.state &&<Grid item xs={12} md={3}>
-          <Label>Is Active</Label>
-          <CustomSwitch
-            checked={formDetails.isActive}
-            onChange={() =>
-              setFormDetails(props => {
-                return { ...formDetails, isActive: !props.isActive };
-              })
-            }
-          />
-        </Grid>}
+        {location.state && (
+          <Grid item xs={12} md={3}>
+            <Label>Is Active</Label>
+            <CustomSwitch
+              checked={formDetails.isActive}
+              onChange={() =>
+                setFormDetails(props => {
+                  return { ...formDetails, isActive: !props.isActive };
+                })
+              }
+            />
+          </Grid>
+        )}
       </Grid>
       <ActionButtonGroup>
         <CustomButton variant="outlined" onClick={() => navigate(-1)}>
           Cancel
         </CustomButton>
-        <CustomButton variant="contained" onClick={handleProductSubmittion}>
+        <CustomButton variant="contained" onClick={() => handleProductSubmittion()}>
           Submit
         </CustomButton>
       </ActionButtonGroup>
+      {!isConfirmPopUp && (
+        <StyledModalBackdrop>
+          <StyledModalContent>
+            <h5>Confirm Popup</h5>
+            <CustomParagraph>Are you sure you want to continue to update the existing Product</CustomParagraph>
+            <ActionButtonGroup>
+              <CustomButton variant="outlined" onClick={() => setIsConfirmPopUp(false)}>
+                Cancel
+              </CustomButton>
+              <CustomButton
+                variant="contained"
+                onClick={() => {
+                  handleProductSubmittion(true);
+                  setIsConfirmPopUp(false);
+                }}
+              >
+                Submit
+              </CustomButton>
+            </ActionButtonGroup>
+          </StyledModalContent>
+        </StyledModalBackdrop>
+      )}
     </BodyContainer>
   );
 };
