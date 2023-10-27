@@ -15,3 +15,10 @@ export const AttributeURLs = {
   GETATTRIBUTELIST: 'Attribute/Attribute_GetList',
   DELETEATTRIBUTE: 'Attribute/Attribute_Delete'
 };
+
+export const MB = 1048576;
+
+export const FileSize = {
+  IMAGEFILESIZE: 5*MB,
+  AUDIOFILESIZE: 1*MB
+}
