@@ -30,8 +30,6 @@ export const fetchToken = (payload: { emailId: string; password: string }): Prom
         // Handle errors here
         if (axios.isAxiosError(error)) {
           // Axios error (e.g., network error)
-          console.error('Axios error:', error);
-          toaster('error', error.response?.data?.message);
         } else {
           // Non-Axios error (e.g., JSON parsing error)
           console.error('Non-Axios error:', error);
@@ -57,6 +55,10 @@ export const fetchMrList = (): Promise<any> => {
         } else {
           // Non-Axios error (e.g., JSON parsing error)
           console.error('Non-Axios error:', error);
+        }
+        if (error.response && error.response.status === 401) {
+          localStorage.clear();
+          window.location.href = '/login'
         }
         reject(error); // Reject the Promise to propagate the error
       });
@@ -88,6 +90,10 @@ export const fetchProductList = (payload?: {
           // Non-Axios error (e.g., JSON parsing error)
           console.error('Non-Axios error:', error);
         }
+        if (error.response && error.response.status === 401) {
+          localStorage.clear();
+          window.location.href = '/login'
+        }
         reject(error); // Reject the Promise to propagate the error
       });
   });
@@ -108,6 +114,10 @@ export const deleteProductItem = (ProductCode?: { ProductCode: string }): Promis
         } else {
           // Non-Axios error (e.g., JSON parsing error)
           console.error('Non-Axios error:', error);
+        }
+        if (error.response && error.response.status === 401) {
+          localStorage.clear();
+          window.location.href = '/login'
         }
         reject(error); // Reject the Promise to propagate the error
       });
@@ -130,6 +140,10 @@ export const fetchCategoryList = (): Promise<categoryListArray> => {
           // Non-Axios error (e.g., JSON parsing error)
           console.error('Non-Axios error:', error);
         }
+        if (error.response && error.response.status === 401) {
+          localStorage.clear();
+          window.location.href = '/login'
+        }
         reject(error); // Reject the Promise to propagate the error
       });
   });
@@ -149,6 +163,10 @@ export const insertOrUpdateProductDetail = (payload: any): Promise<insertUpdateA
         } else {
           // Non-Axios error (e.g., JSON parsing error)
           console.error('Non-Axios error:', error);
+        }
+        if (error.response && error.response.status === 401) {
+          localStorage.clear();
+          window.location.href = '/login'
         }
         reject(error); // Reject the Promise to propagate the error
       });
@@ -170,6 +188,10 @@ export const fetchSubCategoryList = (categoryId: number | null): Promise<subCate
         } else {
           // Non-Axios error (e.g., JSON parsing error)
           console.error('Non-Axios error:', error);
+        }
+        if (error.response && error.response.status === 401) {
+          localStorage.clear();
+          window.location.href = '/login'
         }
         reject(error); // Reject the Promise to propagate the error
       });
@@ -217,6 +239,10 @@ export const fetchAttributeList = (AttributeId?: number | null): Promise<Attribu
           // Non-Axios error (e.g., JSON parsing error)
           console.error('Non-Axios error:', error);
         }
+        if (error.response && error.response.status === 401) {
+          localStorage.clear();
+          window.location.href = '/login'
+        }
         reject(error); // Reject the Promise to propagate the error
       });
   });
@@ -237,6 +263,10 @@ export const deleteAttributeItem = (AttributeId?: number | null): Promise<delete
         } else {
           // Non-Axios error (e.g., JSON parsing error)
           console.error('Non-Axios error:', error);
+        }
+        if (error.response && error.response.status === 401) {
+          localStorage.clear();
+          window.location.href = '/login'
         }
         reject(error); // Reject the Promise to propagate the error
       });
@@ -263,6 +293,10 @@ export const insertOrUpdateDataMapping = (payload: any): Promise<insertUpdateAtr
         } else {
           // Non-Axios error (e.g., JSON parsing error)
           console.error('Non-Axios error:', error);
+        }
+        if (error.response && error.response.status === 401) {
+          localStorage.clear();
+          window.location.href = '/login'
         }
         reject(error); // Reject the Promise to propagate the error
       });

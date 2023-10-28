@@ -16,5 +16,6 @@ export const TH = styled('th')(({theme})=>({
 export const TD = styled('td')(({theme})=>({
     background:"#ffffff",
     fontSize:`${theme.typography.fontSize}px`,
-    textAlign:'center'
+    textAlign:'center',
+    padding:5
 }));

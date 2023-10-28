@@ -1,31 +1,19 @@
-import { ChangeEvent, MouseEvent, useEffect, useMemo, useState } from 'react';
-import { useTable, useSortBy } from 'react-table';
+import { MouseEvent, useEffect, useState } from 'react';
 import { Button, Grid, TextField } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import {
   ProductDetails,
   categoryListArray,
-  categoryListType,
   subCategoryListType,
   subCategoryListTypeArray
 } from '../types/productTypes';
 import { BodyContainer, NormalContainer } from '../components/styledComponents/Body.styles';
-import { CustomButton, CustomeAutoSelect, InputBox, Label } from '../components/styledComponents/InputBox.styles';
-import { deleteProductItem, fetchCategoryList, fetchProductList, fetchSubCategoryList } from '../utils/APIs';
-import { TD, TH, TableContainer } from '../components/styledComponents/Table.styles';
-import {
-  ActionButtons,
-  AddButtonContainer,
-  FilterContainer,
-  NoRecordsFound
-} from '../components/styledComponents/Common.styles';
+import { CustomButton, CustomeAutoSelect, Label } from '../components/styledComponents/InputBox.styles';
+import { fetchCategoryList, fetchProductList, fetchSubCategoryList } from '../utils/APIs';
+import { AddButtonContainer, FilterContainer, NoRecordsFound } from '../components/styledComponents/Common.styles';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
-import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import AccountTreeRoundedIcon from '@mui/icons-material/AccountTreeRounded';
-import dayjs from 'dayjs';
 import Loader from '../components/Loader/Loader';
-import { toaster } from '../components/Toaster/Toaster';
+import ProductTable from '../components/Product/ProductTable';
 const ProductPage = () => {
   const navigate = useNavigate();
   const [productList, setProductList] = useState<ProductDetails>([]);
@@ -34,7 +22,7 @@ const ProductPage = () => {
   const [categoryId, setCategoryId] = useState<number | null>(null);
   const [subCategoryId, setSubCategoryId] = useState<subCategoryListType | null>(null);
   const [isLoader, setIsLoader] = useState<boolean>(false);
-  const handleAddProduct = (e: MouseEvent<HTMLButtonElement>) => {
+  const handleAddProduct = () => {
     navigate('addProduct');
   };
   useEffect(() => {
@@ -134,112 +122,10 @@ const ProductPage = () => {
         {productList.length === 0 ? (
           <NoRecordsFound>No records found</NoRecordsFound>
         ) : (
-          <ProductTable data={productList} callBackProductList={fetchProductDetails} />
+          <ProductTable data={productList} />
         )}
       </BodyContainer>
     </>
-  );
-};
-
-const ProductTable = ({ data, callBackProductList }: { data: ProductDetails; callBackProductList: any }) => {
-  const navigate = useNavigate();
-  const COLUMNS = [
-    {
-      Header: 'Product Name',
-      accessor: 'productName'
-    },
-    {
-      Header: 'Product Code',
-      accessor: 'productCode'
-    },
-    {
-      Header: 'Category',
-      accessor: 'categoryName'
-    },
-    {
-      Header: 'Sub Category',
-      accessor: 'subCategoryName'
-    },
-    {
-      Header: 'Is New Product',
-      accessor: 'isNewProduct',
-      Cell: ({ row }: { row: any }) => (
-        <>
-          <div>{row.values.isNewProduct ? 'Yes' : 'No'}</div>
-        </>
-      )
-    },
-    {
-      Header: 'Activation Date',
-      accessor: 'activationDate',
-      Cell: ({ row }: { row: any }) => (
-        <>
-          <div>{row.values.activationDate ? dayjs(row.values.activationDate).format('DD/MM/YYYY') : ''}</div>
-        </>
-      )
-    },
-    {
-      Header: 'Actions',
-      accessor: 'actions',
-      Cell: ({ row }: { row: any }) => (
-        <>
-          <ActionButtons>
-            <ModeEditOutlineIcon onClick={() => handleAction(row)} />
-            {/* <DeleteForeverIcon onClick={() => handleDeleteAttribute(row)} /> */}
-            <AccountTreeRoundedIcon onClick={() => handleAttributeMapping(row)} />
-          </ActionButtons>
-        </>
-      )
-    }
-  ];
-  const handleDeleteAttribute = async (row: any) => {
-    await deleteProductItem(row.original.productCode).then(res => {
-      if (res.statusCode === 1) {
-        toaster('success', res.statusMessage);
-        callBackProductList();
-      } else {
-        toaster('error', res.statusMessage);
-      }
-    });
-  };
-  const handleAttributeMapping = async (row: any) => {
-    console.log(row, 'rows');
-    navigate('attributeMapping', { state: { attributeDetails: row.original.attributes } });
-  };
-  const handleAction = (row: any) => {
-    navigate('addProduct', { state: { productDetails: row.original } });
-  };
-  const columns = useMemo(() => COLUMNS, []);
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({ columns, data }, useSortBy);
-  return (
-    <TableContainer>
-      <table {...getTableProps()}>
-        <thead>
-          {headerGroups.map((headerGroup: any) => (
-            <tr {...headerGroup.getHeaderGroupProps()} className="table-header-sticky">
-              {headerGroup.headers.map((column: any) => (
-                <TH {...column.getHeaderProps(column.getSortByToggleProps())}>
-                  {column.render('Header')}
-                  <span>{column.isSorted ? (column.isSortedDesc ? ' 🔽' : ' 🔼') : ''}</span>
-                </TH>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody {...getTableBodyProps()}>
-          {rows.map((row: any) => {
-            prepareRow(row);
-            return (
-              <tr {...row.getRowProps()}>
-                {row.cells.map((cell: any) => {
-                  return <TD {...cell.getCellProps()}>{cell.render('Cell')}</TD>;
-                })}
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-    </TableContainer>
   );
 };
 

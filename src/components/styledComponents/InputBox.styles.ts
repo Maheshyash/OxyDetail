@@ -83,7 +83,8 @@ export const HeaderTag = styled('header')(({ theme }) => ({
   }
 }));
 export const CustomButton = styled(Button)(({ theme }) => ({
-  textTransform: 'inherit'
+  textTransform: 'inherit',
+  cursor: 'pointer'
 }));
 CustomButton.defaultProps = {
   size: 'small'

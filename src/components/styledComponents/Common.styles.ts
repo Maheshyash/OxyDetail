@@ -159,7 +159,8 @@ export const StyledModalContent = styled('div')(({ theme }) => ({
 }));
 
 export const CustomParagraph = styled('p')(({ theme }) => ({
-  fontSize:theme.typography.fontSize
+  fontSize:theme.typography.fontSize,
+  margin:0
 }));
 
 export const CustomDatepicker = styled(DatePicker)(({theme})=>({
