@@ -6,16 +6,13 @@ import AudioFileIcon from '@mui/icons-material/AudioFile';
 import { BodyContainer } from '../components/styledComponents/Body.styles';
 import Grid from '@mui/material/Grid';
 import { ActionButtonGroup, CustomButton, Label } from '../components/styledComponents/InputBox.styles';
-import {
-  CustomeFileUpload,
-  FlexItemBetweenContent,
-  StyledInput
-} from '../components/styledComponents/Common.styles';
+import { CustomeFileUpload, FlexItemBetweenContent, StyledInput } from '../components/styledComponents/Common.styles';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
-import { fetchAttributeList, insertOrUpdateDataMapping } from '../utils/APIs';
+import { insertOrUpdateDataMapping } from '../utils/APIs';
 import AddCircleOutlinedIcon from '@mui/icons-material/AddCircleOutlined';
 import { toaster } from '../components/Toaster/Toaster';
 import { FileSize } from '../Constants';
+import { updateFileName } from '../utils/common';
 interface attributeTypes {
   label: string;
   value: number;
@@ -26,6 +23,7 @@ export type listItemArrayInterface = listItem[] | [];
 export interface listItem {
   productCode: string;
   attributeId: number;
+  attributeName: string;
   media: listItemMedia[] | [];
 }
 
@@ -33,11 +31,11 @@ export interface listItemMedia {
   productCode: string;
   attributeId: number;
   productAttributeOrder: number;
-  image: string|any;
+  image: string | any;
   oldImage: any;
-  voice: string|any;
-  imageName?:string;
-  voiceName?:string;
+  voice: string | any;
+  imageName?: string;
+  voiceName?: string;
   oldVoice: any;
   isDeleted: any;
 }
@@ -92,34 +90,39 @@ const AttributeMappingPage1 = () => {
     fileRefs[listItemIndex][index].current.click();
   };
 
-  const handleAudioIconClick = (event, listItemIndex: number, index: number) => {
+  const handleAudioIconClick = (event: any, listItemIndex: number, index: number) => {
     audioRefs[listItemIndex][index].current.click();
   };
 
-  const handleFileChange = (e, listItemIndex: number, index: number) => {
+  const handleFileChange = (e: any, listItemIndex: number, index: number) => {
     const file = e.target.files[0];
     const filename = file.name;
-    const currentTimestamp = new Date().getTime();
     if (file.size > FileSize.IMAGEFILESIZE) {
       // Display an error message or take appropriate action for oversized image.
-      toaster('warning','Please Select Image file upto 1mb')
+      toaster('warning', 'Please Select Image file upto 1mb');
       return;
     }
-    const parts = filename.split(/(\.[^.]+)$/);
-    const fileNameWithoutExtension = parts[0]; // Get the file name without extension
-    const fileExtension = parts[1]; // Get the file extension
 
     // Create a new name by appending a timestamp
-    const newFileName = `${fileNameWithoutExtension}_${currentTimestamp}${fileExtension}`;
+    const newFileName = updateFileName(filename);
     // const newFileName = `${filename}_${currentTimestamp}`;
     const newFile = new File([file], newFileName, { type: file.type });
+
     setAttributeListArray(prevArray => {
-      var newArray:listItemArrayInterface = [...prevArray];
+      var newArray: listItemArrayInterface = [...prevArray];
+      const indexedMedia = newArray[listItemIndex].media[index];
+      const image = indexedMedia.image;
       if (!newArray[listItemIndex].media[index]) {
-        newArray[listItemIndex].media[index] = {...newArray[listItemIndex].media[index], imageName: newFileName, image: newFile }; 
+        newArray[listItemIndex].media[index] = {
+          ...newArray[listItemIndex].media[index],
+          imageName: newFileName,
+          image: newFile,
+          oldImage: image ? image : ''
+        };
       } else {
         newArray[listItemIndex].media[index].imageName = newFileName;
         newArray[listItemIndex].media[index].image = newFile;
+        newArray[listItemIndex].media[index].oldImage = image ? image : '';
       }
 
       return newArray;
@@ -128,29 +131,34 @@ const AttributeMappingPage1 = () => {
 
   const handleAudioFiles = (event: ChangeEvent<HTMLInputElement>, listItemIndex: number, index: number) => {
     const file = event.target.files[0];
-    const filename =  file.name;
-    const currentTimestamp = new Date().getTime();
+    const filename = file.name;
+
     if (file.size > FileSize.AUDIOFILESIZE) {
       // Display an error message or take appropriate action for oversized image.
-      toaster('warning','Please Select Audio file upto 1mb')
+      toaster('warning', 'Please Select Audio file upto 1mb');
       return;
     }
-    const parts = filename.split(/(\.[^.]+)$/);
-    const fileNameWithoutExtension = parts[0]; // Get the file name without extension
-    const fileExtension = parts[1]; // Get the file extension
 
     // Create a new name by appending a timestamp
-    const newFileName = `${fileNameWithoutExtension}_${currentTimestamp}${fileExtension}`;
-
+    const newFileName = updateFileName(filename);
     // const newFileName = `${filename}_${currentTimestamp}`;
     const newFile = new File([file], newFileName, { type: file.type });
+
     setAttributeListArray(prevArray => {
       const newArray = [...prevArray];
-      if (!newArray[listItemIndex].media[index]) {
-        newArray[listItemIndex].media[index] = {...newArray[listItemIndex].media[index], voiceName: newFileName, voice: newFile}; //...newArray[index], imageName: filename, Image: file };
+      const indexedMedia = newArray[listItemIndex].media[index];
+      const voice = indexedMedia.voice;
+      if (!indexedMedia) {
+        newArray[listItemIndex].media[index] = {
+          ...newArray[listItemIndex].media[index],
+          voiceName: newFileName,
+          voice: newFile,
+          oldVoice: voice ? voice : ''
+        };
       } else {
         newArray[listItemIndex].media[index].voiceName = newFileName;
         newArray[listItemIndex].media[index].voice = newFile;
+        newArray[listItemIndex].media[index].oldVoice = voice ? voice : '';
       }
 
       return newArray;
@@ -163,7 +171,7 @@ const AttributeMappingPage1 = () => {
     setAttributeListArray(dummyArray);
   };
 
-  const handleMediaMappingSubmittion = async (e:any) => {
+  const handleMediaMappingSubmittion = async (e: any) => {
     e.preventDefault();
     const ProductCode = location.state.attributeDetails[0].productCode;
     const Data = {
@@ -171,11 +179,11 @@ const AttributeMappingPage1 = () => {
       Media: attributeListArray.flatMap(ele =>
         ele.media.map(ele1 => ({
           AttributeId: ele1.attributeId,
-          Image: ele1.imageName,
-          Voice: ele1.voiceName,
+          Image: typeof ele1.image === 'string' ? ele1.image : ele1.imageName || '',
+          Voice: typeof ele1.voice === 'string' ? ele1.voice : ele1.voiceName || '',
           ProductAttributeOrder: ele1.productAttributeOrder,
-          OldImage: ele1.oldImage,
-          OldVoice: ele1.oldVoice,
+          OldImage: ele1.oldImage || '',
+          OldVoice: ele1.oldVoice || '',
           IsDeleted: ele1.isDeleted
         }))
       )
@@ -186,18 +194,35 @@ const AttributeMappingPage1 = () => {
     formData.append('Data', JSON.stringify(Data));
     attributeListArray.map((ele: any, eleIndex: number) =>
       ele.media.map((ele1: any, index: number) => {
-        return formData.append(`${ele1.imageName}`, ele1.image);
+        if (ele1.imageName && ele1.image) {
+          return formData.append(`${ele1.imageName}`, ele1.image);
+        }
       })
     );
-    attributeListArray.map((ele: any, eleIndex: number) =>
-      ele.media.map((ele1: any, index: number) => {
-        return formData.append(`${ele1.voiceName}`, ele1.voice);
+    attributeListArray.map((ele: any) =>
+      ele.media.map((ele1: any) => {
+        if (ele1.voiceName && ele1.voice) {
+          return formData.append(`${ele1.voiceName}`, ele1.voice);
+        }
       })
     );
     console.log(formData, 'formData');
+    setIsLoader(true);
     insertOrUpdateDataMapping(formData)
-      .then(res => console.log(res))
-      .catch(err => console.log(err));
+      .then(res => {
+        setIsLoader(false);
+        if (res.statusCode === 1 || res.statusCode === 0) {
+          toaster('success', res.statusMessage);
+          navigate(-1);
+        } else {
+          toaster('error', res.statusMessage);
+        }
+      })
+      .catch(err => {
+        setIsLoader(false);
+        console.log(err);
+        toaster('error', 'something went wrong');
+      });
   };
   return (
     <BodyContainer>
@@ -205,7 +230,7 @@ const AttributeMappingPage1 = () => {
         return (
           <div key={listItemIndex}>
             <FlexItemBetweenContent>
-              <h5>{listArrayItem.attributeId}</h5>
+              <h5>{listArrayItem.attributeName}</h5>
               <AddCircleOutlinedIcon
                 onClick={() =>
                   handleAddAdditionalAttributeFiles(listArrayItem.productCode, listArrayItem.attributeId, listItemIndex)
@@ -238,7 +263,7 @@ const AttributeMappingPage1 = () => {
                         id="image-upload-input"
                         type="file"
                         accept="image/*"
-                        onChange={e => handleFileChange(event, listItemIndex, index)}
+                        onChange={e => handleFileChange(e, listItemIndex, index)}
                         ref={fileRefs[listItemIndex][index]}
                       />
                     </Grid>
@@ -267,11 +292,11 @@ const AttributeMappingPage1 = () => {
                         ref={audioRefs[listItemIndex][index]}
                       />
                     </Grid>
-                    {index !== 0 && (
-                      <Grid item xs={3} sx={{ alignSelf: 'flex-end' }}>
-                        <RemoveCircleIcon onClick={() => removeItem(listItemIndex, index)} />
-                      </Grid>
-                    )}
+                    {/* {index !== 0 && ( */}
+                    <Grid item xs={3} sx={{ alignSelf: 'flex-end' }}>
+                      <RemoveCircleIcon onClick={() => removeItem(listItemIndex, index)} />
+                    </Grid>
+                    {/* )} */}
                   </Grid>
                 );
               }

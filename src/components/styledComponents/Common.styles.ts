@@ -1,6 +1,7 @@
-import { Input, styled, keyframes, Switch, alpha } from '@mui/material';
+import { Input, styled, keyframes, Switch, alpha, Stack } from '@mui/material';
 import { MultiSelect } from 'react-multi-select-component';
 import { TextareaAutosize } from '@mui/base/TextareaAutosize';
+import { DatePicker } from '@mui/x-date-pickers';
 export const NoRecordsFound = styled('div')(({ theme }) => ({
   textAlign: 'center',
   fontSize: `${theme.typography.fontSize}px`
@@ -160,3 +161,23 @@ export const StyledModalContent = styled('div')(({ theme }) => ({
 export const CustomParagraph = styled('p')(({ theme }) => ({
   fontSize:theme.typography.fontSize
 }));
+
+export const CustomDatepicker = styled(DatePicker)(({theme})=>({
+  '.MuiFormControl-root':{
+    width:'100%'
+  },
+  '& .MuiOutlinedInput-input':{
+    fontSize:theme.typography.fontSize
+  }
+}))
+
+CustomDatepicker.defaultProps= {
+  slotProps:{
+    textField: { size: 'small', },
+    field: { clearable: true },
+  }
+};
+
+export const DatePickerContainer = styled(Stack)({
+  width: '100%',
+});

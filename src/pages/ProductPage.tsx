@@ -2,7 +2,13 @@ import { ChangeEvent, MouseEvent, useEffect, useMemo, useState } from 'react';
 import { useTable, useSortBy } from 'react-table';
 import { Button, Grid, TextField } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { ProductDetails, categoryListArray, categoryListType, subCategoryListType, subCategoryListTypeArray } from '../types/productTypes';
+import {
+  ProductDetails,
+  categoryListArray,
+  categoryListType,
+  subCategoryListType,
+  subCategoryListTypeArray
+} from '../types/productTypes';
 import { BodyContainer, NormalContainer } from '../components/styledComponents/Body.styles';
 import { CustomButton, CustomeAutoSelect, InputBox, Label } from '../components/styledComponents/InputBox.styles';
 import { deleteProductItem, fetchCategoryList, fetchProductList, fetchSubCategoryList } from '../utils/APIs';
@@ -26,7 +32,7 @@ const ProductPage = () => {
   const [categoryList, setCategoryList] = useState<categoryListArray>([]);
   const [subCategoryList, setSubCategoryList] = useState<subCategoryListTypeArray>([]);
   const [categoryId, setCategoryId] = useState<number | null>(null);
-  const [subCategoryId, setSubCategoryId] = useState<subCategoryListType| null>(null);
+  const [subCategoryId, setSubCategoryId] = useState<subCategoryListType | null>(null);
   const [isLoader, setIsLoader] = useState<boolean>(false);
   const handleAddProduct = (e: MouseEvent<HTMLButtonElement>) => {
     navigate('addProduct');
@@ -57,7 +63,7 @@ const ProductPage = () => {
         alert('err');
       });
   };
-  const fetchProductDetails = async (payload?:any) => {
+  const fetchProductDetails = async (payload?: any) => {
     setIsLoader(true);
     await fetchProductList(payload)
       .then(res => {
@@ -72,11 +78,11 @@ const ProductPage = () => {
   };
   const handleSearch = async () => {
     const payload = {
-      CategoryId : categoryId,
-      SubCategoryId:subCategoryId?.subCategoryId
-    }
-    await fetchProductDetails(payload)
-  }
+      CategoryId: categoryId,
+      SubCategoryId: subCategoryId?.subCategoryId
+    };
+    await fetchProductDetails(payload);
+  };
   return (
     <>
       <NormalContainer>
@@ -87,13 +93,13 @@ const ProductPage = () => {
               <Label>Category</Label>
               <CustomeAutoSelect
                 options={categoryList}
-                onChange={(event:React.SyntheticEvent<Element, Event>, data:any) => {
+                onChange={(event: React.SyntheticEvent<Element, Event>, data: any) => {
                   setCategoryId(data.categoryId);
                   fetchSubCategoryDetails(data.categoryId);
-                  setSubCategoryId(null)
+                  setSubCategoryId(null);
                   console.log(data, 'data');
                 }}
-                getOptionLabel={(option:any) => option.categoryName}
+                getOptionLabel={(option: any) => option.categoryName}
                 size="small"
                 renderInput={params => <TextField {...params} placeholder={'Pleas Select'} />}
               />
@@ -102,18 +108,18 @@ const ProductPage = () => {
               <Label>Sub Category Name</Label>
               <CustomeAutoSelect
                 options={subCategoryList}
-                onChange={(event:React.SyntheticEvent<Element, Event>, data:any) => {
+                onChange={(event: React.SyntheticEvent<Element, Event>, data: any) => {
                   setSubCategoryId(data);
                 }}
-                value ={subCategoryId}
-                getOptionLabel={(option:any) => option.subCategoryName}
+                value={subCategoryId}
+                getOptionLabel={(option: any) => option.subCategoryName}
                 size="small"
                 renderInput={params => <TextField {...params} placeholder={'Pleas Select'} />}
               />
             </Grid>
-            <Grid item xs={12} md={1} style={{display:'flex',alignItems:'end'}}>
+            <Grid item xs={12} md={1} style={{ display: 'flex', alignItems: 'end' }}>
               <Button>
-                <SearchRoundedIcon onClick={handleSearch}/>
+                <SearchRoundedIcon onClick={handleSearch} />
               </Button>
             </Grid>
           </Grid>
@@ -159,7 +165,7 @@ const ProductTable = ({ data, callBackProductList }: { data: ProductDetails; cal
       accessor: 'isNewProduct',
       Cell: ({ row }: { row: any }) => (
         <>
-          <div>{row.values.isNewProduct?"Yes":"No"}</div>
+          <div>{row.values.isNewProduct ? 'Yes' : 'No'}</div>
         </>
       )
     },
@@ -168,7 +174,7 @@ const ProductTable = ({ data, callBackProductList }: { data: ProductDetails; cal
       accessor: 'activationDate',
       Cell: ({ row }: { row: any }) => (
         <>
-          <div>{dayjs(row.values.activationDate).format('YYYY-MM-DD')}</div>
+          <div>{row.values.activationDate ? dayjs(row.values.activationDate).format('DD/MM/YYYY') : ''}</div>
         </>
       )
     },
@@ -180,7 +186,7 @@ const ProductTable = ({ data, callBackProductList }: { data: ProductDetails; cal
           <ActionButtons>
             <ModeEditOutlineIcon onClick={() => handleAction(row)} />
             {/* <DeleteForeverIcon onClick={() => handleDeleteAttribute(row)} /> */}
-            <AccountTreeRoundedIcon onClick={()=> handleAttributeMapping(row)}/>
+            <AccountTreeRoundedIcon onClick={() => handleAttributeMapping(row)} />
           </ActionButtons>
         </>
       )
@@ -189,17 +195,17 @@ const ProductTable = ({ data, callBackProductList }: { data: ProductDetails; cal
   const handleDeleteAttribute = async (row: any) => {
     await deleteProductItem(row.original.productCode).then(res => {
       if (res.statusCode === 1) {
-        toaster('success',res.statusMessage);
+        toaster('success', res.statusMessage);
         callBackProductList();
       } else {
-        toaster('error',res.statusMessage);
+        toaster('error', res.statusMessage);
       }
     });
   };
-  const handleAttributeMapping = async (row:any) => {
-    console.log(row,'rows')
-    navigate('attributeMapping',{state:{attributeDetails:row.original.attributes}})
-  }
+  const handleAttributeMapping = async (row: any) => {
+    console.log(row, 'rows');
+    navigate('attributeMapping', { state: { attributeDetails: row.original.attributes } });
+  };
   const handleAction = (row: any) => {
     navigate('addProduct', { state: { productDetails: row.original } });
   };

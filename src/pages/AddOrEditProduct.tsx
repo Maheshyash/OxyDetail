@@ -1,4 +1,6 @@
 import { Grid, TextField } from '@mui/material';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { BodyContainer } from '../components/styledComponents/Body.styles';
 import LabelValue from '../components/LabelValue';
 import { ChangeEvent, useEffect, useState } from 'react';
@@ -16,10 +18,12 @@ import {
 } from '../utils/APIs';
 import { categoryListArray, subCategoryListType, subCategoryListTypeArray } from '../types/productTypes';
 import {
+  CustomDatepicker,
   CustomMultiSelect,
   CustomParagraph,
   CustomSwitch,
   CustomTextArea,
+  DatePickerContainer,
   ErrorMessage,
   StyledModalBackdrop,
   StyledModalContent
@@ -27,6 +31,7 @@ import {
 import { useLocation, useNavigate } from 'react-router-dom';
 import Loader from '../components/Loader/Loader';
 import { toaster } from '../components/Toaster/Toaster';
+import dayjs from 'dayjs';
 interface productTypes {
   productCode: string;
   productName: string;
@@ -38,6 +43,7 @@ interface productTypes {
   isNewProduct: boolean;
   isFocusedProduct: boolean;
   isActive: boolean;
+  activationDate: string;
 }
 interface attributeTypes {
   label: string;
@@ -56,7 +62,8 @@ const AddOrEditProduct = () => {
     isNewProduct: false,
     isFocusedProduct: false,
     categoryId: null,
-    isActive: true
+    isActive: true,
+    activationDate: ''
   });
   const [categoryList, setCategoryList] = useState<categoryListArray>([]);
   const [subCategoryList, setSubCategoryList] = useState<subCategoryListTypeArray>([]);
@@ -134,7 +141,8 @@ const AddOrEditProduct = () => {
         productDescription,
         productName,
         productCode,
-        isActive
+        isActive,
+        activationDate
       } = location.state.productDetails;
       fetchSubCategoryDetails(categoryId);
       setFormDetails({
@@ -145,15 +153,16 @@ const AddOrEditProduct = () => {
         isFocusedProduct: isFocusedProduct,
         isNewProduct: isNewProduct,
         isActive: isActive,
-        categoryId: { categoryId: categoryId, categoryName: categoryName }
+        categoryId: { categoryId: categoryId, categoryName: categoryName },
+        activationDate:activationDate
       });
       setSubCategoryId({ subCategoryId: subCategoryId, subCategoryName: subCategoryName });
     }
   }, []);
   const [isSubmit, setIsSubmit] = useState<boolean>(false);
   const handleProductSubmittion = (isForceUpdate = false) => {
-    const { productCode, productName, description, categoryId, isNewProduct, isFocusedProduct, isActive } = formDetails;
-    if (productCode.trim() === '' || productName.trim() === '' || description.trim() === '' || selected.length === 0) {
+    const { productCode, productName, description, categoryId, isNewProduct, isFocusedProduct, isActive, activationDate } = formDetails;
+    if (productCode.trim() === '' || productName.trim() === '' || description.trim() === '' || selected.length === 0 || formDetails.activationDate.trim() === '' || formDetails.activationDate === 'Invalid Date') {
       setIsSubmit(true);
       return;
     }
@@ -173,6 +182,7 @@ const AddOrEditProduct = () => {
         attributeId: ele.value,
         productAttributeOrder: index
       })),
+      activationDate:activationDate,
       forceUpdateIfExists: location.state ? true : isForceUpdate
     };
     setIsLoader(true);
@@ -301,6 +311,26 @@ const AddOrEditProduct = () => {
               })
             }
           />
+        </Grid>
+        <Grid item xs={12} md={3}>
+          <Label>Activation Date</Label>
+          <DatePickerContainer>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <CustomDatepicker
+                format="DD/MM/YYYY"
+                value={formDetails.activationDate ? dayjs(formDetails.activationDate) :null }
+                onChange={(date:any) => setFormDetails({ ...formDetails, activationDate: dayjs(date).format('YYYY-MM-DD') })}
+                slotProps={{
+                  textField: { size: 'small'},
+                  field: { clearable: true ,onClear:()=>{setFormDetails({...formDetails,activationDate:''})}},
+                }}
+
+              />
+            </LocalizationProvider>
+          </DatePickerContainer>
+          {formDetails.activationDate.trim() === '' || formDetails.activationDate === 'Invalid Date' && isSubmit && (
+            <ErrorMessage>Please select Activation Date</ErrorMessage>
+          )}
         </Grid>
         {location.state && (
           <Grid item xs={12} md={3}>
