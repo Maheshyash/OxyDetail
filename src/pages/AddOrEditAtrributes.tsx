@@ -6,9 +6,16 @@ import LabelValue from '../components/LabelValue';
 import { useState, ChangeEvent, useRef, useEffect } from 'react';
 import IconButton from '@mui/material/IconButton';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
-import { CustomSwitch, CustomeFileUpload, ErrorMessage, StyledInput } from '../components/styledComponents/Common.styles';
+import {
+  CustomSwitch,
+  CustomeFileUpload,
+  ErrorMessage,
+  StyledInput
+} from '../components/styledComponents/Common.styles';
 import { insertOrUpdateAttributes } from '../utils/APIs';
 import { toaster } from '../components/Toaster/Toaster';
+import { updateFileName } from '../utils/common';
+import { FileSize } from '../Constants';
 interface formDetailsType {
   AttributeName: string;
   AttributeIconUpload: any;
@@ -25,19 +32,23 @@ const AddOrEditAttributes = () => {
   const [fileName, setFileName] = useState<string>('');
   const [isSubmit, setIsSubmit] = useState<boolean>(false);
   const navigate = useNavigate();
-  const handleAttribute = (e: ChangeEvent<HTMLInputElement>) => {
-    setFormDetails({ ...formDetails, AttributeName: e.target.value });
+  const handleAttribute = (event: ChangeEvent<HTMLInputElement>) => {
+    setFormDetails({ ...formDetails, AttributeName: event.target.value });
   };
-  const handleFileChange = e => {
-    const file = e.target.files[0];
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files && event.target.files[0];
+    if (!file) return;
     const filename = file.name;
-    setFileName(filename);
-
-    if (file) {
-      // You can perform additional validation here if needed
-      console.log(`Selected file: ${file.name}`);
-      setFormDetails({ ...formDetails, AttributeIconUpload: file });
+    if (file.size > FileSize.IMAGEFILESIZE) {
+      toaster('warning', 'Please Select Image file upto 1mb');
+      return;
     }
+
+    // updating fileName by appending a timestamp
+    const newFileName = updateFileName(filename);
+    const newFile = new File([file], newFileName, { type: file.type });
+    setFileName(newFileName);
+    setFormDetails({ ...formDetails, AttributeIconUpload: newFile });
   };
   const handleButtonClick = () => {
     if (fileInputRef.current) {
@@ -63,11 +74,11 @@ const AddOrEditAttributes = () => {
   const handleAddOrUpdateAttribute = async e => {
     debugger;
     e.preventDefault();
-    if((fileName.trim()==="" && !location.state)|| formDetails.AttributeName.trim()===""){
+    if ((fileName.trim() === '' && !location.state) || formDetails.AttributeName.trim() === '') {
       setIsSubmit(true);
       return;
     }
-    
+
     console.log(formDetails, 'formDetails');
     const formData = new FormData();
     formData.append('AttributeName', formDetails.AttributeName);
@@ -79,7 +90,7 @@ const AddOrEditAttributes = () => {
     }
     await insertOrUpdateAttributes(formData)
       .then(res => {
-        if (res.statusCode === 1 || res.statusCode ===0) {
+        if (res.statusCode === 1 || res.statusCode === 0) {
           toaster('success', res.statusMessage);
           navigate(-1);
         } else {
@@ -90,7 +101,6 @@ const AddOrEditAttributes = () => {
         toaster('error', 'Something went wrong');
       });
   };
-  console.log(formDetails.AttributeName,'AttributeName')
   return (
     <BodyContainer>
       <Grid container spacing={2}>
@@ -101,7 +111,9 @@ const AddOrEditAttributes = () => {
             onChange={handleAttribute}
             placeholder="Enter Attribute Name"
           />
-           {formDetails.AttributeName.trim()==="" && isSubmit &&<ErrorMessage>Please enter Attribute Name</ErrorMessage>}
+          {formDetails.AttributeName.trim() === '' && isSubmit && (
+            <ErrorMessage>Please enter Attribute Name</ErrorMessage>
+          )}
         </Grid>
         <Grid item xs={12} md={3}>
           <Label>Attribute Icon</Label>
@@ -123,7 +135,9 @@ const AddOrEditAttributes = () => {
             onChange={handleFileChange}
             ref={fileInputRef}
           />
-          {fileName.trim()==="" && !location.state && isSubmit &&<ErrorMessage>Please enter Attribute Name</ErrorMessage>}
+          {fileName.trim() === '' && !location.state && isSubmit && (
+            <ErrorMessage>Please enter Attribute Name</ErrorMessage>
+          )}
         </Grid>
         {location.state?.attributeDetails && (
           <Grid item xs={12} md={3}>

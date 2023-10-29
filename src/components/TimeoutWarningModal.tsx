@@ -1,3 +1,4 @@
+import { clearAllCookies } from '../utils/common';
 import { CustomParagraph, StyledModalBackdrop, StyledModalContent } from './styledComponents/Common.styles';
 import { ActionButtonGroup, CustomButton } from './styledComponents/InputBox.styles';
 interface TimeoutWarningModalProps {
@@ -5,8 +6,8 @@ interface TimeoutWarningModalProps {
 }
 export const TimeoutWarningModal: React.FC<TimeoutWarningModalProps> = ({ onRequestClose }) => {
   const onLogOffCall = () => {
+    clearAllCookies();
     window.location.href = '/';
-    localStorage.clear();
   };
 
   return (

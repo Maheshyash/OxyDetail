@@ -10,6 +10,7 @@ import {
 import { AttributeURLs, ProductURLs, mrURLs } from '../Constants';
 import { AttributeList, deleteAttributeAction, insertUpdateAtrributeResponse } from '../types/attributeTypes';
 import { toaster } from '../components/Toaster/Toaster';
+import { clearAllCookies } from './common';
 
 export const fetchToken = (payload: { emailId: string; password: string }): Promise<loginDetails> => {
   const headers = {
@@ -57,8 +58,10 @@ export const fetchMrList = (): Promise<any> => {
           console.error('Non-Axios error:', error);
         }
         if (error.response && error.response.status === 401) {
-          localStorage.clear();
-          window.location.href = '/'
+          // localStorage.clear();
+          clearAllCookies();
+          toaster('warning', 'Token expired please login again');
+          window.location.href = '/';
         }
         reject(error); // Reject the Promise to propagate the error
       });
@@ -91,8 +94,10 @@ export const fetchProductList = (payload?: {
           console.error('Non-Axios error:', error);
         }
         if (error.response && error.response.status === 401) {
-          localStorage.clear();
-          window.location.href = '/'
+          // localStorage.clear();
+          clearAllCookies();
+          toaster('warning', 'Token expired please login again');
+          window.location.href = '/';
         }
         reject(error); // Reject the Promise to propagate the error
       });
@@ -116,8 +121,10 @@ export const deleteProductItem = (ProductCode?: { ProductCode: string }): Promis
           console.error('Non-Axios error:', error);
         }
         if (error.response && error.response.status === 401) {
-          localStorage.clear();
-          window.location.href = '/'
+          // localStorage.clear();
+          clearAllCookies();
+          toaster('warning', 'Token expired please login again');
+          window.location.href = '/';
         }
         reject(error); // Reject the Promise to propagate the error
       });
@@ -141,8 +148,10 @@ export const fetchCategoryList = (): Promise<categoryListArray> => {
           console.error('Non-Axios error:', error);
         }
         if (error.response && error.response.status === 401) {
-          localStorage.clear();
-          window.location.href = '/'
+          // localStorage.clear();
+          clearAllCookies();
+          toaster('warning', 'Token expired please login again');
+          window.location.href = '/';
         }
         reject(error); // Reject the Promise to propagate the error
       });
@@ -165,8 +174,10 @@ export const insertOrUpdateProductDetail = (payload: any): Promise<insertUpdateA
           console.error('Non-Axios error:', error);
         }
         if (error.response && error.response.status === 401) {
-          localStorage.clear();
-          window.location.href = '/'
+          // localStorage.clear();
+          clearAllCookies();
+          toaster('warning', 'Token expired please login again');
+          window.location.href = '/';
         }
         reject(error); // Reject the Promise to propagate the error
       });
@@ -190,8 +201,10 @@ export const fetchSubCategoryList = (categoryId: number | null): Promise<subCate
           console.error('Non-Axios error:', error);
         }
         if (error.response && error.response.status === 401) {
-          localStorage.clear();
-          window.location.href = '/'
+          // localStorage.clear();
+          clearAllCookies();
+          toaster('warning', 'Token expired please login again');
+          window.location.href = '/';
         }
         reject(error); // Reject the Promise to propagate the error
       });
@@ -240,8 +253,10 @@ export const fetchAttributeList = (AttributeId?: number | null): Promise<Attribu
           console.error('Non-Axios error:', error);
         }
         if (error.response && error.response.status === 401) {
-          localStorage.clear();
-          window.location.href = '/'
+          // localStorage.clear();
+          clearAllCookies();
+          toaster('warning', 'Token expired please login again');
+          window.location.href = '/';
         }
         reject(error); // Reject the Promise to propagate the error
       });
@@ -265,8 +280,10 @@ export const deleteAttributeItem = (AttributeId?: number | null): Promise<delete
           console.error('Non-Axios error:', error);
         }
         if (error.response && error.response.status === 401) {
-          localStorage.clear();
-          window.location.href = '/'
+          // localStorage.clear();
+          clearAllCookies();
+          toaster('warning', 'Token expired please login again');
+          window.location.href = '/';
         }
         reject(error); // Reject the Promise to propagate the error
       });
@@ -295,8 +312,10 @@ export const insertOrUpdateDataMapping = (payload: any): Promise<insertUpdateAtr
           console.error('Non-Axios error:', error);
         }
         if (error.response && error.response.status === 401) {
-          localStorage.clear();
-          window.location.href = '/'
+          // localStorage.clear();
+          clearAllCookies();
+          toaster('warning', 'Token expired please login again');
+          window.location.href = '/';
         }
         reject(error); // Reject the Promise to propagate the error
       });

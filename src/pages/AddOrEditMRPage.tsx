@@ -5,22 +5,39 @@ import {
   CustomButton,
   CustomeAutoSelect,
   Label,
-  PaperContainer,
   PhoneNumber
 } from '../components/styledComponents/InputBox.styles';
 import LabelValue from '../components/LabelValue';
 import TextField from '@mui/material/TextField';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { BodyContainer } from '../components/styledComponents/Body.styles';
+import { CustomeFileUpload, ErrorMessage, StyledInput } from '../components/styledComponents/Common.styles';
+import { IconButton } from '@mui/material';
+import { PhotoCamera } from '@mui/icons-material';
+import { FileSize } from '../Constants';
+import { toaster } from '../components/Toaster/Toaster';
+import { getCookie, updateFileName } from '../utils/common';
+interface formDetailsType {
+  mrName: string;
+  email: string;
+  phone: string;
+  photo: File | null;
+  role: any;
+  category: any;
+  photoName: string;
+}
 const AddOrEditMRPage = () => {
   const navigate = useNavigate();
-  const [formDetails, setFormDetails] = useState({
+  const location = useLocation();
+  const [isSubmit, setIsSubmit] = useState<boolean>(false);
+  const [formDetails, setFormDetails] = useState<formDetailsType>({
     mrName: '',
     email: '',
     phone: '',
-    photo: '',
-    role: '',
-    category: ''
+    photo: null,
+    role: null,
+    category: null,
+    photoName: ''
   });
   const handleName = (e: ChangeEvent<HTMLInputElement>) => {
     setFormDetails({ ...formDetails, mrName: e.target.value });
@@ -29,10 +46,23 @@ const AddOrEditMRPage = () => {
     setFormDetails({ ...formDetails, email: e.target.value });
   };
   const handlePhone = (e: ChangeEvent<HTMLInputElement>) => {
-    setFormDetails({ ...formDetails, phone: e.target.value });
+    const validPhoneNumber = e.target.value.replace(/[^0-9]/g, '');
+    const trimmedPhoneNumber = validPhoneNumber.substring(0, 10);
+    setFormDetails({ ...formDetails, phone: trimmedPhoneNumber });
   };
   const handleFile = (e: ChangeEvent<HTMLInputElement>) => {
-    setFormDetails({ ...formDetails, photo: e.target.value });
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    const filename = file.name;
+    if (file.size > FileSize.IMAGEFILESIZE) {
+      toaster('warning', 'Please Select Image file upto 1mb');
+      return;
+    }
+
+    // updating fileName by appending a timestamp
+    const newFileName = updateFileName(filename);
+    const newFile = new File([file], newFileName, { type: file.type });
+    setFormDetails({ ...formDetails, photo: newFile, photoName: newFileName });
   };
   const top100Films = [
     { title: 'The Shawshank Redemption', year: 1994 },
@@ -167,56 +197,127 @@ const AddOrEditMRPage = () => {
       ...option
     };
   });
+  const handleButtonClick = () => {
+    const photoElement = document.getElementById('Photo');
+    photoElement?.click();
+  };
+  const handleUserCreation = (event: any) => {
+    event.preventDefault();
+    setIsSubmit(true);
+    const isValidEmail = isValidMail(formDetails.email);
+
+    if (
+      !isValidEmail ||
+      formDetails.mrName.trim() === '' ||
+      formDetails.email.trim() === '' ||
+      formDetails.phone.trim() === '' ||
+      formDetails.phone.length < 10 ||
+      !formDetails.category ||
+      !formDetails.role
+    ) {
+      return;
+    }
+    let userDetails: any = getCookie('userDetails');
+    if (userDetails) {
+      userDetails = JSON.parse(userDetails);
+      const payload = {
+        userId: userDetails.userId,
+        loginId: formDetails.email,
+        name: formDetails.mrName,
+        mobileNo: formDetails.phone,
+        type: userDetails.type,
+        emailId: formDetails.email,
+        password: 'string',
+        passwordSalt: 'string',
+        photo: formDetails.photo,
+        orgId: 'string',
+        isActive: true,
+        timeZoneId: 'string',
+        roleId: formDetails.role.value
+      };
+    }
+  };
+  const isValidMail = (email: string) => {
+    if (!email.trim()) return '';
+    // const isValidEmail = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email);
+    const isValidEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
+    return isValidEmail;
+  };
   return (
     <BodyContainer>
       <Grid container spacing={2}>
         <Grid item xs={12} md={3}>
           <LabelValue label="Name" value={formDetails.mrName} onChange={handleName} placeholder="Enter Name" />
+          {formDetails.mrName.trim() === '' && isSubmit && <ErrorMessage>Please User Name</ErrorMessage>}
         </Grid>
         <Grid item xs={12} md={3}>
           <LabelValue label="Email Id" value={formDetails.email} onChange={handleEmail} placeholder="Enter Email Id" />
+          {(formDetails.email.trim() === '' || !isValidMail(formDetails.email)) && isSubmit && (
+            <ErrorMessage>Please enter Email Id</ErrorMessage>
+          )}
         </Grid>
         <Grid item xs={12} md={3}>
           <Label>Phone Number</Label>
-          <PhoneNumber value={formDetails.phone} onChange={handlePhone} type="number"></PhoneNumber>
-          {/* <LabelValue label="Phone Number" value={formDetails.phone} onChange={handlePhone} type="tel" /> */}`
+          <PhoneNumber
+            value={formDetails.phone}
+            onChange={handlePhone}
+            type="tel"
+            placeholder="Enter Phone Number"
+          ></PhoneNumber>
+          {(formDetails.phone.trim() === '' || formDetails.phone.length < 10) && isSubmit && (
+            <ErrorMessage>Please enter Phone Number</ErrorMessage>
+          )}
         </Grid>
         <Grid item xs={12} md={3}>
-          <LabelValue
-            label="Photo"
-            value={formDetails.photo}
-            onChange={handleFile}
-            type="file"
-            placeholder="Enter Mobile Number"
+          <Label>Photo</Label>
+          <CustomeFileUpload
+            id="image-upload"
+            type="text"
+            readOnly
+            value={formDetails.photoName}
+            endAdornment={
+              <IconButton color="primary" component="span" onClick={handleButtonClick}>
+                <PhotoCamera />
+              </IconButton>
+            }
           />
+          <StyledInput id="Photo" type="file" accept="image/*" onChange={handleFile} />
+          {formDetails.photoName.trim() === '' && isSubmit && <ErrorMessage>Please select File</ErrorMessage>}
         </Grid>
         <Grid item xs={12} md={3}>
           <Label>Role</Label>
           <CustomeAutoSelect
             options={options}
             onChange={(event, data) => {
-              console.log(event, data);
+              setFormDetails({ ...formDetails, role: data });
             }}
             getOptionLabel={option => option.title}
             size="small"
             renderInput={params => <TextField {...params} placeholder={'Select Role'} />}
           />
+          {!formDetails.role && isSubmit && <ErrorMessage>Please select Role</ErrorMessage>}
         </Grid>
         <Grid item xs={3} md={3}>
           <Label>Product Category</Label>
           <CustomeAutoSelect
             options={options}
             getOptionLabel={option => option.title}
+            onChange={(event, data) => {
+              setFormDetails({ ...formDetails, category: data });
+            }}
             size="small"
             renderInput={params => <TextField {...params} placeholder={'Select Product Category'} />}
           />
+          {!formDetails.category && isSubmit && <ErrorMessage>Please select Product Category</ErrorMessage>}
         </Grid>
       </Grid>
       <ActionButtonGroup>
         <CustomButton variant="outlined" onClick={() => navigate(-1)}>
           Cancel
         </CustomButton>
-        <CustomButton variant="contained">Submit</CustomButton>
+        <CustomButton variant="contained" onClick={handleUserCreation}>
+          Submit
+        </CustomButton>
       </ActionButtonGroup>
     </BodyContainer>
   );

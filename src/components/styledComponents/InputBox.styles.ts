@@ -29,7 +29,7 @@ export const PaperContainer = styled(Paper)(() => ({
 PhoneNumber.defaultProps = {
   size: 'small',
   inputProps: {
-    inputMode: 'numeric',
+    inputMode: 'tel',
     pattern: '[0-9]*',
     maxLength: 10
   }
@@ -42,7 +42,7 @@ export const Label = styled('label')(({ theme }) => ({
 
 export const ActionButtonGroup = styled('section')(({ theme }) => ({
   textAlign: 'end',
-  marginTop:10,
+  marginTop: 10,
   '& > *:not(:last-child)': {
     marginRight: '10px'
   }

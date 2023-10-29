@@ -4,18 +4,24 @@ import { useAuth } from './Routes/useAuth';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { TimeoutLogic } from './components/TimeoutLogic';
+import { Navigate } from 'react-router-dom';
+import { getCookie } from './utils/common';
 const App = () => {
   const { token, setAuthToken, removeAuthToken } = useAuth();
+  const cookieToken = getCookie('token');
   return (
     <>
       <ToastContainer />
-      {token ? (
+      {token || cookieToken ? (
         <>
-        <AuthorizeRoutes removeAuthToken={removeAuthToken} />
-        <TimeoutLogic/>
+          <AuthorizeRoutes removeAuthToken={removeAuthToken} />
+          <TimeoutLogic />
         </>
       ) : (
-        <UnAuthorizeRoutes setAuthToken={setAuthToken} />
+        <>
+          {!cookieToken && <Navigate to="/" />}
+          <UnAuthorizeRoutes setAuthToken={setAuthToken} />
+        </>
       )}
     </>
   );

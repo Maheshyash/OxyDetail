@@ -32,7 +32,7 @@ const Header = ({ removeAuthToken }: { removeAuthToken: any }) => {
         <section className="header_right">
           <div className="header_right_container">
             <div>
-              <CustomNavLink to={'/MrPage'} className={({ isActive }) => (isActive ? 'active' : '')}>
+              <CustomNavLink to={'/'} className={({ isActive }) => (isActive ? 'active' : '')}>
                 MR
               </CustomNavLink>
             </div>

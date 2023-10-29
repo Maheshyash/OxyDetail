@@ -16,7 +16,12 @@ import {
   fetchSubCategoryList,
   insertOrUpdateProductDetail
 } from '../utils/APIs';
-import { categoryListArray, categoryListType, subCategoryListType, subCategoryListTypeArray } from '../types/productTypes';
+import {
+  categoryListArray,
+  categoryListType,
+  subCategoryListType,
+  subCategoryListTypeArray
+} from '../types/productTypes';
 import {
   CustomDatepicker,
   CustomMultiSelect,
@@ -154,15 +159,31 @@ const AddOrEditProduct = () => {
         isNewProduct: isNewProduct,
         isActive: isActive,
         categoryId: { categoryId: categoryId, categoryName: categoryName },
-        activationDate:activationDate
+        activationDate: activationDate
       });
       setSubCategoryId({ subCategoryId: subCategoryId, subCategoryName: subCategoryName });
     }
   }, []);
   const [isSubmit, setIsSubmit] = useState<boolean>(false);
   const handleProductSubmittion = (isForceUpdate = false) => {
-    const { productCode, productName, description, categoryId, isNewProduct, isFocusedProduct, isActive, activationDate } = formDetails;
-    if (productCode.trim() === '' || productName.trim() === '' || description.trim() === '' || selected.length === 0 || formDetails.activationDate.trim() === '' || formDetails.activationDate === 'Invalid Date') {
+    const {
+      productCode,
+      productName,
+      description,
+      categoryId,
+      isNewProduct,
+      isFocusedProduct,
+      isActive,
+      activationDate
+    } = formDetails;
+    if (
+      productCode.trim() === '' ||
+      productName.trim() === '' ||
+      description.trim() === '' ||
+      selected.length === 0 ||
+      formDetails.activationDate.trim() === '' ||
+      formDetails.activationDate === 'Invalid Date'
+    ) {
       setIsSubmit(true);
       return;
     }
@@ -182,7 +203,7 @@ const AddOrEditProduct = () => {
         attributeId: ele.value,
         productAttributeOrder: index
       })),
-      activationDate:activationDate,
+      activationDate: activationDate,
       forceUpdateIfExists: location.state ? true : isForceUpdate
     };
     setIsLoader(true);
@@ -241,7 +262,7 @@ const AddOrEditProduct = () => {
               console.log(data, 'data');
             }}
             value={formDetails.categoryId}
-            getOptionLabel={(option:categoryListType|any) => option.categoryName}
+            getOptionLabel={(option: categoryListType | any) => option.categoryName}
             size="small"
             renderInput={params => <TextField {...params} placeholder={'Pleas Select'} />}
           />
@@ -255,7 +276,7 @@ const AddOrEditProduct = () => {
               setSubCategoryId(data);
             }}
             value={subCategoryId}
-            getOptionLabel={(option:subCategoryListType|any) => option.subCategoryName}
+            getOptionLabel={(option: subCategoryListType | any) => option.subCategoryName}
             size="small"
             renderInput={params => <TextField {...params} placeholder={'Pleas Select'} />}
           />
@@ -318,19 +339,26 @@ const AddOrEditProduct = () => {
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <CustomDatepicker
                 format="DD/MM/YYYY"
-                value={formDetails.activationDate ? dayjs(formDetails.activationDate) :null }
-                onChange={(date:any) => setFormDetails({ ...formDetails, activationDate: dayjs(date).format('YYYY-MM-DD') })}
+                value={formDetails.activationDate ? dayjs(formDetails.activationDate) : null}
+                onChange={(date: any) =>
+                  setFormDetails({ ...formDetails, activationDate: dayjs(date).format('YYYY-MM-DD') })
+                }
                 slotProps={{
-                  textField: { size: 'small'},
-                  field: { clearable: true ,onClear:()=>{setFormDetails({...formDetails,activationDate:''})}},
+                  textField: { size: 'small' },
+                  field: {
+                    clearable: true,
+                    onClear: () => {
+                      setFormDetails({ ...formDetails, activationDate: '' });
+                    }
+                  }
                 }}
-
               />
             </LocalizationProvider>
           </DatePickerContainer>
-          {formDetails.activationDate.trim() === '' || formDetails.activationDate === 'Invalid Date' && isSubmit && (
-            <ErrorMessage>Please select Activation Date</ErrorMessage>
-          )}
+          {formDetails.activationDate.trim() === '' ||
+            (formDetails.activationDate === 'Invalid Date' && isSubmit && (
+              <ErrorMessage>Please select Activation Date</ErrorMessage>
+            ))}
         </Grid>
         {location.state && (
           <Grid item xs={12} md={3}>

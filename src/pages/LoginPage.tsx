@@ -38,7 +38,7 @@ const LoginPage = ({ setAuthToken }: { setAuthToken: any }) => {
           setAuthToken(res);
           toaster('success', 'Successfully Logged in.');
           setIsLoader(false);
-          navigate('/MrPage', { replace: true });
+          navigate('/', { replace: true });
         }
       })
       .catch(err => {

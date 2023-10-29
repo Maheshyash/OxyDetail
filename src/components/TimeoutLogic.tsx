@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { TimeoutWarningModal } from './TimeoutWarningModal';
 import { addEventListeners, removeEventListeners } from '../utils/eventListenerUtil';
 import { IdealTiming } from '../Constants';
+import { clearAllCookies } from '../utils/common';
 
 export const TimeoutLogic = () => {
   const [isWarningModalOpen, setWarningModalOpen] = useState(false);
@@ -13,9 +14,8 @@ export const TimeoutLogic = () => {
 
     const createTimeout2 = () =>
       setTimeout(() => {
-        // Implement a sign out function here
+        clearAllCookies()
         window.location.href = '/';
-        localStorage.clear();
       }, IdealTiming.AUTOSIGNOFF);
 
     const listener = () => {

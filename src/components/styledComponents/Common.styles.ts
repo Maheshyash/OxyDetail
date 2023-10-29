@@ -109,6 +109,8 @@ export const CustomTextArea = styled(TextareaAutosize)(({ theme }) => ({
   borderRadius: '4px',
   fontFamily: `${theme.typography.fontFamily}`,
   color: `${theme.palette.text.primary}`,
+  border: `1px solid ${theme.palette.grey['50']}`,
+  resize: 'vertical',
   '&:focus-visible': {
     borderColor: theme.palette.primary.main,
     borderWidth: 2,
@@ -117,37 +119,37 @@ export const CustomTextArea = styled(TextareaAutosize)(({ theme }) => ({
   }
 }));
 
-export const FlexItemBetweenContent = styled('div')(({theme})=>({
-  backgroundColor:`${theme.palette.primary.main}`,
-  display:'flex',
-  justifyContent:'space-between',
-  alignItems:'center',
-  padding:'5px',
-  borderRadius:'5px',
-  margin:'10px 0',
-  '& h5':{
-    margin:0,
-    color:'#fff'
+export const FlexItemBetweenContent = styled('div')(({ theme }) => ({
+  backgroundColor: `${theme.palette.primary.main}`,
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  padding: '5px',
+  borderRadius: '5px',
+  margin: '10px 0',
+  '& h5': {
+    margin: 0,
+    color: '#fff'
   },
-  '& svg':{
-    cursor:'pointer'
+  '& svg': {
+    cursor: 'pointer'
   }
-}))
+}));
 
-export const ErrorMessage = styled('span')(({theme})=>({
-  display:'block',
-  color:`${theme.palette.error.main}`,
-  fontSize:`${theme.typography.fontSize}px`
-}))
+export const ErrorMessage = styled('span')(({ theme }) => ({
+  display: 'block',
+  color: `${theme.palette.error.main}`,
+  fontSize: `${theme.typography.fontSize}px`
+}));
 
-export const ImgLogo = styled('img')(({theme})=>({
-  width:200,
-}))
+export const ImgLogo = styled('img')(({ theme }) => ({
+  width: 200
+}));
 
 export const StyledModalBackdrop = styled('div')(({ theme }) => ({
   display: 'flex',
   justifyContent: 'center',
-  alignItems: 'center',
+  alignItems: 'center'
 }));
 
 export const StyledModalContent = styled('div')(({ theme }) => ({
@@ -155,30 +157,30 @@ export const StyledModalContent = styled('div')(({ theme }) => ({
   padding: '20px',
   borderRadius: '4px',
   boxShadow: theme.shadows[10],
-  width: '400px',
+  width: '400px'
 }));
 
 export const CustomParagraph = styled('p')(({ theme }) => ({
-  fontSize:theme.typography.fontSize,
-  margin:0
+  fontSize: theme.typography.fontSize,
+  margin: 0
 }));
 
-export const CustomDatepicker = styled(DatePicker)(({theme})=>({
-  '.MuiFormControl-root':{
-    width:'100%'
+export const CustomDatepicker = styled(DatePicker)(({ theme }) => ({
+  '.MuiFormControl-root': {
+    width: '100%'
   },
-  '& .MuiOutlinedInput-input':{
-    fontSize:theme.typography.fontSize
+  '& .MuiOutlinedInput-input': {
+    fontSize: theme.typography.fontSize
   }
-}))
+}));
 
-CustomDatepicker.defaultProps= {
-  slotProps:{
-    textField: { size: 'small', },
-    field: { clearable: true },
+CustomDatepicker.defaultProps = {
+  slotProps: {
+    textField: { size: 'small' },
+    field: { clearable: true }
   }
 };
 
 export const DatePickerContainer = styled(Stack)({
-  width: '100%',
+  width: '100%'
 });
