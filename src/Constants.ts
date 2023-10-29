@@ -22,3 +22,7 @@ export const FileSize = {
   IMAGEFILESIZE: 5*MB,
   AUDIOFILESIZE: 1*MB
 }
+export const IdealTiming ={
+  IDEALTIME : 10*60000,
+  AUTOSIGNOFF:1*60000
+}

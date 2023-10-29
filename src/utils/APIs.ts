@@ -58,7 +58,7 @@ export const fetchMrList = (): Promise<any> => {
         }
         if (error.response && error.response.status === 401) {
           localStorage.clear();
-          window.location.href = '/login'
+          window.location.href = '/'
         }
         reject(error); // Reject the Promise to propagate the error
       });
@@ -92,7 +92,7 @@ export const fetchProductList = (payload?: {
         }
         if (error.response && error.response.status === 401) {
           localStorage.clear();
-          window.location.href = '/login'
+          window.location.href = '/'
         }
         reject(error); // Reject the Promise to propagate the error
       });
@@ -117,7 +117,7 @@ export const deleteProductItem = (ProductCode?: { ProductCode: string }): Promis
         }
         if (error.response && error.response.status === 401) {
           localStorage.clear();
-          window.location.href = '/login'
+          window.location.href = '/'
         }
         reject(error); // Reject the Promise to propagate the error
       });
@@ -142,7 +142,7 @@ export const fetchCategoryList = (): Promise<categoryListArray> => {
         }
         if (error.response && error.response.status === 401) {
           localStorage.clear();
-          window.location.href = '/login'
+          window.location.href = '/'
         }
         reject(error); // Reject the Promise to propagate the error
       });
@@ -166,7 +166,7 @@ export const insertOrUpdateProductDetail = (payload: any): Promise<insertUpdateA
         }
         if (error.response && error.response.status === 401) {
           localStorage.clear();
-          window.location.href = '/login'
+          window.location.href = '/'
         }
         reject(error); // Reject the Promise to propagate the error
       });
@@ -191,7 +191,7 @@ export const fetchSubCategoryList = (categoryId: number | null): Promise<subCate
         }
         if (error.response && error.response.status === 401) {
           localStorage.clear();
-          window.location.href = '/login'
+          window.location.href = '/'
         }
         reject(error); // Reject the Promise to propagate the error
       });
@@ -241,7 +241,7 @@ export const fetchAttributeList = (AttributeId?: number | null): Promise<Attribu
         }
         if (error.response && error.response.status === 401) {
           localStorage.clear();
-          window.location.href = '/login'
+          window.location.href = '/'
         }
         reject(error); // Reject the Promise to propagate the error
       });
@@ -266,7 +266,7 @@ export const deleteAttributeItem = (AttributeId?: number | null): Promise<delete
         }
         if (error.response && error.response.status === 401) {
           localStorage.clear();
-          window.location.href = '/login'
+          window.location.href = '/'
         }
         reject(error); // Reject the Promise to propagate the error
       });
@@ -296,7 +296,7 @@ export const insertOrUpdateDataMapping = (payload: any): Promise<insertUpdateAtr
         }
         if (error.response && error.response.status === 401) {
           localStorage.clear();
-          window.location.href = '/login'
+          window.location.href = '/'
         }
         reject(error); // Reject the Promise to propagate the error
       });

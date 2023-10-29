@@ -16,7 +16,7 @@ import {
   fetchSubCategoryList,
   insertOrUpdateProductDetail
 } from '../utils/APIs';
-import { categoryListArray, subCategoryListType, subCategoryListTypeArray } from '../types/productTypes';
+import { categoryListArray, categoryListType, subCategoryListType, subCategoryListTypeArray } from '../types/productTypes';
 import {
   CustomDatepicker,
   CustomMultiSelect,
@@ -241,7 +241,7 @@ const AddOrEditProduct = () => {
               console.log(data, 'data');
             }}
             value={formDetails.categoryId}
-            getOptionLabel={option => option.categoryName}
+            getOptionLabel={(option:categoryListType|any) => option.categoryName}
             size="small"
             renderInput={params => <TextField {...params} placeholder={'Pleas Select'} />}
           />
@@ -255,7 +255,7 @@ const AddOrEditProduct = () => {
               setSubCategoryId(data);
             }}
             value={subCategoryId}
-            getOptionLabel={option => option.subCategoryName}
+            getOptionLabel={(option:subCategoryListType|any) => option.subCategoryName}
             size="small"
             renderInput={params => <TextField {...params} placeholder={'Pleas Select'} />}
           />

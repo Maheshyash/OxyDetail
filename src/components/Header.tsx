@@ -19,7 +19,7 @@ const Header = ({ removeAuthToken }: { removeAuthToken: any }) => {
   };
   const handleLogout = () => {
     removeAuthToken();
-    navigate('./login', { replace: true });
+    navigate('./', { replace: true });
   };
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;

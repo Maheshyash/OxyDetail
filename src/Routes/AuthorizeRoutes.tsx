@@ -6,7 +6,6 @@ import AddOrEditProduct from '../pages/AddOrEditProduct';
 import AddOrEditMRPage from '../pages/AddOrEditMRPage';
 import AttributesPage from '../pages/AttributesPage';
 import AddOrEditAttributes from '../pages/AddOrEditAtrributes';
-// import AttributeMappingPage from '../pages/AttributeMappingPage';
 import AttributeMappingPage from '../pages/AttributeMappingPage';
 const AuthorizeRoutes = ({removeAuthToken}:{removeAuthToken:any}) => {
   return (
