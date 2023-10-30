@@ -108,18 +108,18 @@ const AddOrEditMRPage = () => {
       userDetails = JSON.parse(userDetails);
       const payload = {
         userId: userDetails.userId,
-        loginId: formDetails.email,
+        loginId: userDetails.loginId,
         name: formDetails.mrName,
         mobileNo: formDetails.phone,
         type: userDetails.type,
         emailId: formDetails.email,
-        password: 'string',
-        passwordSalt: 'string',
+        password: '',
+        passwordSalt: '',
         photo: formDetails.photo,
-        orgId: 'string',
+        orgId: userDetails.orgId,
         isActive: formDetails.isActive,
         timeZoneId: 'string',
-        roleId: formDetails.role.value
+        roleId: 0
       };
     }
   };

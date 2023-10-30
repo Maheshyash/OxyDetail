@@ -1,5 +1,10 @@
-import React from "react";
-import { CustomParagraph, StyledModalBackdrop, StyledModalContent } from "./styledComponents/Common.styles";
+import React from 'react';
+import {
+  CustomParagraph,
+  StyledModalBackdrop,
+  StyledModalBody,
+  StyledModalContent
+} from './styledComponents/Common.styles';
 interface ErrorBoundaryProps {
   children: React.ReactNode;
 }
@@ -10,12 +15,12 @@ interface ErrorBoundaryState {
 class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
   state = {
     hasError: false,
-    error: null,
+    error: null
   };
   static getDerivedStateFromError(error: Error) {
     return {
       hasError: true,
-      error,
+      error
     };
   }
   componentDidCatch(error: Error, info: React.ErrorInfo) {
@@ -26,12 +31,13 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
     if (hasError) {
       return (
         <StyledModalBackdrop>
-        <StyledModalContent>
-          <h5>Confirm Popup</h5>
-          <CustomParagraph>{error.message}</CustomParagraph>
-          
-        </StyledModalContent>
-      </StyledModalBackdrop>
+          <StyledModalBody>
+            <StyledModalContent>
+              <h5>Confirm Popup</h5>
+              <CustomParagraph>{error.message}</CustomParagraph>
+            </StyledModalContent>
+          </StyledModalBody>
+        </StyledModalBackdrop>
       );
     }
     return this.props.children;

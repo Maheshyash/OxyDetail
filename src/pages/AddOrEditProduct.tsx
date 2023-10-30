@@ -31,6 +31,7 @@ import {
   DatePickerContainer,
   ErrorMessage,
   StyledModalBackdrop,
+  StyledModalBody,
   StyledModalContent
 } from '../components/styledComponents/Common.styles';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -385,6 +386,7 @@ const AddOrEditProduct = () => {
       </ActionButtonGroup>
       {isConfirmPopUp && (
         <StyledModalBackdrop>
+          <StyledModalBody>
           <StyledModalContent>
             <h5>Confirm Popup</h5>
             <CustomParagraph>Are you sure you want to continue to update the existing Product</CustomParagraph>
@@ -403,6 +405,7 @@ const AddOrEditProduct = () => {
               </CustomButton>
             </ActionButtonGroup>
           </StyledModalContent>
+          </StyledModalBody>
         </StyledModalBackdrop>
       )}
     </BodyContainer>

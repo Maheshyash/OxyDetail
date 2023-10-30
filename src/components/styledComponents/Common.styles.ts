@@ -147,10 +147,21 @@ export const ImgLogo = styled('img')(({ theme }) => ({
 }));
 
 export const StyledModalBackdrop = styled('div')(({ theme }) => ({
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center'
+  position:'absolute',
+  top:0,
+  left:0,
+  right:0,
+  bottom:0,
+  zIndex:999999999
 }));
+export const StyledModalBody = styled('div')(({})=>({
+  position: 'relative',
+    top: '50%',
+    left:'50%',
+    transform: 'translate(-50%,-50%)',
+    display: 'flex',
+    justifyContent: 'center'
+}))
 
 export const StyledModalContent = styled('div')(({ theme }) => ({
   background: '#fff',

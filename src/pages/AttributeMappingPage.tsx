@@ -1,5 +1,5 @@
 import { ChangeEvent, useEffect, useState } from 'react';
-import { json, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import IconButton from '@mui/material/IconButton';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import AudioFileIcon from '@mui/icons-material/AudioFile';
@@ -14,10 +14,6 @@ import { toaster } from '../components/Toaster/Toaster';
 import { FileSize } from '../Constants';
 import { updateFileName } from '../utils/common';
 import Loader from '../components/Loader/Loader';
-interface attributeTypes {
-  label: string;
-  value: number;
-}
 
 export type listItemArrayInterface = listItem[] | [];
 
@@ -59,7 +55,7 @@ const AttributeMappingPage = () => {
   }, []);
   const handleAddAdditionalAttributeFiles = (productCode: string, attributeId: number, listItemIndex: number) => {
     // const newArray = JSON.parse(JSON.stringify(attributeListArray));
-    const newArray = attributeListArray.map(ele=> ele);
+    const newArray = attributeListArray.map(ele => ele);
     const condition = newArray[listItemIndex].media.filter((ele: listItemMedia) => {
       if (!ele.isDeleted) {
         return ele;
@@ -80,6 +76,7 @@ const AttributeMappingPage = () => {
           isNewRow: true
         }
       ];
+      debugger;
       setAttributeListArray(newArray);
     }
   };
@@ -109,7 +106,7 @@ const AttributeMappingPage = () => {
 
     setAttributeListArray(prevArray => {
       // var newArray: listItemArrayInterface = JSON.parse(JSON.stringify(prevArray));
-      var newArray: listItemArrayInterface = prevArray.map(ele=>ele);
+      var newArray: listItemArrayInterface = prevArray.map(ele => ele);
       const indexedMedia = newArray[listItemIndex].media[index];
       const { image, oldImage } = indexedMedia;
       if (!indexedMedia) {
@@ -124,6 +121,7 @@ const AttributeMappingPage = () => {
         newArray[listItemIndex].media[index].image = newFile;
         newArray[listItemIndex].media[index].oldImage = oldImage || (image ? image : '');
       }
+      debugger;
       return newArray;
     });
   };
@@ -144,7 +142,7 @@ const AttributeMappingPage = () => {
 
     setAttributeListArray(prevArray => {
       // let newArray: listItemArrayInterface = JSON.parse(JSON.stringify(prevArray));
-      let newArray: listItemArrayInterface = prevArray.map(ele=>ele);
+      let newArray: listItemArrayInterface = prevArray.map(ele => ele);
       const indexedMedia = newArray[listItemIndex].media[index];
       const { voice, oldVoice } = indexedMedia;
       if (!indexedMedia) {
@@ -159,12 +157,14 @@ const AttributeMappingPage = () => {
         newArray[listItemIndex].media[index].voice = newFile;
         newArray[listItemIndex].media[index].oldVoice = oldVoice || (voice ? voice : '');
       }
+      debugger;
       return newArray;
     });
   };
 
   const removeItem = (listItemIndex: number, index: number) => {
-    var dummyArray: listItemArrayInterface = JSON.parse(JSON.stringify(attributeListArray));
+    // var dummyArray: listItemArrayInterface = JSON.parse(JSON.stringify(attributeListArray));
+    var dummyArray: listItemArrayInterface = attributeListArray.map(ele=> ele);
     if (dummyArray[listItemIndex].media[index].isNewRow) {
       dummyArray[listItemIndex].media.splice(index, 1);
     } else {
@@ -175,36 +175,39 @@ const AttributeMappingPage = () => {
 
   const handleMediaMappingSubmittion = async (e: any) => {
     e.preventDefault();
-    let isEverythingFilled:boolean = true;
-    attributeListArray.map(ele=>ele.media.map(ele1=>{
-      if(ele1.image==="" || ele1.voice==="" ){
-        isEverythingFilled =false;
-        toaster('warning', 'Please Upload all files')
-        return;
-      }
-    }))
-    if(!isEverythingFilled) return;
+    let isEverythingFilled: boolean = true;
+    attributeListArray.map(ele =>
+      ele.media.map(ele1 => {
+        if (ele1.image === '' || ele1.voice === '') {
+          isEverythingFilled = false;
+          toaster('warning', 'Please Upload all files');
+          return;
+        }
+      })
+    );
+    if (!isEverythingFilled) return;
     const ProductCode = location.state.attributeDetails.productCode;
     const Data = {
       productCode: ProductCode,
       Media: attributeListArray.flatMap(ele =>
         ele.media.map(ele1 => ({
-              AttributeId: ele1.attributeId,
-              Image: typeof ele1.image === 'string' ? ele1.image : ele1.imageName || '',
-              Voice: typeof ele1.voice === 'string' ? ele1.voice : ele1.voiceName || '',
-              ProductAttributeOrder: ele1.productAttributeOrder,
-              OldImage: ele1.oldImage || '',
-              OldVoice: ele1.oldVoice || '',
-              IsDeleted: ele1.isDeleted
-            }))
+          AttributeId: ele1.attributeId,
+          Image: typeof ele1.image === 'string' ? ele1.image : ele1.imageName || '',
+          Voice: typeof ele1.voice === 'string' ? ele1.voice : ele1.voiceName || '',
+          ProductAttributeOrder: ele1.productAttributeOrder,
+          OldImage: ele1.oldImage || '',
+          OldVoice: ele1.oldVoice || '',
+          IsDeleted: ele1.isDeleted == null ? false :ele1.isDeleted
+        }))
       )
     };
     console.log(Data, 'data');
-
+    console.log(attributeListArray,'attributeListArray')
     var formData = new FormData();
     formData.append('Data', JSON.stringify(Data));
-    attributeListArray.map((ele: any, eleIndex: number) =>
-      ele.media.map((ele1: any, index: number) => {
+    debugger;
+    attributeListArray.map((ele: any) =>
+      ele.media.map((ele1: any) => {
         if (ele1.imageName && ele1.image) {
           return formData.append(`${ele1.imageName}`, ele1.image);
         }
@@ -237,7 +240,7 @@ const AttributeMappingPage = () => {
   };
   return (
     <BodyContainer>
-      {isLoader && <Loader/>}
+      {isLoader && <Loader />}
       {attributeListArray.map((listArrayItem, listItemIndex) => {
         return (
           <div key={listItemIndex}>
@@ -245,7 +248,6 @@ const AttributeMappingPage = () => {
               <h5>{listArrayItem.attributeName}</h5>
               <AddCircleOutlinedIcon
                 onClick={event => {
-                  debugger;
                   event.stopPropagation();
                   handleAddAdditionalAttributeFiles(
                     // event,
@@ -309,11 +311,9 @@ const AttributeMappingPage = () => {
                         onChange={event => handleAudioFiles(event, listItemIndex, index)}
                       />
                     </Grid>
-                    {/* {index !== 0 && ( */}
                     <Grid item xs={3} sx={{ alignSelf: 'flex-end' }}>
                       <RemoveCircleIcon onClick={() => removeItem(listItemIndex, index)} />
                     </Grid>
-                    {/* )} */}
                   </Grid>
                 );
               }
