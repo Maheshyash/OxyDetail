@@ -12,7 +12,8 @@ export const updateFileName = (fileName: string) => {
 
 export const addCookie = (key: string, value: string, path: string = '/') => {
   var d = new Date();
-  d.setMinutes(d.getMinutes() + 2);
+  // d.setMinutes(d.getMinutes() + 30);
+  d.setHours(d.getHours()+24);
   var expires = d.toUTCString();
   document.cookie = `${key}=${value}; expires=${expires}; path=${path}`;
 };

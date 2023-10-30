@@ -19,10 +19,10 @@ export const AttributeURLs = {
 export const MB = 1048576;
 
 export const FileSize = {
-  IMAGEFILESIZE: 5*MB,
-  AUDIOFILESIZE: 1*MB
+  IMAGEFILESIZE: 1*MB,
+  AUDIOFILESIZE: 2*MB
 }
 export const IdealTiming ={
-  IDEALTIME : 10*60000,
-  AUTOSIGNOFF:1*60000
+  IDEALTIME : 20*60000,// 20 is mins
+  AUTOSIGNOFF:1*60000// 1 is mins
 }

@@ -217,6 +217,7 @@ const AddOrEditProduct = () => {
           navigate(-1);
         } else if (statusCode === -1) {
           setIsConfirmPopUp(true);
+          setIsLoader(false)
         } else {
           toaster('error', statusMessage);
           setIsLoader(false);

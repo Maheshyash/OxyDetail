@@ -7,7 +7,9 @@ import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import { PlainButton, CustomButton } from './styledComponents/InputBox.styles';
 import { CustomNavLink, HeaderBody, HeaderContainer, OxyDetailHeaderText } from './styledComponents/Header.styles';
+import { useTheme } from '@mui/material';
 const Header = ({ removeAuthToken }: { removeAuthToken: any }) => {
+  const theme = useTheme();
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const navigate = useNavigate();
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -32,7 +34,11 @@ const Header = ({ removeAuthToken }: { removeAuthToken: any }) => {
         <section className="header_right">
           <div className="header_right_container">
             <div>
-              <CustomNavLink to={'/'} className={({ isActive }) => (isActive ? 'active' : '')}>
+              <CustomNavLink
+                to={'/'}
+                className={({ isActive }) => (isActive ? 'active' : '')}
+                style={{ color: location.href.includes('/addMR') ? theme.palette.primary.main:'inherit' }}
+              >
                 MR
               </CustomNavLink>
             </div>

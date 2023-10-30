@@ -26,6 +26,6 @@ export const CustomNavLink = styled(NavLink)(({theme})=>({
     fontSize:'14px',
     color:`${theme.palette.text.secondary}`,
     '&.active': {
-        color:`${theme.palette.primary.main}`
+        color:`${theme.palette.primary.main} !important`
     },
 }))

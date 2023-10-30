@@ -58,7 +58,8 @@ const AttributeMappingPage = () => {
     }
   }, []);
   const handleAddAdditionalAttributeFiles = (productCode: string, attributeId: number, listItemIndex: number) => {
-    const newArray = JSON.parse(JSON.stringify(attributeListArray));
+    // const newArray = JSON.parse(JSON.stringify(attributeListArray));
+    const newArray = attributeListArray.map(ele=> ele);
     const condition = newArray[listItemIndex].media.filter((ele: listItemMedia) => {
       if (!ele.isDeleted) {
         return ele;
@@ -107,8 +108,8 @@ const AttributeMappingPage = () => {
     const newFile = new File([file], newFileName, { type: file.type });
 
     setAttributeListArray(prevArray => {
-      var newArray: listItemArrayInterface = JSON.parse(JSON.stringify(prevArray));
-      debugger;
+      // var newArray: listItemArrayInterface = JSON.parse(JSON.stringify(prevArray));
+      var newArray: listItemArrayInterface = prevArray.map(ele=>ele);
       const indexedMedia = newArray[listItemIndex].media[index];
       const { image, oldImage } = indexedMedia;
       if (!indexedMedia) {
@@ -142,7 +143,8 @@ const AttributeMappingPage = () => {
     const newFile = new File([file], newFileName, { type: file.type });
 
     setAttributeListArray(prevArray => {
-      let newArray: listItemArrayInterface = JSON.parse(JSON.stringify(prevArray));
+      // let newArray: listItemArrayInterface = JSON.parse(JSON.stringify(prevArray));
+      let newArray: listItemArrayInterface = prevArray.map(ele=>ele);
       const indexedMedia = newArray[listItemIndex].media[index];
       const { voice, oldVoice } = indexedMedia;
       if (!indexedMedia) {
@@ -173,19 +175,28 @@ const AttributeMappingPage = () => {
 
   const handleMediaMappingSubmittion = async (e: any) => {
     e.preventDefault();
+    let isEverythingFilled:boolean = true;
+    attributeListArray.map(ele=>ele.media.map(ele1=>{
+      if(ele1.image==="" || ele1.voice==="" ){
+        isEverythingFilled =false;
+        toaster('warning', 'Please Upload all files')
+        return;
+      }
+    }))
+    if(!isEverythingFilled) return;
     const ProductCode = location.state.attributeDetails.productCode;
     const Data = {
       productCode: ProductCode,
       Media: attributeListArray.flatMap(ele =>
         ele.media.map(ele1 => ({
-          AttributeId: ele1.attributeId,
-          Image: typeof ele1.image === 'string' ? ele1.image : ele1.imageName || '',
-          Voice: typeof ele1.voice === 'string' ? ele1.voice : ele1.voiceName || '',
-          ProductAttributeOrder: ele1.productAttributeOrder,
-          OldImage: ele1.oldImage || '',
-          OldVoice: ele1.oldVoice || '',
-          IsDeleted: ele1.isDeleted
-        }))
+              AttributeId: ele1.attributeId,
+              Image: typeof ele1.image === 'string' ? ele1.image : ele1.imageName || '',
+              Voice: typeof ele1.voice === 'string' ? ele1.voice : ele1.voiceName || '',
+              ProductAttributeOrder: ele1.productAttributeOrder,
+              OldImage: ele1.oldImage || '',
+              OldVoice: ele1.oldVoice || '',
+              IsDeleted: ele1.isDeleted
+            }))
       )
     };
     console.log(Data, 'data');
