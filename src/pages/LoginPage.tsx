@@ -2,7 +2,7 @@ import { useState, ChangeEvent, FormEvent } from 'react';
 import LabelValue from '../components/LabelValue';
 import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
-import { fetchToken } from '../utils/APIs';
+import { fetchToken } from '../utils/APIActions';
 import { toaster } from '../components/Toaster/Toaster';
 import Loader from '../components/Loader/Loader';
 import Logo from '../assets/logo.png';

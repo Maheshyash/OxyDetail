@@ -7,7 +7,7 @@ import {
   deleteProductResponse,
   subCategoryListTypeArray
 } from '../types/productTypes';
-import { AttributeURLs, ProductURLs, mrURLs } from '../Constants';
+import { AttributeURLs, ProductURLs, mrURLs } from './APIUrls';
 import { AttributeList, deleteAttributeAction, insertUpdateAtrributeResponse } from '../types/attributeTypes';
 import { toaster } from '../components/Toaster/Toaster';
 import { clearAllCookies } from './common';
@@ -39,6 +39,7 @@ export const fetchToken = (payload: { emailId: string; password: string }): Prom
       });
   });
 };
+
 export const fetchMrList = (): Promise<any> => {
   return new Promise<any>((resolve, reject) => {
     OxyDetailInstaceWithToken.get(mrURLs.MRLIST)
@@ -67,6 +68,7 @@ export const fetchMrList = (): Promise<any> => {
       });
   });
 };
+
 export const fetchProductList = (payload?: {
   ProductCode?: string;
   CategoryId?: number;
@@ -157,6 +159,7 @@ export const fetchCategoryList = (): Promise<categoryListArray> => {
       });
   });
 };
+
 export const insertOrUpdateProductDetail = (payload: any): Promise<insertUpdateAtrributeResponse> => {
   return new Promise<insertUpdateAtrributeResponse>((resolve, reject) => {
     OxyDetailInstaceWithToken.post(ProductURLs.INSERTORUPDATE, payload)
@@ -210,6 +213,7 @@ export const fetchSubCategoryList = (categoryId: number | null): Promise<subCate
       });
   });
 };
+
 export const insertOrUpdateAttributes = (payload: any): Promise<insertUpdateAtrributeResponse> => {
   const headers = {
     headers: {
@@ -291,6 +295,39 @@ export const deleteAttributeItem = (AttributeId?: number | null): Promise<delete
 };
 
 export const insertOrUpdateDataMapping = (payload: any): Promise<insertUpdateAtrributeResponse> => {
+  const headers = {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  };
+  return new Promise<insertUpdateAtrributeResponse>((resolve, reject) => {
+    OxyDetailInstaceWithToken.post(ProductURLs.MEDIAPUSH, payload, headers)
+      .then((response: AxiosResponse<insertUpdateAtrributeResponse>) => {
+        // Handle the successful response here
+        const responseData = response.data;
+        resolve(responseData);
+      })
+      .catch((error: AxiosError) => {
+        if (axios.isAxiosError(error)) {
+          // Axios error (e.g., network error)
+          console.error('Axios error:', error);
+        } else {
+          // Non-Axios error (e.g., JSON parsing error)
+          console.error('Non-Axios error:', error);
+        }
+        if (error.response && error.response.status === 401) {
+          // localStorage.clear();
+          clearAllCookies();
+          toaster('warning', 'Token expired please login again');
+          window.location.href = '/';
+        }
+        reject(error); // Reject the Promise to propagate the error
+      });
+  });
+};
+
+
+export const insertOrUpdateUser = (payload: any): Promise<insertUpdateAtrributeResponse> => {
   const headers = {
     headers: {
       'Content-Type': 'multipart/form-data'

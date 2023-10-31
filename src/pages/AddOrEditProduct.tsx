@@ -15,7 +15,7 @@ import {
   fetchCategoryList,
   fetchSubCategoryList,
   insertOrUpdateProductDetail
-} from '../utils/APIs';
+} from '../utils/APIActions';
 import {
   categoryListArray,
   categoryListType,
@@ -38,6 +38,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Loader from '../components/Loader/Loader';
 import { toaster } from '../components/Toaster/Toaster';
 import dayjs from 'dayjs';
+import { AttributeDetails } from '../types/attributeTypes';
 interface productTypes {
   productCode: string;
   productName: string;
@@ -91,10 +92,10 @@ const AddOrEditProduct = () => {
         // setAttributeList(res.map(ele=>{label:ele.attributeId, value:ele.attributeName}));
         const list = res.map(ele => ({ label: ele.attributeName, value: ele.attributeId }));
         if (location.state) {
-          const list1 = location.state.productDetails.attributes.map(ele => ele.attributeId);
+          const list1 = location.state.productDetails.attributes.map((ele:AttributeDetails) => ele.attributeId);
           const info = list1
-            .map(ele => (list.find(ele1 => ele1.value === ele) ? list.find(ele1 => ele1.value === ele) : null))
-            .filter(ele => ele !== null && ele !== undefined);
+            .map((ele:number|string) => (list.find(ele1 => ele1.value === ele) ? list.find(ele1 => ele1.value === ele) : null))
+            .filter((ele:any) => ele !== null && ele !== undefined);
           // const info = list.filter(ele => list.findIndex(ele1 => ele1.value === ele) && list.find(ele1 => ele1.value === ele) );
           console.log(info, 'info');
           setSelected(info);
@@ -274,7 +275,7 @@ const AddOrEditProduct = () => {
           <Label>Sub Category Name</Label>
           <CustomeAutoSelect
             options={subCategoryList}
-            onChange={(event: React.SyntheticEvent<Element, Event>, data: any) => {
+            onChange={(event: React.SyntheticEvent<Element, Event>, data: subCategoryListType|any) => {
               setSubCategoryId(data);
             }}
             value={subCategoryId}

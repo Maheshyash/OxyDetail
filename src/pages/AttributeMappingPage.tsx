@@ -8,7 +8,7 @@ import Grid from '@mui/material/Grid';
 import { ActionButtonGroup, CustomButton, Label } from '../components/styledComponents/InputBox.styles';
 import { CustomeFileUpload, FlexItemBetweenContent, StyledInput } from '../components/styledComponents/Common.styles';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
-import { insertOrUpdateDataMapping } from '../utils/APIs';
+import { insertOrUpdateDataMapping } from '../utils/APIActions';
 import AddCircleOutlinedIcon from '@mui/icons-material/AddCircleOutlined';
 import { toaster } from '../components/Toaster/Toaster';
 import { FileSize } from '../Constants';

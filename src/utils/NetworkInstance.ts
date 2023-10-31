@@ -8,9 +8,11 @@ const commonConfig = {
     'Content-Type': 'application/json'
   }
 };
+
 export const oxyDetailInstance = axios.create({
   baseURL: baseURL // Replace with your API's base URL
 });
+
 export const OxyDetailInstaceWithToken = axios.create({
   baseURL: baseURL, // Replace with your API's base URL
   headers: {
@@ -18,6 +20,7 @@ export const OxyDetailInstaceWithToken = axios.create({
     'Content-Type': 'application/json'
   }
 });
+
 OxyDetailInstaceWithToken.interceptors.request.use(
   config => {
     // Retrieve the access token from localStorage

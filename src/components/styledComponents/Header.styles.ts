@@ -24,6 +24,7 @@ export const OxyDetailHeaderText = styled('h2')(({theme})=>({
 export const CustomNavLink = styled(NavLink)(({theme})=>({
     textDecoration:'none',
     fontSize:'14px',
+    cursor:'pointer',
     color:`${theme.palette.text.secondary}`,
     '&.active': {
         color:`${theme.palette.primary.main} !important`

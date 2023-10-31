@@ -9,7 +9,7 @@ import {
 } from '../types/productTypes';
 import { BodyContainer, NormalContainer } from '../components/styledComponents/Body.styles';
 import { CustomButton, CustomeAutoSelect, Label } from '../components/styledComponents/InputBox.styles';
-import { fetchCategoryList, fetchProductList, fetchSubCategoryList } from '../utils/APIs';
+import { fetchCategoryList, fetchProductList, fetchSubCategoryList } from '../utils/APIActions';
 import { AddButtonContainer, FilterContainer, NoRecordsFound } from '../components/styledComponents/Common.styles';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import Loader from '../components/Loader/Loader';

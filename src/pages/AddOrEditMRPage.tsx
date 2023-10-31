@@ -16,18 +16,22 @@ import { IconButton } from '@mui/material';
 import { PhotoCamera } from '@mui/icons-material';
 import { FileSize } from '../Constants';
 import { toaster } from '../components/Toaster/Toaster';
-import { getCookie, updateFileName } from '../utils/common';
-import { fetchCategoryList } from '../utils/APIs';
-import { categoryListArray } from '../types/productTypes';
+import { isValidMail, updateFileName } from '../utils/common';
+import { fetchCategoryList, insertOrUpdateUser } from '../utils/APIActions';
+import { categoryListArray, categoryListType } from '../types/productTypes';
+import timezones from '../Data/timezones.json';
+import { Timezone } from '../types/timezoneTypes';
+import Loader from '../components/Loader/Loader';
 interface formDetailsType {
   mrName: string;
   email: string;
   phone: string;
   photo: File | null;
-  role: any;
-  category: any;
+  role: number;
+  category: categoryListType|null;
   photoName: string;
   isActive:boolean;
+  timezone:Timezone|null;
 }
 const AddOrEditMRPage = () => {
   const navigate = useNavigate();
@@ -40,10 +44,11 @@ const AddOrEditMRPage = () => {
     email: '',
     phone: '',
     photo: null,
-    role: null,
+    role: 4,
     category: null,
     photoName: '',
-    isActive:true
+    isActive:true,
+    timezone:null,
   });
   const handleName = (e: ChangeEvent<HTMLInputElement>) => {
     setFormDetails({ ...formDetails, mrName: e.target.value });
@@ -87,7 +92,8 @@ const AddOrEditMRPage = () => {
     const photoElement = document.getElementById('Photo');
     photoElement?.click();
   };
-  const handleUserCreation = (event: any) => {
+
+  const handleUserCreation = async (event: any) => {
     event.preventDefault();
     setIsSubmit(true);
     const isValidEmail = isValidMail(formDetails.email);
@@ -103,37 +109,52 @@ const AddOrEditMRPage = () => {
     ) {
       return;
     }
-    let userDetails: any = getCookie('userDetails');
+    // let userDetails: any = getCookie('userDetails');
+    let userDetails: any = localStorage.getItem('userDetails')
     if (userDetails) {
       userDetails = JSON.parse(userDetails);
-      const payload = {
+      const {mrName, phone, email,photo,isActive,timezone} = formDetails;
+      const payload:any = {
         userId: userDetails.userId,
         loginId: userDetails.loginId,
-        name: formDetails.mrName,
-        mobileNo: formDetails.phone,
+        name: mrName,
+        mobileNo: phone,
         type: userDetails.type,
-        emailId: formDetails.email,
+        emailId: email,
         password: '',
         passwordSalt: '',
-        photo: formDetails.photo,
+        photo: photo,
         orgId: userDetails.orgId,
-        isActive: formDetails.isActive,
-        timeZoneId: 'string',
+        isActive: isActive,
+        timeZoneId: timezone?.text,
         roleId: 0
       };
+      const formData = new FormData();
+      for(let key in payload){
+        formData.append(key, payload[key]);
+      }
+      console.log(formData,'formData')
+      setIsLoader(true);
+      await insertOrUpdateUser(formData).then(res=>{
+        if(res.statusCode==0 || res.statusCode==1){
+          toaster('success', res.statusMessage);
+          setIsLoader(false);
+        }else{
+          toaster('error',res.statusMessage)
+        }
+      }).catch(err=>{
+        console.log(err,'err')
+        toaster('error','something went wrong')
+      })
     }
   };
-  const isValidMail = (email: string) => {
-    if (!email.trim()) return '';
-    // const isValidEmail = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email);
-    const isValidEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
-    return isValidEmail;
-  };
+
   useEffect(()=>{
     fetchCategoryDetails();
   },[])
   return (
     <BodyContainer>
+      {isLoader && <Loader/>}
       <Grid container spacing={2}>
         <Grid item xs={12} md={3}>
           <LabelValue label="Name" value={formDetails.mrName} onChange={handleName} placeholder="Enter Name" />
@@ -174,24 +195,24 @@ const AddOrEditMRPage = () => {
           {formDetails.photoName.trim() === '' && isSubmit && <ErrorMessage>Please select File</ErrorMessage>}
         </Grid>
         <Grid item xs={12} md={3}>
-          <Label>Role</Label>
+          <Label>Timezone</Label>
           <CustomeAutoSelect
-            options={categoryList}
-            onChange={(event, data) => {
-              setFormDetails({ ...formDetails, role: data });
+            options={timezones}
+            onChange={(event, data:Timezone|any) => {
+              setFormDetails({ ...formDetails, timezone: data });
             }}
-            getOptionLabel={option => option.categoryName}
+            getOptionLabel={(option:Timezone|any)=> option.value}
             size="small"
-            renderInput={params => <TextField {...params} placeholder={'Select Role'} />}
+            renderInput={params => <TextField {...params} placeholder={'Select Timezone'} />}
           />
-          {!formDetails.role && isSubmit && <ErrorMessage>Please select Role</ErrorMessage>}
+          {!formDetails.timezone && isSubmit && <ErrorMessage>Please select Timezone</ErrorMessage>}
         </Grid>
         <Grid item xs={3} md={3}>
           <Label>Product Category</Label>
           <CustomeAutoSelect
             options={categoryList}
-            getOptionLabel={option => option.categoryName}
-            onChange={(event, data) => {
+            getOptionLabel={(option:categoryListType|any) => option.categoryName}
+            onChange={(event:any, data:categoryListType|any) => {
               setFormDetails({ ...formDetails, category: data });
             }}
             size="small"

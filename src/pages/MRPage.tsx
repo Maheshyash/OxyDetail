@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { BodyContainer } from '../components/styledComponents/Body.styles';
 import { AddButtonContainer, NoRecordsFound } from '../components/styledComponents/Common.styles';
 import { CustomButton } from '../components/styledComponents/InputBox.styles';
-import { fetchMrList } from '../utils/APIs';
+import { fetchMrList } from '../utils/APIActions';
 const MRPage = () => {
   const navigate = useNavigate();
   const [MrList, setMrList] = useState<Array<any> | []>([]);

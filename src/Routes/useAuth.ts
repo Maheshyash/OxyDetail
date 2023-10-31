@@ -19,7 +19,8 @@ export function useAuth() {
     setToken(userDetails?.token);
     if (userDetails?.token) {
       addCookie('token', userDetails?.token);
-      addCookie('userDetails', JSON.stringify(userDetails?.userDetails));
+      // addCookie('userDetails', JSON.stringify(userDetails?.userDetails));
+      localStorage.setItem("userDetails",JSON.stringify(userDetails?.userDetails));
     }
   };
 
@@ -27,6 +28,7 @@ export function useAuth() {
   const removeAuthToken = () => {
     setToken(null);
     clearAllCookies();
+    localStorage.clear();
   };
 
   return { token, setAuthToken, removeAuthToken };

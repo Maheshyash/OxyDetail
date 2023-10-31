@@ -39,5 +39,13 @@ export const clearAllCookies = () => {
     var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
     document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
   }
+  localStorage.clear();
   window.location.href = '/';
+};
+
+export const isValidMail = (email: string) => {
+  if (!email.trim()) return '';
+  // const isValidEmail = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email);
+  const isValidEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
+  return isValidEmail;
 };

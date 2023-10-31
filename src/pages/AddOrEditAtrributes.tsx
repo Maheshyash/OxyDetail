@@ -12,7 +12,7 @@ import {
   ErrorMessage,
   StyledInput
 } from '../components/styledComponents/Common.styles';
-import { insertOrUpdateAttributes } from '../utils/APIs';
+import { insertOrUpdateAttributes } from '../utils/APIActions';
 import { toaster } from '../components/Toaster/Toaster';
 import { updateFileName } from '../utils/common';
 import { FileSize } from '../Constants';
