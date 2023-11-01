@@ -6,7 +6,7 @@ import AudioFileIcon from '@mui/icons-material/AudioFile';
 import { BodyContainer } from '../components/styledComponents/Body.styles';
 import Grid from '@mui/material/Grid';
 import { ActionButtonGroup, CustomButton, Label } from '../components/styledComponents/InputBox.styles';
-import { CustomeFileUpload, FlexItemBetweenContent, StyledInput } from '../components/styledComponents/Common.styles';
+import { CustomParagraph, CustomeFileUpload, FlexItemBetweenContent, StyledInput } from '../components/styledComponents/Common.styles';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import { insertOrUpdateDataMapping } from '../utils/APIActions';
 import AddCircleOutlinedIcon from '@mui/icons-material/AddCircleOutlined';
@@ -14,6 +14,8 @@ import { toaster } from '../components/Toaster/Toaster';
 import { FileSize } from '../Constants';
 import { updateFileName } from '../utils/common';
 import Loader from '../components/Loader/Loader';
+import { useTheme } from '@mui/material';
+import dayjs from 'dayjs';
 
 export type listItemArrayInterface = listItem[] | [];
 
@@ -38,6 +40,7 @@ export interface listItemMedia {
   isNewRow: boolean;
 }
 const AttributeMappingPage = () => {
+  const theme = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
   const [attributeListArray, setAttributeListArray] = useState<listItemArrayInterface>([]);
@@ -164,7 +167,7 @@ const AttributeMappingPage = () => {
 
   const removeItem = (listItemIndex: number, index: number) => {
     // var dummyArray: listItemArrayInterface = JSON.parse(JSON.stringify(attributeListArray));
-    var dummyArray: listItemArrayInterface = attributeListArray.map(ele=> ele);
+    var dummyArray: listItemArrayInterface = attributeListArray.map(ele => ele);
     if (dummyArray[listItemIndex].media[index].isNewRow) {
       dummyArray[listItemIndex].media.splice(index, 1);
     } else {
@@ -197,12 +200,10 @@ const AttributeMappingPage = () => {
           ProductAttributeOrder: ele1.productAttributeOrder,
           OldImage: ele1.oldImage || '',
           OldVoice: ele1.oldVoice || '',
-          IsDeleted: ele1.isDeleted == null ? false :ele1.isDeleted
+          IsDeleted: ele1.isDeleted == null ? false : ele1.isDeleted
         }))
       )
     };
-    console.log(Data, 'data');
-    console.log(attributeListArray,'attributeListArray')
     var formData = new FormData();
     formData.append('Data', JSON.stringify(Data));
     debugger;
@@ -240,6 +241,35 @@ const AttributeMappingPage = () => {
   };
   return (
     <BodyContainer>
+
+      <div style={{ background: theme.palette.background.default, padding: 10, borderRadius: 8 }}>
+        <Grid container>
+          <Grid md={3}>
+            <Label style={{ fontWeight: 600 }}>Product Codes</Label>
+            <CustomParagraph>{location.state.attributeDetails.productCode}</CustomParagraph>
+          </Grid>
+          <Grid md={3}>
+            <Label style={{ fontWeight: 600 }}>Product Name</Label>
+            <CustomParagraph>{location.state.attributeDetails.productName}</CustomParagraph>
+          </Grid>
+          <Grid md={3}>
+            <Label style={{ fontWeight: 600 }}>Category</Label>
+            <CustomParagraph>{location.state.attributeDetails.categoryName}</CustomParagraph>
+          </Grid>
+          <Grid md={3}>
+            <Label style={{ fontWeight: 600 }}>Sub Category</Label>
+            <CustomParagraph>{location.state.attributeDetails.subCategoryName}</CustomParagraph>
+          </Grid>
+          <Grid md={3}>
+            <Label style={{ fontWeight: 600 }}>Product Description</Label>
+            <CustomParagraph>{location.state.attributeDetails.productDescription}</CustomParagraph>
+          </Grid>
+          <Grid md={3}>
+            <Label style={{ fontWeight: 600 }}>Activation Date</Label>
+            <CustomParagraph>{dayjs(location.state.attributeDetails.activationDate).format('DD/MM/YYYY')}</CustomParagraph>
+          </Grid>
+        </Grid>
+      </div>
       {isLoader && <Loader />}
       {attributeListArray.map((listArrayItem, listItemIndex) => {
         return (
