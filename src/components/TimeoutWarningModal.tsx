@@ -1,5 +1,5 @@
 import { clearAllCookies } from '../utils/common';
-import { CustomParagraph, StyledModalBackdrop, StyledModalContent } from './styledComponents/Common.styles';
+import { CustomParagraph, StyledModalBackdrop, StyledModalBody, StyledModalContent } from './styledComponents/Common.styles';
 import { ActionButtonGroup, CustomButton } from './styledComponents/InputBox.styles';
 interface TimeoutWarningModalProps {
   onRequestClose: () => void;
@@ -12,18 +12,20 @@ export const TimeoutWarningModal: React.FC<TimeoutWarningModalProps> = ({ onRequ
 
   return (
     <StyledModalBackdrop>
-      <StyledModalContent>
-        <h5>Confirm Popup</h5>
-        <CustomParagraph>Are you sure you want to continue to update the existing Product</CustomParagraph>
-        <ActionButtonGroup>
-          <CustomButton variant="outlined" onClick={onLogOffCall}>
-            Log off
-          </CustomButton>
-          <CustomButton variant="contained" onClick={onRequestClose}>
-            Stay Logged In
-          </CustomButton>
-        </ActionButtonGroup>
-      </StyledModalContent>
+      <StyledModalBody>
+        <StyledModalContent>
+          <h5>Confirm Popup</h5>
+          <CustomParagraph>Are you sure you want to continue to update the existing Product</CustomParagraph>
+          <ActionButtonGroup>
+            <CustomButton variant="outlined" onClick={onLogOffCall}>
+              Log off
+            </CustomButton>
+            <CustomButton variant="contained" onClick={onRequestClose}>
+              Stay Logged In
+            </CustomButton>
+          </ActionButtonGroup>
+        </StyledModalContent>
+      </StyledModalBody>
     </StyledModalBackdrop>
   );
 };

@@ -2,13 +2,6 @@ import axios from 'axios';
 import { baseURL } from '../environments';
 import { getCookie } from './common';
 
-const commonConfig = {
-  headers: {
-    Accept: 'application/json',
-    'Content-Type': 'application/json'
-  }
-};
-
 export const oxyDetailInstance = axios.create({
   baseURL: baseURL // Replace with your API's base URL
 });
