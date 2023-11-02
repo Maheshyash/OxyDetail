@@ -74,7 +74,6 @@ const AddOrEditProduct = () => {
   });
   const [categoryList, setCategoryList] = useState<categoryListArray>([]);
   const [subCategoryList, setSubCategoryList] = useState<subCategoryListTypeArray>([]);
-  const [categoryId, setCategoryId] = useState<number | null>(null);
   const [subCategoryId, setSubCategoryId] = useState<subCategoryListType | null>(null);
   const [attributeList, setAttributeList] = useState<Array<attributeTypes> | []>([]);
   const [isLoader, setIsLoader] = useState<boolean>(false);
@@ -258,7 +257,6 @@ const AddOrEditProduct = () => {
           <CustomeAutoSelect
             options={categoryList}
             onChange={(event: React.SyntheticEvent<Element, Event>, data: any) => {
-              setCategoryId(data.categoryId);
               setFormDetails({ ...formDetails, categoryId: data });
               fetchSubCategoryDetails(data.categoryId);
               setSubCategoryId(null);

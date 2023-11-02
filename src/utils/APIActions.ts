@@ -7,10 +7,11 @@ import {
   deleteProductResponse,
   subCategoryListTypeArray
 } from '../types/productTypes';
-import { AttributeURLs, ProductURLs, mrURLs } from './APIUrls';
+import { AttributeURLs, OrganizationURLs, ProductURLs, mrURLs } from './APIUrls';
 import { AttributeList, deleteAttributeAction, insertUpdateAtrributeResponse } from '../types/attributeTypes';
 import { toaster } from '../components/Toaster/Toaster';
 import { clearAllCookies } from './common';
+import { countryListArray, organizationListArray, stateListArray } from '../types/organizationTypes';
 
 export const fetchToken = (payload: { emailId: string; password: string }): Promise<loginDetails> => {
   const headers = {
@@ -328,13 +329,8 @@ export const insertOrUpdateDataMapping = (payload: any): Promise<insertUpdateAtr
 
 
 export const insertOrUpdateUser = (payload: any): Promise<insertUpdateAtrributeResponse> => {
-  const headers = {
-    headers: {
-      'Content-Type': 'multipart/form-data'
-    }
-  };
   return new Promise<insertUpdateAtrributeResponse>((resolve, reject) => {
-    OxyDetailInstaceWithToken.post(ProductURLs.MEDIAPUSH, payload, headers)
+    OxyDetailInstaceWithToken.post(mrURLs.USERINSERTUPDATE, payload)
       .then((response: AxiosResponse<insertUpdateAtrributeResponse>) => {
         // Handle the successful response here
         const responseData = response.data;
@@ -358,3 +354,87 @@ export const insertOrUpdateUser = (payload: any): Promise<insertUpdateAtrributeR
       });
   });
 };
+
+export const fetchOrganizationList = (): Promise<organizationListArray> => {
+  return new Promise<organizationListArray>((resolve, reject) => {
+    OxyDetailInstaceWithToken.get(OrganizationURLs.ORGANIZATIONGETLIST)
+      .then((response: AxiosResponse<organizationListArray>) => {
+        // Handle the successful response here
+        const responseData = response.data;
+        console.log('Response data:', responseData);
+        resolve(responseData);
+      })
+      .catch((error: AxiosError) => {
+        // Handle errors here
+        if (axios.isAxiosError(error)) {
+          // Axios error (e.g., network error)
+          console.error('Axios error:', error);
+        } else {
+          // Non-Axios error (e.g., JSON parsing error)
+          console.error('Non-Axios error:', error);
+        }
+        if (error.response && error.response.status === 401) {
+          // localStorage.clear();
+          clearAllCookies();
+          toaster('warning', 'Token expired please login again');
+          window.location.href = '/';
+        }
+        reject(error); // Reject the Promise to propagate the error
+      });
+  });
+};
+
+
+export const fetchStateListDetails = (countryCode: string): Promise<stateListArray> => {
+  return new Promise<stateListArray>((resolve, reject) => {
+    OxyDetailInstaceWithToken.get(OrganizationURLs.STATELIST, { params: { countryCode: countryCode } })
+      .then((response: AxiosResponse<stateListArray>) => {
+        // Handle the successful response here
+        const responseData = response.data;
+        resolve(responseData);
+      })
+      .catch((error: AxiosError) => {
+        if (axios.isAxiosError(error)) {
+          // Axios error (e.g., network error)
+          console.error('Axios error:', error);
+        } else {
+          // Non-Axios error (e.g., JSON parsing error)
+          console.error('Non-Axios error:', error);
+        }
+        if (error.response && error.response.status === 401) {
+          // localStorage.clear();
+          clearAllCookies();
+          toaster('warning', 'Token expired please login again');
+          window.location.href = '/';
+        }
+        reject(error); // Reject the Promise to propagate the error
+      });
+  });
+}
+
+export const fetchCoutryListDetails = (): Promise<countryListArray> => {
+  return new Promise<countryListArray>((resolve, reject) => {
+    OxyDetailInstaceWithToken.post(OrganizationURLs.COUNTRYLIST)
+      .then((response: AxiosResponse<countryListArray>) => {
+        // Handle the successful response here
+        const responseData = response.data;
+        resolve(responseData);
+      })
+      .catch((error: AxiosError) => {
+        if (axios.isAxiosError(error)) {
+          // Axios error (e.g., network error)
+          console.error('Axios error:', error);
+        } else {
+          // Non-Axios error (e.g., JSON parsing error)
+          console.error('Non-Axios error:', error);
+        }
+        if (error.response && error.response.status === 401) {
+          // localStorage.clear();
+          clearAllCookies();
+          toaster('warning', 'Token expired please login again');
+          window.location.href = '/';
+        }
+        reject(error); // Reject the Promise to propagate the error
+      });
+  });
+}

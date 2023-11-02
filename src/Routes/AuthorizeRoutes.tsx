@@ -7,6 +7,8 @@ import AddOrEditMRPage from '../pages/AddOrEditMRPage';
 import AttributesPage from '../pages/AttributesPage';
 import AddOrEditAttributes from '../pages/AddOrEditAtrributes';
 import AttributeMappingPage from '../pages/AttributeMappingPage';
+import OrganizationPage from '../pages/OrganizationPage';
+import AddOrEditOrganization from '../pages/AddOrEditOrganization';
 const AuthorizeRoutes = ({ removeAuthToken }: { removeAuthToken: any }) => {
   return (
     <>
@@ -19,6 +21,8 @@ const AuthorizeRoutes = ({ removeAuthToken }: { removeAuthToken: any }) => {
         <Route path="/product/attributeMapping" Component={AttributeMappingPage} />
         <Route path="/attribute" Component={AttributesPage} />
         <Route path="/attribute/addAttribute" Component={AddOrEditAttributes} />
+        <Route path="/organization" Component={OrganizationPage} />
+        <Route path="/organization/addOrganization" Component={AddOrEditOrganization} />
       </Routes>
     </>
   );

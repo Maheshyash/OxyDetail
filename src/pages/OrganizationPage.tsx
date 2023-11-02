@@ -3,18 +3,18 @@ import { useNavigate } from 'react-router-dom';
 import { BodyContainer } from '../components/styledComponents/Body.styles';
 import { AddButtonContainer, NoRecordsFound } from '../components/styledComponents/Common.styles';
 import { CustomButton } from '../components/styledComponents/InputBox.styles';
-import { fetchMrList } from '../utils/APIActions';
-import MRTable from '../components/MR/MRTable';
-const MRPage = () => {
+import { fetchOrganizationList } from '../utils/APIActions';
+import { organizationListArray } from '../types/organizationTypes';
+const OrganizationPage = () => {
   const navigate = useNavigate();
-  const [MrList, setMrList] = useState<Array<any> | []>([]);
+  const [organizationList, setOrganizationList] = useState<organizationListArray>([]);
   const handleAddMR = (e: MouseEvent<HTMLButtonElement>) => {
-    navigate('addMR');
+    navigate('addOrganization');
   };
   useEffect(() => {
-    fetchMrList()
+    fetchOrganizationList()
       .then(res => {
-        setMrList(res.data);
+        setOrganizationList(res);
       })
       .catch(err => {
         alert('err');
@@ -28,9 +28,9 @@ const MRPage = () => {
           Add
         </CustomButton>
       </AddButtonContainer>
-      {MrList.length === 0 ? <NoRecordsFound>No records found</NoRecordsFound> : <MRTable data={MrList}/>}
+      {organizationList.length === 0 ? <NoRecordsFound>No records found</NoRecordsFound> : ''}
     </BodyContainer>
   );
 };
 
-export default MRPage;
+export default OrganizationPage;

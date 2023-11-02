@@ -1,7 +1,7 @@
 import { InputBox, Label } from './styledComponents/InputBox.styles';
 interface lableKey {
   label: string;
-  value: string;
+  value: string|number;
   onChange: any;
   type?: string;
   placeholder?:string;

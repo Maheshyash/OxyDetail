@@ -16,3 +16,17 @@ export const AttributeURLs = {
   GETATTRIBUTELIST: 'Attribute/Attribute_GetList',
   DELETEATTRIBUTE: 'Attribute/Attribute_Delete'
 };
+
+export const OrganizationURLs = {
+  ORGANIZATIONGETLIST: 'Organization/Organization_GetList',
+  ORGNIZATIONINSERTUPDATE: 'Organization/Organization_InsertUpdate',
+  COUNTRYLIST: 'Organization/Country_GetList',
+  STATELIST: 'Organization/State_GetList',
+  ORGANIZATIONSETTINGLIST: 'Organization/OrganizationSetting_GetList',
+  ORGANIZATIONSETTINGINSERTUPDATE: 'Organization/OrganizationSetting_InsertUpdate',
+};
+
+export const RoleURLs = {
+  ROLEGETLIST: 'Role/Role_GetList',
+  ROLEINSERTUPDATE: 'Role/Role_InsertUpdate'
+}
