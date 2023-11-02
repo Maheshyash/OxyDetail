@@ -414,7 +414,7 @@ export const fetchStateListDetails = (countryCode: string): Promise<stateListArr
 
 export const fetchCoutryListDetails = (): Promise<countryListArray> => {
   return new Promise<countryListArray>((resolve, reject) => {
-    OxyDetailInstaceWithToken.post(OrganizationURLs.COUNTRYLIST)
+    OxyDetailInstaceWithToken.get(OrganizationURLs.COUNTRYLIST)
       .then((response: AxiosResponse<countryListArray>) => {
         // Handle the successful response here
         const responseData = response.data;
@@ -438,3 +438,30 @@ export const fetchCoutryListDetails = (): Promise<countryListArray> => {
       });
   });
 }
+
+export const insertOrUpdateOrganization = (payload: any): Promise<insertUpdateAtrributeResponse> => {
+  return new Promise<insertUpdateAtrributeResponse>((resolve, reject) => {
+    OxyDetailInstaceWithToken.post(OrganizationURLs.ORGNIZATIONINSERTUPDATE, payload)
+      .then((response: AxiosResponse<insertUpdateAtrributeResponse>) => {
+        // Handle the successful response here
+        const responseData = response.data;
+        resolve(responseData);
+      })
+      .catch((error: AxiosError) => {
+        if (axios.isAxiosError(error)) {
+          // Axios error (e.g., network error)
+          console.error('Axios error:', error);
+        } else {
+          // Non-Axios error (e.g., JSON parsing error)
+          console.error('Non-Axios error:', error);
+        }
+        if (error.response && error.response.status === 401) {
+          // localStorage.clear();
+          clearAllCookies();
+          toaster('warning', 'Token expired please login again');
+          window.location.href = '/';
+        }
+        reject(error); // Reject the Promise to propagate the error
+      });
+  });
+};

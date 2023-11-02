@@ -3,12 +3,16 @@ import { BodyContainer } from '../components/styledComponents/Body.styles';
 import Loader from '../components/Loader/Loader';
 import { Grid, TextField } from '@mui/material';
 import LabelValue from '../components/LabelValue';
-import { CustomTextArea, ErrorMessage } from '../components/styledComponents/Common.styles';
-import { CustomeAutoSelect, Label, PhoneNumber } from '../components/styledComponents/InputBox.styles';
+import { CustomDatepicker, CustomParagraph, CustomTextArea, DatePickerContainer, ErrorMessage, FlexItemBetweenContent, StyledModalBackdrop, StyledModalBody, StyledModalContent } from '../components/styledComponents/Common.styles';
+import { ActionButtonGroup, CustomButton, CustomeAutoSelect, Label, PhoneNumber } from '../components/styledComponents/InputBox.styles';
 import { countryListItem, countryListArray, stateListArray, stateListItem } from '../types/organizationTypes';
-import { fetchCoutryListDetails, fetchStateListDetails } from '../utils/APIActions';
+import { fetchCoutryListDetails, fetchStateListDetails, insertOrUpdateOrganization } from '../utils/APIActions';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { isValidMail } from '../utils/common';
+import { toaster } from '../components/Toaster/Toaster';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
 
 interface formDetailsType {
   orgId: number;
@@ -34,13 +38,14 @@ const AddOrEditOrganization = () => {
   const navigate = useNavigate();
   const [isLoader, setIsLoader] = useState(false);
   const [isSubmit, setIsSubmit] = useState(false);
+  const [isConfirmPopUp, setIsConfirmPopUp] = useState(false);
   const [countryList, setCountryList] = useState<countryListArray>([]);
   const [stateList, setStateList] = useState<stateListArray>([]);
   const [formDetails, setFormDetails] = useState<formDetailsType>({
     orgId: 0,
     orgCode: '',
     orgName: '',
-    planId: 0,
+    planId: 1,
     activationDate: '',
     countryCode: null,
     stateCode: null,
@@ -78,17 +83,60 @@ const AddOrEditOrganization = () => {
   };
   useEffect(() => {
     fetchCountryDetails();
+  }, [])
+  useEffect(() => {
     if (location.state) {
+      const { activationDate, address, contactNo, countryCode,countryName, emailId, gstnNo, isActive, numberOfUser, orgCode, orgId, orgName, planId, pocContactNo, pocEmailId, pocName, stateCode, stateName } = location.state.organizationDetails;
+      fetchStateDetails(countryCode);
+      setFormDetails({
+        ...formDetails,
+        activationDate: activationDate,
+        address: address,
+        contactNo: contactNo,
+        countryCode: {countryCode:countryCode,countryName:countryName},
+        stateCode: { stateCode: stateCode, stateName: stateName },
+        emailId: emailId,
+        gstnNo: gstnNo,
+        isActive: isActive,
+        numberOfUser: numberOfUser,
+        orgCode: orgCode,
+        orgId: orgId,
+        orgName: orgName,
+        planId: planId,
+        pocContactNo: pocContactNo,
+        pocEmailId: pocEmailId,
+        pocName: pocName,
+        forceUpdateIfExists:true,
+      })
     }
   }, []);
-  const handlePhone = (e: ChangeEvent<HTMLInputElement>) => {
+
+  const handlePhone = (e: ChangeEvent<HTMLInputElement>, variable: string) => {
     const validPhoneNumber = e.target.value.replace(/[^0-9]/g, '');
     const trimmedPhoneNumber = validPhoneNumber.substring(0, 10);
-    setFormDetails({ ...formDetails, contactNo: trimmedPhoneNumber });
+    setFormDetails({ ...formDetails, [variable]: trimmedPhoneNumber });
   };
-  const handleEmail = (e: ChangeEvent<HTMLInputElement>) => {
-    setFormDetails({ ...formDetails, emailId: e.target.value });
-  };
+
+  const handleSubmittion = async (isForceUpdate = false) => {
+    const payload = { ...formDetails, countryCode: formDetails.countryCode?.countryCode, stateCode: formDetails.stateCode?.stateCode,forceUpdateIfExists: location.state ? true : isForceUpdate }
+    setIsLoader(true);
+    await insertOrUpdateOrganization(payload).then(res => {
+      const {statusCode, statusMessage} = res;
+      if (statusCode == 0 || statusCode === 1) {
+        toaster('success', statusMessage);
+        setIsLoader(false);
+        navigate(-1);
+      }else if (statusCode === -1) {
+        setIsConfirmPopUp(true);
+        setIsLoader(false)
+      } else {
+        toaster('error', statusMessage);
+      }
+    }).catch(err => {
+      console.log(err, 'err')
+      setIsLoader(false)
+    })
+  }
   return (
     <BodyContainer>
       {isLoader && <Loader />}
@@ -105,7 +153,7 @@ const AddOrEditOrganization = () => {
         <Grid item xs={12} md={3}>
           <LabelValue
             label="Organization Name"
-            value={formDetails.orgCode}
+            value={formDetails.orgName}
             onChange={(event: ChangeEvent<HTMLInputElement>) => handleFormDetails(event, 'orgName')}
             placeholder="Enter Organization Name"
           />
@@ -115,9 +163,9 @@ const AddOrEditOrganization = () => {
           <Label>Country</Label>
           <CustomeAutoSelect
             options={countryList}
-            onChange={(event: React.SyntheticEvent<Element, Event>, data: any) => {
+            onChange={(event: React.SyntheticEvent<Element, Event>, data: countryListItem | any) => {
               setFormDetails({ ...formDetails, countryCode: data, stateCode: null });
-              fetchStateDetails(data.categoryId);
+              fetchStateDetails(data.countryCode);
             }}
             value={formDetails.countryCode}
             getOptionLabel={(option: countryListItem | any) => option.countryName}
@@ -143,8 +191,14 @@ const AddOrEditOrganization = () => {
         <Grid item xs={12} md={3}>
           <LabelValue
             label="No of Users"
+            type='number'
             value={formDetails.numberOfUser}
-            onChange={(event: ChangeEvent<HTMLInputElement>) => handleFormDetails(event, 'numberOfUser')}
+            onChange={(event: ChangeEvent<HTMLInputElement>) => {
+              let inputNumber = event.target.value;
+              if (Number(inputNumber) >= 0) {
+                setFormDetails({ ...formDetails, numberOfUser: Number(inputNumber) })
+              }
+            }}
             placeholder="Enter No of Users"
           />
           {formDetails.address.trim() === '' && isSubmit && <ErrorMessage>Please enter No of Users</ErrorMessage>}
@@ -162,7 +216,8 @@ const AddOrEditOrganization = () => {
           <Label>Contact Number</Label>
           <PhoneNumber
             value={formDetails.contactNo}
-            onChange={handlePhone}
+            // onChange={handlePhone}
+            onChange={(event: ChangeEvent<HTMLInputElement>) => handlePhone(event, 'contactNo')}
             type="tel"
             placeholder="Enter Contact Number"
           ></PhoneNumber>
@@ -174,12 +229,39 @@ const AddOrEditOrganization = () => {
           <LabelValue
             label="Email Id"
             value={formDetails.emailId}
-            onChange={handleEmail}
+            onChange={(event: ChangeEvent<HTMLInputElement>) => handleFormDetails(event, 'emailId')}
             placeholder="Enter Email Id"
           />
           {(formDetails.emailId.trim() === '' || !isValidMail(formDetails.emailId)) && isSubmit && (
             <ErrorMessage>Please enter Email Id</ErrorMessage>
           )}
+        </Grid>
+        <Grid item xs={12} md={3}>
+          <Label>Activation Date</Label>
+          <DatePickerContainer>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <CustomDatepicker
+                format="DD/MM/YYYY"
+                value={formDetails.activationDate ? dayjs(formDetails.activationDate) : null}
+                onChange={(date: any) =>
+                  setFormDetails({ ...formDetails, activationDate: dayjs(date).format('YYYY-MM-DD') })
+                }
+                slotProps={{
+                  textField: { size: 'small' },
+                  field: {
+                    clearable: true,
+                    onClear: () => {
+                      setFormDetails({ ...formDetails, activationDate: '' });
+                    }
+                  }
+                }}
+              />
+            </LocalizationProvider>
+          </DatePickerContainer>
+          {formDetails.activationDate.trim() === '' ||
+            (formDetails.activationDate === 'Invalid Date' && isSubmit && (
+              <ErrorMessage>Please select Activation Date</ErrorMessage>
+            ))}
         </Grid>
         <Grid item xs={12} md={3}>
           <Label>Address</Label>
@@ -193,7 +275,78 @@ const AddOrEditOrganization = () => {
           />
           {formDetails.address.trim() === '' && isSubmit && <ErrorMessage>Please enter Address</ErrorMessage>}
         </Grid>
+        <Grid item xs={12}>
+          <FlexItemBetweenContent>
+            <h5>Point Of Contact</h5>
+          </FlexItemBetweenContent>
+        </Grid>
+        <Grid item xs={12} md={3}>
+          <LabelValue
+            label="Name"
+            value={formDetails.pocName}
+            onChange={(event: ChangeEvent<HTMLInputElement>) => handleFormDetails(event, 'pocName')}
+            placeholder="Enter Organization Name"
+          />
+          {formDetails.pocName.trim() === '' && isSubmit && <ErrorMessage>Please enter Point Of Contact Name</ErrorMessage>}
+        </Grid>
+        <Grid item xs={12} md={3}>
+          <LabelValue
+            label="Email Id"
+            value={formDetails.pocEmailId}
+            onChange={(event: ChangeEvent<HTMLInputElement>) => handleFormDetails(event, 'pocEmailId')}
+            placeholder="Enter Email Id"
+          />
+          {(formDetails.pocEmailId.trim() === '' || !isValidMail(formDetails.pocEmailId)) && isSubmit && (
+            <ErrorMessage>Please enter Email Id</ErrorMessage>
+          )}
+        </Grid>
+        <Grid item xs={12} md={3}>
+          <Label>Contact Number</Label>
+          <PhoneNumber
+            value={formDetails.pocContactNo}
+            // onChange={handlePhone}
+            onChange={(event: ChangeEvent<HTMLInputElement>) => handlePhone(event, 'pocContactNo')}
+            type="tel"
+            placeholder="Enter Contact Number"
+          ></PhoneNumber>
+          {(formDetails.contactNo.trim() === '' || formDetails.contactNo.length < 10) && isSubmit && (
+            <ErrorMessage>Please enter Contact Number</ErrorMessage>
+          )}
+        </Grid>
+
       </Grid>
+      <ActionButtonGroup>
+        <CustomButton variant="outlined" onClick={() => navigate(-1)}>
+          Cancel
+        </CustomButton>
+        <CustomButton variant="contained" onClick={()=>handleSubmittion()}>
+          Submit
+        </CustomButton>
+      </ActionButtonGroup>
+      {isConfirmPopUp && (
+        <StyledModalBackdrop>
+          <StyledModalBody>
+          <StyledModalContent>
+            <h5>Confirm Popup</h5>
+            <CustomParagraph>Are you sure you want to continue to update the existing Product</CustomParagraph>
+            <ActionButtonGroup>
+              <CustomButton variant="outlined" onClick={() => setIsConfirmPopUp(false)}>
+                Cancel
+              </CustomButton>
+              <CustomButton
+                variant="contained"
+                onClick={() => {
+                  handleSubmittion(true);
+                  setIsConfirmPopUp(false);
+                }}
+              >
+                Submit
+              </CustomButton>
+            </ActionButtonGroup>
+          </StyledModalContent>
+          </StyledModalBody>
+        </StyledModalBackdrop>
+      )}
     </BodyContainer>
   );
 };

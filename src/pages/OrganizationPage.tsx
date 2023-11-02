@@ -5,6 +5,7 @@ import { AddButtonContainer, NoRecordsFound } from '../components/styledComponen
 import { CustomButton } from '../components/styledComponents/InputBox.styles';
 import { fetchOrganizationList } from '../utils/APIActions';
 import { organizationListArray } from '../types/organizationTypes';
+import OrganizationTable from '../components/Organization/OrganizationTable';
 const OrganizationPage = () => {
   const navigate = useNavigate();
   const [organizationList, setOrganizationList] = useState<organizationListArray>([]);
@@ -28,7 +29,8 @@ const OrganizationPage = () => {
           Add
         </CustomButton>
       </AddButtonContainer>
-      {organizationList.length === 0 ? <NoRecordsFound>No records found</NoRecordsFound> : ''}
+      
+      {organizationList.length === 0 ? <NoRecordsFound>No records found</NoRecordsFound> : <OrganizationTable data={organizationList}/>}
     </BodyContainer>
   );
 };
