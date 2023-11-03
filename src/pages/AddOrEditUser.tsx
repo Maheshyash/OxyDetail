@@ -1,50 +1,42 @@
 import { useState, ChangeEvent, useEffect } from 'react';
 import Grid from '@mui/material/Grid';
-import {
-  CustomeAutoSelect,
-  Label,
-  PhoneNumber
-} from '../components/styledComponents/InputBox.styles';
+import { CustomeAutoSelect, Label, PhoneNumber } from '../components/styledComponents/InputBox.styles';
 import LabelValue from '../components/LabelValue';
 import TextField from '@mui/material/TextField';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { BodyContainer } from '../components/styledComponents/Body.styles';
-import {
-  CustomSwitch,
-  ErrorMessage,
-} from '../components/styledComponents/Common.styles';
+import { CustomSwitch, ErrorMessage } from '../components/styledComponents/Common.styles';
 import { toaster } from '../components/Toaster/Toaster';
 import { isValidMail } from '../utils/common';
-import { fetchCategoryList, insertOrUpdateUser } from '../utils/APIActions';
-import { categoryListArray, categoryListType } from '../types/productTypes';
+import { fetchRoleList, insertOrUpdateUser } from '../utils/APIActions';
+import { categoryListType } from '../types/productTypes';
 import timezones from '../Data/timezones.json';
 import { Timezone } from '../types/timezoneTypes';
 import Loader from '../components/Loader/Loader';
 import FormActionsButtons from '../components/FormActionsButtons';
+import { roleListArray, roleListItem } from '../types/roleTypes';
 interface formDetailsType {
-  mrName: string;
-  email: string;
-  phone: string;
-  photo: File | null;
-  role: number;
+  name: string;
+  emailId: string;
+  mobileNo: string;
+  roleId: roleListItem | null;
   category: categoryListType | null;
   photoName: string;
   isActive: boolean;
   timezone: Timezone | null;
   userId: number;
 }
-const AddOrEditMRPage = () => {
+const AddOrEditUser = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isSubmit, setIsSubmit] = useState<boolean>(false);
   const [isLoader, setIsLoader] = useState<boolean>(false);
-  const [categoryList, setCategoryList] = useState<categoryListArray>([]);
+  const [roleList, setRoleList] = useState<roleListArray>([]);
   const [formDetails, setFormDetails] = useState<formDetailsType>({
-    mrName: '',
-    email: '',
-    phone: '',
-    photo: null,
-    role: 4,
+    name: '',
+    emailId: '',
+    mobileNo: '',
+    roleId: null,
     category: null,
     photoName: '',
     isActive: true,
@@ -52,22 +44,26 @@ const AddOrEditMRPage = () => {
     userId: 0
   });
   const handleName = (e: ChangeEvent<HTMLInputElement>) => {
-    setFormDetails({ ...formDetails, mrName: e.target.value });
+    setFormDetails({ ...formDetails, name: e.target.value });
   };
   const handleEmail = (e: ChangeEvent<HTMLInputElement>) => {
-    setFormDetails({ ...formDetails, email: e.target.value });
+    setFormDetails({ ...formDetails, emailId: e.target.value });
   };
+
+  const handleFormDetails = (event:ChangeEvent<HTMLInputElement>, variable:string) => {
+    setFormDetails({ ...formDetails, [variable]: event.target.value });
+  }
   const handlePhone = (e: ChangeEvent<HTMLInputElement>) => {
     const validPhoneNumber = e.target.value.replace(/[^0-9]/g, '');
     const trimmedPhoneNumber = validPhoneNumber.substring(0, 10);
-    setFormDetails({ ...formDetails, phone: trimmedPhoneNumber });
+    setFormDetails({ ...formDetails, mobileNo: trimmedPhoneNumber });
   };
 
-  const fetchCategoryDetails = async () => {
+  const fetchRoleDetails = async () => {
     setIsLoader(true);
-    await fetchCategoryList()
+    await fetchRoleList()
       .then(res => {
-        setCategoryList(res);
+        setRoleList(res);
         setIsLoader(false);
       })
       .catch(err => {
@@ -76,20 +72,17 @@ const AddOrEditMRPage = () => {
       });
   };
 
-
-  const handleUserCreation = async (event: any) => {
-    event.preventDefault();
+  const handleUserCreation = async () => {
     setIsSubmit(true);
-    const isValidEmail = isValidMail(formDetails.email);
+    const isValidEmail = isValidMail(formDetails.emailId);
 
     if (
       !isValidEmail ||
-      formDetails.mrName.trim() === '' ||
-      formDetails.email.trim() === '' ||
-      formDetails.phone.trim() === '' ||
-      formDetails.phone.length < 10 ||
-      !formDetails.category ||
-      !formDetails.role
+      formDetails.name.trim() === '' ||
+      formDetails.emailId.trim() === '' ||
+      formDetails.mobileNo.trim() === '' ||
+      formDetails.mobileNo.length < 10 ||
+      !formDetails.roleId
     ) {
       return;
     }
@@ -97,22 +90,22 @@ const AddOrEditMRPage = () => {
     let userDetails: any = localStorage.getItem('userDetails');
     if (userDetails) {
       userDetails = JSON.parse(userDetails);
-      const { mrName, phone, email, isActive, timezone, category, userId } = formDetails;
+      const { name, mobileNo, emailId, isActive, timezone, userId, roleId } = formDetails;
       const payload: any = {
         userId: location.state ? userId : 0,
-        loginId: email,
-        name: mrName,
-        mobileNo: phone,
+        loginId: emailId,
+        name: name,
+        mobileNo: mobileNo,
         type: userDetails.type,
-        emailId: email,
+        emailId: emailId,
         password: '',
         passwordSalt: '',
-        orgId: userDetails.orgId,
+        // orgId: userDetails.orgId,
         isActive: isActive,
         timeZoneId: timezone?.text,
-        roleId: 4,
-        orgCode: userDetails.orgId,
-        categoryId: category.categoryId
+        roleId: roleId.roleId,
+        orgCode: userDetails.orgCode,
+        categoryId: 0
       };
 
       setIsLoader(true);
@@ -136,25 +129,27 @@ const AddOrEditMRPage = () => {
   };
 
   useEffect(() => {
-    fetchCategoryDetails();
+    fetchRoleDetails();
   }, []);
+
   useEffect(() => {
     if (location.state) {
-      const { name, emailId, mobileNo, timeZoneId, isActive, userId, categoryId } = location.state.userDetails;
+      const { name, emailId, mobileNo, timeZoneId, isActive, userId, roleId } = location.state.userDetails;
       setFormDetails({
         ...formDetails,
-        mrName: name,
-        email: emailId,
-        category: getCategoryDetails(categoryId),
-        phone: mobileNo,
+        name: name,
+        emailId: emailId,
+        roleId: getListDetails(roleId),
+        mobileNo: mobileNo,
         timezone: getTimezoneDetails(timeZoneId),
         isActive: isActive,
         userId: userId
       });
     }
-  }, [categoryList]);
-  const getCategoryDetails = (categoryId: number) => {
-    let result = categoryList.find(ele => ele.categoryId === categoryId);
+  }, [roleList]);
+
+  const getListDetails = (roleId: number) => {
+    let result = roleList.find(ele => ele.roleId === roleId);
     if (result) {
       return result;
     }
@@ -168,29 +163,35 @@ const AddOrEditMRPage = () => {
     }
     return null;
   };
+
   return (
     <BodyContainer>
       {isLoader && <Loader />}
       <Grid container spacing={2}>
         <Grid item xs={12} md={3}>
-          <LabelValue label="Name" value={formDetails.mrName} onChange={handleName} placeholder="Enter Name" />
-          {formDetails.mrName.trim() === '' && isSubmit && <ErrorMessage>Please User Name</ErrorMessage>}
+          <LabelValue label="Name" value={formDetails.name} onChange={(event:ChangeEvent<HTMLInputElement>)=>handleFormDetails(event,'name')} placeholder="Enter Name" />
+          {formDetails.name.trim() === '' && isSubmit && <ErrorMessage>Please User Name</ErrorMessage>}
         </Grid>
         <Grid item xs={12} md={3}>
-          <LabelValue label="Email Id" value={formDetails.email} onChange={handleEmail} placeholder="Enter Email Id" />
-          {(formDetails.email.trim() === '' || !isValidMail(formDetails.email)) && isSubmit && (
+          <LabelValue
+            label="Email Id"
+            value={formDetails.emailId}
+            onChange={(event:ChangeEvent<HTMLInputElement>)=>handleFormDetails(event,'emailId')}
+            placeholder="Enter Email Id"
+          />
+          {(formDetails.emailId.trim() === '' || !isValidMail(formDetails.emailId)) && isSubmit && (
             <ErrorMessage>Please enter Email Id</ErrorMessage>
           )}
         </Grid>
         <Grid item xs={12} md={3}>
           <Label>Phone Number</Label>
           <PhoneNumber
-            value={formDetails.phone}
+            value={formDetails.mobileNo}
             onChange={handlePhone}
             type="tel"
             placeholder="Enter Phone Number"
           ></PhoneNumber>
-          {(formDetails.phone.trim() === '' || formDetails.phone.length < 10) && isSubmit && (
+          {(formDetails.mobileNo.trim() === '' || formDetails.mobileNo.length < 10) && isSubmit && (
             <ErrorMessage>Please enter Phone Number</ErrorMessage>
           )}
         </Grid>
@@ -209,18 +210,18 @@ const AddOrEditMRPage = () => {
           {!formDetails.timezone && isSubmit && <ErrorMessage>Please select Timezone</ErrorMessage>}
         </Grid>
         <Grid item xs={3} md={3}>
-          <Label>Product Category</Label>
+          <Label>Role</Label>
           <CustomeAutoSelect
-            options={categoryList}
-            value={formDetails.category}
-            getOptionLabel={(option: categoryListType | any) => option.categoryName}
-            onChange={(event: any, data: categoryListType | any) => {
-              setFormDetails({ ...formDetails, category: data });
+            options={roleList}
+            value={formDetails.roleId}
+            getOptionLabel={(option: roleListItem | any) => option.roleName}
+            onChange={(event: any, data: roleListItem | any) => {
+              setFormDetails({ ...formDetails, roleId: data });
             }}
             size="small"
-            renderInput={params => <TextField {...params} placeholder={'Select Product Category'} />}
+            renderInput={params => <TextField {...params} placeholder={'Select Role'} />}
           />
-          {!formDetails.category && isSubmit && <ErrorMessage>Please select Product Category</ErrorMessage>}
+          {!formDetails.roleId && isSubmit && <ErrorMessage>Please select role</ErrorMessage>}
         </Grid>
         {location.state && (
           <Grid item xs={12} md={3}>
@@ -241,4 +242,4 @@ const AddOrEditMRPage = () => {
   );
 };
 
-export default AddOrEditMRPage;
+export default AddOrEditUser;

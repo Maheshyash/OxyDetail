@@ -37,9 +37,19 @@ const Header = ({ removeAuthToken }: { removeAuthToken: any }) => {
               <CustomNavLink
                 to={'/'}
                 className={({ isActive }) => (isActive ? 'active' : '')}
-                style={{ color: location.href.includes('/addMR') ? theme.palette.primary.main:'inherit' }}
+                style={{ color: location.href.includes('/addMR') ? theme.palette.primary.main : 'inherit' }}
               >
                 MR
+              </CustomNavLink>
+            </div>
+            <div>
+              <CustomNavLink to={'/user'} className={({ isActive }) => (isActive ? 'active' : '')}>
+                User
+              </CustomNavLink>
+            </div>
+            <div>
+              <CustomNavLink to={'/role'} className={({ isActive }) => (isActive ? 'active' : '')}>
+                Role
               </CustomNavLink>
             </div>
             <div>
@@ -55,6 +65,11 @@ const Header = ({ removeAuthToken }: { removeAuthToken: any }) => {
             <div>
               <CustomNavLink to={'/organization'} className={({ isActive }) => (isActive ? 'active' : '')}>
                 Organization
+              </CustomNavLink>
+            </div>
+            <div>
+              <CustomNavLink to={'/organization_settings'} className={({ isActive }) => (isActive ? 'active' : '')}>
+                Organization Settings
               </CustomNavLink>
             </div>
             <div>

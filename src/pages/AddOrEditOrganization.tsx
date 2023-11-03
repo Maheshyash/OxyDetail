@@ -16,8 +16,8 @@ import {
   Label,
   PhoneNumber
 } from '../components/styledComponents/InputBox.styles';
-import { countryListItem, countryListArray, stateListArray, stateListItem } from '../types/organizationTypes';
-import { fetchCoutryListDetails, fetchStateListDetails, insertOrUpdateOrganization } from '../utils/APIActions';
+import { countryListItem, countryListArray, stateListArray, stateListItem, plansListArray, planItem } from '../types/organizationTypes';
+import { fetchCoutryListDetails, fetchPlansList, fetchStateListDetails, insertOrUpdateOrganization } from '../utils/APIActions';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { isValidMail } from '../utils/common';
 import { toaster } from '../components/Toaster/Toaster';
@@ -31,7 +31,7 @@ interface formDetailsType {
   orgId: number;
   orgCode: string;
   orgName: string;
-  planId: number;
+  planId: planItem | null;
   activationDate: string;
   countryCode: countryListItem | null;
   stateCode: stateListItem | null;
@@ -53,12 +53,13 @@ const AddOrEditOrganization = () => {
   const [isSubmit, setIsSubmit] = useState(false);
   const [isConfirmPopUp, setIsConfirmPopUp] = useState(false);
   const [countryList, setCountryList] = useState<countryListArray>([]);
+  const [plansList, setPlansList] = useState<plansListArray>([]);
   const [stateList, setStateList] = useState<stateListArray>([]);
   const [formDetails, setFormDetails] = useState<formDetailsType>({
     orgId: 0,
     orgCode: '',
     orgName: '',
-    planId: 1,
+    planId: null,
     activationDate: '',
     countryCode: null,
     stateCode: null,
@@ -94,8 +95,14 @@ const AddOrEditOrganization = () => {
         console.log(err);
       });
   };
+  const fetchPlansDetails = async () => {
+    await fetchPlansList().then(res=>{
+      setPlansList(res);
+    })
+  }
   useEffect(() => {
     fetchCountryDetails();
+    fetchPlansDetails();
   }, []);
   useEffect(() => {
     if (location.state) {
@@ -179,7 +186,8 @@ const AddOrEditOrganization = () => {
       orgName.trim() === '' ||
       pocName.trim() === '' ||
       !stateCode ||
-      !countryCode
+      !countryCode ||
+      !planId
     ) {
       return false;
     }
@@ -191,6 +199,7 @@ const AddOrEditOrganization = () => {
       ...formDetails,
       countryCode: formDetails.countryCode?.countryCode,
       stateCode: formDetails.stateCode?.stateCode,
+      planId:formDetails.planId?.planId,
       forceUpdateIfExists: location.state ? true : isForceUpdate
     };
     const isValid = isValidFields();
@@ -355,6 +364,20 @@ const AddOrEditOrganization = () => {
             }
           />
           {formDetails.address.trim() === '' && isSubmit && <ErrorMessage>Please enter Address</ErrorMessage>}
+        </Grid>
+        <Grid item xs={12} md={3}>
+          <Label>Plan</Label>
+          <CustomeAutoSelect
+            options={plansList}
+            onChange={(event: React.SyntheticEvent<Element, Event>, data: planItem | any) => {
+              setFormDetails({ ...formDetails, planId: data });
+            }}
+            value={formDetails.planId}
+            getOptionLabel={(option: planItem | any) => option.planName}
+            size="small"
+            renderInput={params => <TextField {...params} placeholder={'Pleas Select'} />}
+          />
+          {!formDetails.planId && isSubmit && <ErrorMessage>Please select Plan</ErrorMessage>}
         </Grid>
         {location.state && (
           <Grid item xs={12} md={3}>

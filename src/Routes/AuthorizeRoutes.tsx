@@ -9,6 +9,11 @@ import AddOrEditAttributes from '../pages/AddOrEditAtrributes';
 import AttributeMappingPage from '../pages/AttributeMappingPage';
 import OrganizationPage from '../pages/OrganizationPage';
 import AddOrEditOrganization from '../pages/AddOrEditOrganization';
+import UserPage from '../pages/UserPage';
+import AddOrEditUser from '../pages/AddOrEditUser';
+import RolePage from '../pages/RolePage';
+import AddOrEditRole from '../pages/AddOrEditRole';
+import OrganizationSettingPage from '../pages/OrganizationSettingPage';
 const AuthorizeRoutes = ({ removeAuthToken }: { removeAuthToken: any }) => {
   return (
     <>
@@ -23,6 +28,11 @@ const AuthorizeRoutes = ({ removeAuthToken }: { removeAuthToken: any }) => {
         <Route path="/attribute/addAttribute" Component={AddOrEditAttributes} />
         <Route path="/organization" Component={OrganizationPage} />
         <Route path="/organization/addOrganization" Component={AddOrEditOrganization} />
+        <Route path="/user" Component={UserPage} />
+        <Route path="/user/addUser" Component={AddOrEditUser} />
+        <Route path="/role" Component={RolePage} />
+        <Route path="/role/addRole" Component={AddOrEditRole} />
+        <Route path='/organization_settings' Component={OrganizationSettingPage}/>
       </Routes>
     </>
   );

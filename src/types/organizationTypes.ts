@@ -25,7 +25,7 @@ export interface orgalizationListItem {
 }
 
 
-export type countryListArray = Array<countryListItem> |[]
+export type countryListArray = Array<countryListItem> | []
 
 export interface countryListItem {
   countryCode: string
@@ -37,4 +37,27 @@ export type stateListArray = Array<stateListItem> | []
 export interface stateListItem {
   stateCode: string
   stateName: string
+}
+
+export interface organizationSettings {
+  orgSettingId: number
+  orgCode: string
+  language: string
+  timeZone: string
+  currency: string
+  dateFormat: string
+  logo: string
+  pocName: string
+  pocContactNo: string
+  pocEmailId: string
+  designation: string
+  isActive: boolean
+}
+
+
+export type plansListArray = Array<planItem> | []
+
+export interface planItem {
+  planId: number
+  planName: string
 }
