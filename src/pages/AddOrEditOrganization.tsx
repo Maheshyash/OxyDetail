@@ -3,8 +3,19 @@ import { BodyContainer } from '../components/styledComponents/Body.styles';
 import Loader from '../components/Loader/Loader';
 import { Grid, TextField } from '@mui/material';
 import LabelValue from '../components/LabelValue';
-import { CustomDatepicker, CustomParagraph, CustomTextArea, DatePickerContainer, ErrorMessage, FlexItemBetweenContent, StyledModalBackdrop, StyledModalBody, StyledModalContent } from '../components/styledComponents/Common.styles';
-import { ActionButtonGroup, CustomButton, CustomeAutoSelect, Label, PhoneNumber } from '../components/styledComponents/InputBox.styles';
+import {
+  CustomDatepicker,
+  CustomSwitch,
+  CustomTextArea,
+  DatePickerContainer,
+  ErrorMessage,
+  FlexItemBetweenContent,
+} from '../components/styledComponents/Common.styles';
+import {
+  CustomeAutoSelect,
+  Label,
+  PhoneNumber
+} from '../components/styledComponents/InputBox.styles';
 import { countryListItem, countryListArray, stateListArray, stateListItem } from '../types/organizationTypes';
 import { fetchCoutryListDetails, fetchStateListDetails, insertOrUpdateOrganization } from '../utils/APIActions';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -13,6 +24,8 @@ import { toaster } from '../components/Toaster/Toaster';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
+import FormActionsButtons from '../components/FormActionsButtons';
+import CustomModal from '../components/CustomModal';
 
 interface formDetailsType {
   orgId: number;
@@ -83,17 +96,36 @@ const AddOrEditOrganization = () => {
   };
   useEffect(() => {
     fetchCountryDetails();
-  }, [])
+  }, []);
   useEffect(() => {
     if (location.state) {
-      const { activationDate, address, contactNo, countryCode,countryName, emailId, gstnNo, isActive, numberOfUser, orgCode, orgId, orgName, planId, pocContactNo, pocEmailId, pocName, stateCode, stateName } = location.state.organizationDetails;
+      const {
+        activationDate,
+        address,
+        contactNo,
+        countryCode,
+        countryName,
+        emailId,
+        gstnNo,
+        isActive,
+        numberOfUser,
+        orgCode,
+        orgId,
+        orgName,
+        planId,
+        pocContactNo,
+        pocEmailId,
+        pocName,
+        stateCode,
+        stateName
+      } = location.state.organizationDetails;
       fetchStateDetails(countryCode);
       setFormDetails({
         ...formDetails,
         activationDate: activationDate,
         address: address,
         contactNo: contactNo,
-        countryCode: {countryCode:countryCode,countryName:countryName},
+        countryCode: { countryCode: countryCode, countryName: countryName },
         stateCode: { stateCode: stateCode, stateName: stateName },
         emailId: emailId,
         gstnNo: gstnNo,
@@ -106,8 +138,8 @@ const AddOrEditOrganization = () => {
         pocContactNo: pocContactNo,
         pocEmailId: pocEmailId,
         pocName: pocName,
-        forceUpdateIfExists:true,
-      })
+        forceUpdateIfExists: true
+      });
     }
   }, []);
 
@@ -116,27 +148,76 @@ const AddOrEditOrganization = () => {
     const trimmedPhoneNumber = validPhoneNumber.substring(0, 10);
     setFormDetails({ ...formDetails, [variable]: trimmedPhoneNumber });
   };
+  const isValidFields = (): boolean => {
+    const {
+      activationDate,
+      address,
+      contactNo,
+      pocContactNo,
+      stateCode,
+      countryCode,
+      emailId,
+      gstnNo,
+      orgCode,
+      orgName,
+      planId,
+      pocEmailId,
+      pocName
+    } = formDetails;
+    if (
+      activationDate.trim() === '' ||
+      formDetails.activationDate === 'Invalid Date' ||
+      address.trim() === '' ||
+      contactNo.trim() === '' ||
+      pocContactNo.trim() === '' ||
+      emailId.trim() === '' ||
+      !isValidMail(emailId) ||
+      pocEmailId.trim() === '' ||
+      !isValidMail(pocEmailId) ||
+      gstnNo.trim() === '' ||
+      orgCode.trim() === '' ||
+      orgName.trim() === '' ||
+      pocName.trim() === '' ||
+      !stateCode ||
+      !countryCode
+    ) {
+      return false;
+    }
+    return true;
+  };
 
   const handleSubmittion = async (isForceUpdate = false) => {
-    const payload = { ...formDetails, countryCode: formDetails.countryCode?.countryCode, stateCode: formDetails.stateCode?.stateCode,forceUpdateIfExists: location.state ? true : isForceUpdate }
+    const payload = {
+      ...formDetails,
+      countryCode: formDetails.countryCode?.countryCode,
+      stateCode: formDetails.stateCode?.stateCode,
+      forceUpdateIfExists: location.state ? true : isForceUpdate
+    };
+    const isValid = isValidFields();
+    if (!isValid) {
+      setIsSubmit(true);
+      return;
+    }
     setIsLoader(true);
-    await insertOrUpdateOrganization(payload).then(res => {
-      const {statusCode, statusMessage} = res;
-      if (statusCode == 0 || statusCode === 1) {
-        toaster('success', statusMessage);
+    await insertOrUpdateOrganization(payload)
+      .then(res => {
+        const { statusCode, statusMessage } = res;
+        if (statusCode == 0 || statusCode === 1) {
+          toaster('success', statusMessage);
+          setIsLoader(false);
+          navigate(-1);
+        } else if (statusCode === -1) {
+          setIsConfirmPopUp(true);
+          setIsLoader(false);
+        } else {
+          toaster('error', statusMessage);
+        }
+      })
+      .catch(err => {
+        console.log(err, 'err');
         setIsLoader(false);
-        navigate(-1);
-      }else if (statusCode === -1) {
-        setIsConfirmPopUp(true);
-        setIsLoader(false)
-      } else {
-        toaster('error', statusMessage);
-      }
-    }).catch(err => {
-      console.log(err, 'err')
-      setIsLoader(false)
-    })
-  }
+      });
+  };
   return (
     <BodyContainer>
       {isLoader && <Loader />}
@@ -172,7 +253,7 @@ const AddOrEditOrganization = () => {
             size="small"
             renderInput={params => <TextField {...params} placeholder={'Pleas Select'} />}
           />
-          {formDetails.orgName.trim() === '' && isSubmit && <ErrorMessage>Please select Country</ErrorMessage>}
+          {!formDetails.countryCode && isSubmit && <ErrorMessage>Please select Country</ErrorMessage>}
         </Grid>
         <Grid item xs={12} md={3}>
           <Label>State</Label>
@@ -186,22 +267,22 @@ const AddOrEditOrganization = () => {
             size="small"
             renderInput={params => <TextField {...params} placeholder={'Pleas Select'} />}
           />
-          {formDetails.orgName.trim() === '' && isSubmit && <ErrorMessage>Please select State</ErrorMessage>}
+          {!formDetails.stateCode && isSubmit && <ErrorMessage>Please select State</ErrorMessage>}
         </Grid>
         <Grid item xs={12} md={3}>
           <LabelValue
             label="No of Users"
-            type='number'
+            type="number"
             value={formDetails.numberOfUser}
             onChange={(event: ChangeEvent<HTMLInputElement>) => {
               let inputNumber = event.target.value;
               if (Number(inputNumber) >= 0) {
-                setFormDetails({ ...formDetails, numberOfUser: Number(inputNumber) })
+                setFormDetails({ ...formDetails, numberOfUser: Number(inputNumber) });
               }
             }}
             placeholder="Enter No of Users"
           />
-          {formDetails.address.trim() === '' && isSubmit && <ErrorMessage>Please enter No of Users</ErrorMessage>}
+          {/* {formDetails.address.trim() === '' && isSubmit && <ErrorMessage>Please enter No of Users</ErrorMessage>} */}
         </Grid>
         <Grid item xs={12} md={3}>
           <LabelValue
@@ -242,6 +323,7 @@ const AddOrEditOrganization = () => {
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <CustomDatepicker
                 format="DD/MM/YYYY"
+                minDate={dayjs()}
                 value={formDetails.activationDate ? dayjs(formDetails.activationDate) : null}
                 onChange={(date: any) =>
                   setFormDetails({ ...formDetails, activationDate: dayjs(date).format('YYYY-MM-DD') })
@@ -258,10 +340,9 @@ const AddOrEditOrganization = () => {
               />
             </LocalizationProvider>
           </DatePickerContainer>
-          {formDetails.activationDate.trim() === '' ||
-            (formDetails.activationDate === 'Invalid Date' && isSubmit && (
-              <ErrorMessage>Please select Activation Date</ErrorMessage>
-            ))}
+          {(formDetails.activationDate.trim() === '' || formDetails.activationDate === 'Invalid Date') && isSubmit && (
+            <ErrorMessage>Please select Activation Date</ErrorMessage>
+          )}
         </Grid>
         <Grid item xs={12} md={3}>
           <Label>Address</Label>
@@ -275,6 +356,19 @@ const AddOrEditOrganization = () => {
           />
           {formDetails.address.trim() === '' && isSubmit && <ErrorMessage>Please enter Address</ErrorMessage>}
         </Grid>
+        {location.state && (
+          <Grid item xs={12} md={3}>
+            <Label>Is Active</Label>
+            <CustomSwitch
+              checked={formDetails.isActive}
+              onChange={() =>
+                setFormDetails(props => {
+                  return { ...formDetails, isActive: !props.isActive };
+                })
+              }
+            />
+          </Grid>
+        )}
         <Grid item xs={12}>
           <FlexItemBetweenContent>
             <h5>Point Of Contact</h5>
@@ -287,7 +381,9 @@ const AddOrEditOrganization = () => {
             onChange={(event: ChangeEvent<HTMLInputElement>) => handleFormDetails(event, 'pocName')}
             placeholder="Enter Organization Name"
           />
-          {formDetails.pocName.trim() === '' && isSubmit && <ErrorMessage>Please enter Point Of Contact Name</ErrorMessage>}
+          {formDetails.pocName.trim() === '' && isSubmit && (
+            <ErrorMessage>Please enter Point Of Contact Name</ErrorMessage>
+          )}
         </Grid>
         <Grid item xs={12} md={3}>
           <LabelValue
@@ -309,43 +405,23 @@ const AddOrEditOrganization = () => {
             type="tel"
             placeholder="Enter Contact Number"
           ></PhoneNumber>
-          {(formDetails.contactNo.trim() === '' || formDetails.contactNo.length < 10) && isSubmit && (
+          {(formDetails.pocContactNo.trim() === '' || formDetails.pocContactNo.length < 10) && isSubmit && (
             <ErrorMessage>Please enter Contact Number</ErrorMessage>
           )}
         </Grid>
-
       </Grid>
-      <ActionButtonGroup>
-        <CustomButton variant="outlined" onClick={() => navigate(-1)}>
-          Cancel
-        </CustomButton>
-        <CustomButton variant="contained" onClick={()=>handleSubmittion()}>
-          Submit
-        </CustomButton>
-      </ActionButtonGroup>
+      <FormActionsButtons handleForm={handleSubmittion} />
+
       {isConfirmPopUp && (
-        <StyledModalBackdrop>
-          <StyledModalBody>
-          <StyledModalContent>
-            <h5>Confirm Popup</h5>
-            <CustomParagraph>Are you sure you want to continue to update the existing Product</CustomParagraph>
-            <ActionButtonGroup>
-              <CustomButton variant="outlined" onClick={() => setIsConfirmPopUp(false)}>
-                Cancel
-              </CustomButton>
-              <CustomButton
-                variant="contained"
-                onClick={() => {
-                  handleSubmittion(true);
-                  setIsConfirmPopUp(false);
-                }}
-              >
-                Submit
-              </CustomButton>
-            </ActionButtonGroup>
-          </StyledModalContent>
-          </StyledModalBody>
-        </StyledModalBackdrop>
+        <CustomModal
+          handleForm={() => {
+            handleSubmittion(true);
+            setIsConfirmPopUp(false);
+          }}
+          handleCancel={() => setIsConfirmPopUp(false)}
+          heading="Confirm Popup"
+          subText="Are you sure you want to continue to update the existing Organization."
+        />
       )}
     </BodyContainer>
   );

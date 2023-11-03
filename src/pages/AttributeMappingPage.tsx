@@ -5,8 +5,13 @@ import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import AudioFileIcon from '@mui/icons-material/AudioFile';
 import { BodyContainer } from '../components/styledComponents/Body.styles';
 import Grid from '@mui/material/Grid';
-import { ActionButtonGroup, CustomButton, Label } from '../components/styledComponents/InputBox.styles';
-import { CustomParagraph, CustomeFileUpload, FlexItemBetweenContent, StyledInput } from '../components/styledComponents/Common.styles';
+import { Label } from '../components/styledComponents/InputBox.styles';
+import {
+  CustomParagraph,
+  CustomeFileUpload,
+  FlexItemBetweenContent,
+  StyledInput
+} from '../components/styledComponents/Common.styles';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import { insertOrUpdateDataMapping } from '../utils/APIActions';
 import AddCircleOutlinedIcon from '@mui/icons-material/AddCircleOutlined';
@@ -16,6 +21,7 @@ import { updateFileName } from '../utils/common';
 import Loader from '../components/Loader/Loader';
 import { useTheme } from '@mui/material';
 import dayjs from 'dayjs';
+import FormActionsButtons from '../components/FormActionsButtons';
 
 export type listItemArrayInterface = listItem[] | [];
 
@@ -241,7 +247,6 @@ const AttributeMappingPage = () => {
   };
   return (
     <BodyContainer>
-
       <div style={{ background: theme.palette.background.default, padding: 10, borderRadius: 8 }}>
         <Grid container>
           <Grid md={3}>
@@ -266,7 +271,9 @@ const AttributeMappingPage = () => {
           </Grid>
           <Grid md={3}>
             <Label style={{ fontWeight: 600 }}>Activation Date</Label>
-            <CustomParagraph>{dayjs(location.state.attributeDetails.activationDate).format('DD/MM/YYYY')}</CustomParagraph>
+            <CustomParagraph>
+              {dayjs(location.state.attributeDetails.activationDate).format('DD/MM/YYYY')}
+            </CustomParagraph>
           </Grid>
         </Grid>
       </div>
@@ -351,14 +358,7 @@ const AttributeMappingPage = () => {
           </div>
         );
       })}
-      <ActionButtonGroup>
-        <CustomButton variant="outlined" onClick={() => navigate(-1)}>
-          Cancel
-        </CustomButton>
-        <CustomButton variant="contained" onClick={handleMediaMappingSubmittion}>
-          Submit
-        </CustomButton>
-      </ActionButtonGroup>
+      <FormActionsButtons handleForm={handleMediaMappingSubmittion} />
     </BodyContainer>
   );
 };

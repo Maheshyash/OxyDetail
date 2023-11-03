@@ -1,6 +1,5 @@
 import { clearAllCookies } from '../utils/common';
-import { CustomParagraph, StyledModalBackdrop, StyledModalBody, StyledModalContent } from './styledComponents/Common.styles';
-import { ActionButtonGroup, CustomButton } from './styledComponents/InputBox.styles';
+import CustomModal from './CustomModal';
 interface TimeoutWarningModalProps {
   onRequestClose: () => void;
 }
@@ -11,21 +10,13 @@ export const TimeoutWarningModal: React.FC<TimeoutWarningModalProps> = ({ onRequ
   };
 
   return (
-    <StyledModalBackdrop>
-      <StyledModalBody>
-        <StyledModalContent>
-          <h5>Confirm Popup</h5>
-          <CustomParagraph>Are you sure you want to continue to update the existing Product</CustomParagraph>
-          <ActionButtonGroup>
-            <CustomButton variant="outlined" onClick={onLogOffCall}>
-              Log off
-            </CustomButton>
-            <CustomButton variant="contained" onClick={onRequestClose}>
-              Stay Logged In
-            </CustomButton>
-          </ActionButtonGroup>
-        </StyledModalContent>
-      </StyledModalBody>
-    </StyledModalBackdrop>
+    <CustomModal
+      handleForm={onRequestClose}
+      handleCancel={onLogOffCall}
+      heading="Confirm Popup"
+      subText="Are you sure you want Log Off."
+      button1Text="Log Off"
+      button2Text="Stay Logged In"
+    />
   );
 };

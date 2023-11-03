@@ -1,5 +1,5 @@
 import { BodyContainer } from '../components/styledComponents/Body.styles';
-import { ActionButtonGroup, CustomButton, Label } from '../components/styledComponents/InputBox.styles';
+import { Label } from '../components/styledComponents/InputBox.styles';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Grid from '@mui/material/Grid';
 import LabelValue from '../components/LabelValue';
@@ -16,6 +16,7 @@ import { insertOrUpdateAttributes } from '../utils/APIActions';
 import { toaster } from '../components/Toaster/Toaster';
 import { updateFileName } from '../utils/common';
 import { FileSize } from '../Constants';
+import FormActionsButtons from '../components/FormActionsButtons';
 interface formDetailsType {
   AttributeName: string;
   AttributeIconUpload: any;
@@ -71,7 +72,7 @@ const AddOrEditAttributes = () => {
       // setFileName(attributeDetails.)
     }
   }, []);
-  const handleAddOrUpdateAttribute = async e => {
+  const handleAddOrUpdateAttribute = async (e:any) => {
     debugger;
     e.preventDefault();
     if ((fileName.trim() === '' && !location.state) || formDetails.AttributeName.trim() === '') {
@@ -153,14 +154,7 @@ const AddOrEditAttributes = () => {
           </Grid>
         )}
       </Grid>
-      <ActionButtonGroup>
-        <CustomButton variant="outlined" onClick={() => navigate(-1)}>
-          Cancel
-        </CustomButton>
-        <CustomButton variant="contained" onClick={handleAddOrUpdateAttribute}>
-          Submit
-        </CustomButton>
-      </ActionButtonGroup>
+      <FormActionsButtons handleForm={handleAddOrUpdateAttribute} />
     </BodyContainer>
   );
 };

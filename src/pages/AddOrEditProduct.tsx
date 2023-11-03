@@ -5,8 +5,6 @@ import { BodyContainer } from '../components/styledComponents/Body.styles';
 import LabelValue from '../components/LabelValue';
 import { ChangeEvent, useEffect, useState } from 'react';
 import {
-  ActionButtonGroup,
-  CustomButton,
   CustomeAutoSelect,
   Label
 } from '../components/styledComponents/InputBox.styles';
@@ -25,20 +23,18 @@ import {
 import {
   CustomDatepicker,
   CustomMultiSelect,
-  CustomParagraph,
   CustomSwitch,
   CustomTextArea,
   DatePickerContainer,
-  ErrorMessage,
-  StyledModalBackdrop,
-  StyledModalBody,
-  StyledModalContent
+  ErrorMessage
 } from '../components/styledComponents/Common.styles';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Loader from '../components/Loader/Loader';
 import { toaster } from '../components/Toaster/Toaster';
 import dayjs from 'dayjs';
 import { AttributeDetails } from '../types/attributeTypes';
+import FormActionsButtons from '../components/FormActionsButtons';
+import CustomModal from '../components/CustomModal';
 interface productTypes {
   productCode: string;
   productName: string;
@@ -341,6 +337,7 @@ const AddOrEditProduct = () => {
               <CustomDatepicker
                 format="DD/MM/YYYY"
                 value={formDetails.activationDate ? dayjs(formDetails.activationDate) : null}
+                minDate={dayjs()}
                 onChange={(date: any) =>
                   setFormDetails({ ...formDetails, activationDate: dayjs(date).format('YYYY-MM-DD') })
                 }
@@ -356,10 +353,9 @@ const AddOrEditProduct = () => {
               />
             </LocalizationProvider>
           </DatePickerContainer>
-          {formDetails.activationDate.trim() === '' ||
-            (formDetails.activationDate === 'Invalid Date' && isSubmit && (
-              <ErrorMessage>Please select Activation Date</ErrorMessage>
-            ))}
+          {(formDetails.activationDate.trim() === '' || formDetails.activationDate === 'Invalid Date') && isSubmit && (
+            <ErrorMessage>Please select Activation Date</ErrorMessage>
+          )}
         </Grid>
         {location.state && (
           <Grid item xs={12} md={3}>
@@ -375,37 +371,19 @@ const AddOrEditProduct = () => {
           </Grid>
         )}
       </Grid>
-      <ActionButtonGroup>
-        <CustomButton variant="outlined" onClick={() => navigate(-1)}>
-          Cancel
-        </CustomButton>
-        <CustomButton variant="contained" onClick={() => handleProductSubmittion()}>
-          Submit
-        </CustomButton>
-      </ActionButtonGroup>
+      <FormActionsButtons
+        handleForm={handleProductSubmittion}
+      />
       {isConfirmPopUp && (
-        <StyledModalBackdrop>
-          <StyledModalBody>
-          <StyledModalContent>
-            <h5>Confirm Popup</h5>
-            <CustomParagraph>Are you sure you want to continue to update the existing Product</CustomParagraph>
-            <ActionButtonGroup>
-              <CustomButton variant="outlined" onClick={() => setIsConfirmPopUp(false)}>
-                Cancel
-              </CustomButton>
-              <CustomButton
-                variant="contained"
-                onClick={() => {
-                  handleProductSubmittion(true);
+        <CustomModal
+          handleForm={() => {
+            handleProductSubmittion(true);
                   setIsConfirmPopUp(false);
-                }}
-              >
-                Submit
-              </CustomButton>
-            </ActionButtonGroup>
-          </StyledModalContent>
-          </StyledModalBody>
-        </StyledModalBackdrop>
+          }}
+          handleCancel={() => setIsConfirmPopUp(false)}
+          heading="Confirm Popup"
+          subText="Are you sure you want to continue to update the existing Product."
+        />
       )}
     </BodyContainer>
   );
