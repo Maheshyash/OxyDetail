@@ -6,23 +6,40 @@ import { fetchToken } from '../utils/APIActions';
 import { toaster } from '../components/Toaster/Toaster';
 import Loader from '../components/Loader/Loader';
 import Logo from '../assets/logo.png';
-import { ErrorMessage, ImgLogo } from '../components/styledComponents/Common.styles';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import {
+  ErrorMessage,
+  ImgLogo
+} from '../components/styledComponents/Common.styles';
+import { ChangeOrResetPasswordContainer, LoginContainer, LoginRightContainer, Span } from '../components/styledComponents/Login.styles';
 const LoginPage = ({ setAuthToken }: { setAuthToken: any }) => {
   const navigate = useNavigate();
-  const [userName, setUserName] = useState('');
-  const [password, setPassword] = useState('');
   const [isSubmit, setIsSubmit] = useState<boolean>(false);
   const [isLoader, setIsLoader] = useState<boolean>(false);
-  const handleUserName = (e: ChangeEvent<HTMLInputElement>) => {
-    let value = e.target.value;
-    setUserName(value);
+  const [isForgotPassword, setIsForgotPassword] = useState<boolean>(false);
+  const [loginDetails, setLoginDetails] = useState({
+    userName: '',
+    password: ''
+  });
+  const [resetPasswordDetails, setResetPasswordDetails] = useState({
+    oldPassword: '',
+    newPassword: ''
+  });
+  const handleLoginDetails = (event: ChangeEvent<HTMLInputElement>, variableName: string) => {
+    setLoginDetails({ ...loginDetails, [variableName]: event.target.value });
   };
-  const handlePassword = (e: ChangeEvent<HTMLInputElement>) => {
-    let value = e.target.value;
-    setPassword(value);
+
+  const handleResetPassword = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
   };
-  const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+
+  const handleChangePassword = (event: ChangeEvent<HTMLInputElement>, variableName: string) => {
+    setResetPasswordDetails({ ...resetPasswordDetails, [variableName]: event.target.value });
+  };
+
+  const handleLogin = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const { userName, password } = loginDetails;
     if (userName.trim() === '' || password.trim() === '') {
       setIsSubmit(true);
       return;
@@ -48,12 +65,20 @@ const LoginPage = ({ setAuthToken }: { setAuthToken: any }) => {
   };
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', overflowX: 'hidden', position: 'relative' }}>
+    <LoginContainer>
       {isLoader && <Loader />}
       <aside className="login_left-side"></aside>
       <aside className="login_right-side">
-        <div className="login_right-side_container">
-          <form className="w_100" onSubmit={handleLogin}>
+        <LoginRightContainer>
+          <form
+            onSubmit={(event: FormEvent<HTMLFormElement>) => {
+              if (isForgotPassword) {
+                handleResetPassword(event);
+              } else {
+                handleLogin(event);
+              }
+            }}
+          >
             <section className="logo">
               <ImgLogo src={Logo} alt="OxyDetailLogo" />
             </section>
@@ -61,21 +86,64 @@ const LoginPage = ({ setAuthToken }: { setAuthToken: any }) => {
               <h3 style={{ marginBottom: 0 }}>Welcome to OxyDetail</h3>
               <p style={{ fontSize: 14, marginTop: 0 }}>Please sign-in to your account</p>
             </section>
-            <section className="user_inputs">
-              <LabelValue label="UserName" value={userName} onChange={handleUserName} />
-              {userName.trim() === '' && isSubmit && <ErrorMessage>Please enter UserName</ErrorMessage>}
-              <LabelValue label="Password" value={password} onChange={handlePassword} type="password" />
-              {password.trim() === '' && isSubmit && <ErrorMessage>Please enter Password</ErrorMessage>}
-            </section>
+            {!isForgotPassword ? (
+              <section >
+                <LabelValue
+                  label="UserName"
+                  value={loginDetails.userName}
+                  onChange={(event: ChangeEvent<HTMLInputElement>) => handleLoginDetails(event, 'userName')}
+                  placeholder="UserName"
+                />
+                {loginDetails.userName.trim() === '' && isSubmit && <ErrorMessage>Please enter UserName</ErrorMessage>}
+                <LabelValue
+                  label="Password"
+                  value={loginDetails.password}
+                  onChange={(event: ChangeEvent<HTMLInputElement>) => handleLoginDetails(event, 'password')}
+                  type="password"
+                  placeholder="Password"
+                />
+                {loginDetails.password.trim() === '' && isSubmit && <ErrorMessage>Please enter Password</ErrorMessage>}
+                <ChangeOrResetPasswordContainer>
+                  <Span onClick={() => setIsForgotPassword(true)}>Change Password</Span>
+                  <Span onClick={() => setIsForgotPassword(true)}>Forgot Password</Span>
+                </ChangeOrResetPasswordContainer>
+              </section>
+            ) : (
+              <section >
+                <ChangeOrResetPasswordContainer>
+                  <Span onClick={()=>setIsForgotPassword(false)}><ArrowBackIcon  />  Back</Span>
+                </ChangeOrResetPasswordContainer>
+                <LabelValue
+                  label="Old Password"
+                  placeholder="Old Password"
+                  value={resetPasswordDetails.oldPassword}
+                  onChange={(event: ChangeEvent<HTMLInputElement>) => handleChangePassword(event, 'oldPassword')}
+                />
+                {resetPasswordDetails.oldPassword.trim() === '' && isSubmit && (
+                  <ErrorMessage>Please enter UserName</ErrorMessage>
+                )}
+                <LabelValue
+                  label="New Password"
+                  value={resetPasswordDetails.newPassword}
+                  onChange={(event: ChangeEvent<HTMLInputElement>) => handleChangePassword(event, 'newPassword')}
+                  type="password"
+                  placeholder="New Password"
+                />
+                {resetPasswordDetails.newPassword.trim() === '' && isSubmit && (
+                  <ErrorMessage>Please enter Password</ErrorMessage>
+                )}
+                {/* <CustomParagraph onClick={() => console.log()}>Forgot Password</CustomParagraph> */}
+              </section>
+            )}
             <section>
               <Button variant="contained" fullWidth type="submit">
                 Login
               </Button>
             </section>
           </form>
-        </div>
+        </LoginRightContainer>
       </aside>
-    </div>
+    </LoginContainer>
   );
 };
 

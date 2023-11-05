@@ -8,7 +8,12 @@ import { CustomButton, CustomeAutoSelect, Label, PhoneNumber } from '../componen
 import { Timezone } from '../types/timezoneTypes';
 import timezones from '../Data/timezones.json';
 import dateformats from '../Data/dateformats.json';
-import { CustomeFileUpload, ErrorMessage, FlexItemBetweenContent, StyledInput } from '../components/styledComponents/Common.styles';
+import {
+  CustomeFileUpload,
+  ErrorMessage,
+  FlexItemBetweenContent,
+  StyledInput
+} from '../components/styledComponents/Common.styles';
 import { isValidMail, updateFileName } from '../utils/common';
 import { toaster } from '../components/Toaster/Toaster';
 import { PhotoCamera } from '@mui/icons-material';
@@ -17,21 +22,26 @@ import Avatar from '@mui/material/Avatar';
 import Stack from '@mui/material/Stack';
 import ClearIcon from '@mui/icons-material/Clear';
 import Loader from '../components/Loader/Loader';
+import FormActionsButtons from '../components/FormActionsButtons';
 
 export interface formDetailsType {
   orgSettingId: number;
   orgCode: string;
   language: string; //backend dropdown
-  timeZone: Timezone | string;
+  timeZone: Timezone | null;
   currency: string; // backend dropdown
   dateFormat: { label: string; value: string } | null;
-  logo: string |any | null;
+  logo: string | any | null;
   logoName: string;
   pocName: string;
   pocContactNo: string;
   pocEmailId: string;
   designation: string;
   isActive: boolean;
+}
+export interface dateFormatType {
+  label: string;
+  value: string;
 }
 const OrganizationSettingPage = () => {
   const [organizationDetails, setOrganizationDetials] = useState<organizationSettings | {}>({});
@@ -41,7 +51,7 @@ const OrganizationSettingPage = () => {
     orgSettingId: 0,
     orgCode: '',
     language: '',
-    timeZone: '',
+    timeZone: null,
     currency: '',
     dateFormat: null,
     logo: null,
@@ -59,11 +69,25 @@ const OrganizationSettingPage = () => {
     setIsLoader(true);
     await fetchOrganizationSettings()
       .then(res => {
-        setFormDetails({...res,dateFormat:{label:'DD/MM/YYYY', value:'DD/MM/YYYY'}});
+        setFormDetails({
+          ...res,
+          dateFormat: { label: 'DD/MM/YYYY', value: 'DD/MM/YYYY' },
+          timeZone: getTimezoneDetails(res.timeZone)
+        });
         setIsLoader(false);
       })
-      .catch(err => {console.log(err)
-      setIsLoader(false);});
+      .catch(err => {
+        console.log(err);
+        setIsLoader(false);
+      });
+  };
+
+  const getTimezoneDetails = (timezoneId: string | number) => {
+    let result: undefined | Timezone = timezones.find((ele: Timezone) => ele.text === timezoneId);
+    if (result) {
+      return result;
+    }
+    return null;
   };
 
   const handleFormDetails = (event: ChangeEvent<HTMLInputElement>, variableName: string) => {
@@ -77,42 +101,64 @@ const OrganizationSettingPage = () => {
   };
 
   const handleFormSubmittion = async () => {
-    if (formDetails.orgCode.trim() === "" || formDetails.language.trim() === "" || !formDetails.dateFormat || !formDetails.currency || formDetails.designation.trim()===""
-      || formDetails.pocName.trim() === "" || formDetails.pocContactNo.length < 10 || !isValidMail(formDetails.pocEmailId)) {
+    if (
+      formDetails.orgCode.trim() === '' ||
+      formDetails.language.trim() === '' ||
+      !formDetails.dateFormat ||
+      !formDetails.currency ||
+      formDetails.designation.trim() === '' ||
+      formDetails.pocName.trim() === '' ||
+      formDetails.pocContactNo.length < 10 ||
+      !isValidMail(formDetails.pocEmailId) ||
+      !formDetails.timeZone ||
+      !formDetails.logo ||
+      formDetails.logo === ''
+    ) {
       setIsSubmit(true);
       return;
     }
-    
+
     setIsLoader(true);
     var formData = new FormData();
-    formData.append('orgSettingId',String(formDetails.orgSettingId));
-    formData.append("orgCode",formDetails.orgCode);
-    formData.append("language",formDetails.language);
-    formData.append("timeZone",formDetails.timeZone.text);
-    formData.append('currency',formDetails.currency);
-    formData.append('dateFormat',formDetails.dateFormat.value);
-    formData.append('logo',formDetails.logo);
-    formData.append('pocName',formDetails.pocName);
-    formData.append('pocContactNo',formDetails.pocContactNo);
-    formData.append('pocEmailId',formDetails.pocEmailId);
-    formData.append('designation',formDetails.designation);
-    formData.append('isActive','false');
-    
-    await updateSettings(formData).then(res => {
-      if (res.statusCode == 0 || res.statusCode === 1) {
-        toaster('success', res.statusMessage);
+
+    const payload = {
+      orgSettingId: formDetails.orgSettingId,
+      orgCode: formDetails.orgCode,
+      language: formDetails.language,
+      timeZone: formDetails.timeZone.text,
+      currency: formDetails.currency,
+      dateFormat: formDetails.dateFormat.value,
+      logo: typeof formDetails.logo === 'string' ? formDetails.logo : formDetails.logoName,
+      pocName: formDetails.pocName,
+      pocContactNo: formDetails.pocContactNo,
+      pocEmailId: formDetails.pocEmailId,
+      designation: formDetails.designation,
+      isActive: formDetails.isActive
+    };
+
+    formData.append('Data', JSON.stringify(payload));
+    if (formDetails.logo instanceof File) {
+      formData.append(formDetails.logoName, formDetails.logo);
+    }
+
+    await updateSettings(formData)
+      .then(res => {
+        if (res.statusCode == 0 || res.statusCode === 1) {
+          toaster('success', res.statusMessage);
+          setIsLoader(false);
+        } else {
+          setIsLoader(false);
+          toaster('error', res.statusMessage);
+        }
+      })
+      .catch(res => {
         setIsLoader(false);
-      } else {
-        setIsLoader(false);
-      }
-    }).catch(res => {
-      setIsLoader(false);
-    })
+      });
   };
 
-  const findoutIsStringOrFile = (file:any) => {
-    return typeof(file) === 'string'|| file instanceof File;
-  }
+  const findoutIsStringOrFile = (file: any) => {
+    return typeof file === 'string' || file instanceof File;
+  };
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files && event.target.files[0];
@@ -134,7 +180,6 @@ const OrganizationSettingPage = () => {
     imageInput?.click();
   };
 
-  console.log(formDetails,'formDetails')
   return (
     <BodyContainer>
       {isLoader && <Loader />}
@@ -145,11 +190,17 @@ const OrganizationSettingPage = () => {
             onChange={(event: ChangeEvent<HTMLInputElement>) => handleFormDetails(event, 'orgCode')}
             value={formDetails.orgCode}
           />
-          {formDetails.orgCode.trim() === "" && isSubmit && <ErrorMessage>Please enter Organization Code</ErrorMessage>}
+          {formDetails.orgCode.trim() === '' && isSubmit && <ErrorMessage>Please enter Organization Code</ErrorMessage>}
         </Grid>
         <Grid item xs={12} md={3}>
-          <LabelValue label="Language" onChange={(event: ChangeEvent<HTMLInputElement>) => handleFormDetails(event, 'language')} value={formDetails.language} />
-          {formDetails.language.trim() === "" && isSubmit && <ErrorMessage>Please enter Organization Code</ErrorMessage>}
+          <LabelValue
+            label="Language"
+            onChange={(event: ChangeEvent<HTMLInputElement>) => handleFormDetails(event, 'language')}
+            value={formDetails.language}
+          />
+          {formDetails.language.trim() === '' && isSubmit && (
+            <ErrorMessage>Please enter Organization Code</ErrorMessage>
+          )}
         </Grid>
         <Grid item xs={12} md={3}>
           <Label>Timezone</Label>
@@ -163,7 +214,9 @@ const OrganizationSettingPage = () => {
             value={formDetails.timeZone}
             renderInput={params => <TextField {...params} placeholder={'Select Timezone'} />}
           />
-          {(!formDetails.timeZone || formDetails.timeZone == undefined) && isSubmit && <ErrorMessage>Please select Timezone</ErrorMessage>}
+          {(!formDetails.timeZone || formDetails.timeZone == undefined) && isSubmit && (
+            <ErrorMessage>Please select Timezone</ErrorMessage>
+          )}
         </Grid>
         <Grid item xs={12} md={3}>
           <LabelValue
@@ -182,9 +235,8 @@ const OrganizationSettingPage = () => {
             // onChange={(event, data) => {
             //   setFormDetails({ ...formDetails, dateFormat: data });
             // }}
-            getOptionLabel={option => option.value}
+            getOptionLabel={(option: dateFormatType | any) => option.value}
             size="small"
-            // value={formDetails.dateFormat}
             value={dateformats[0]}
             disabled
             renderInput={params => <TextField {...params} placeholder={'Select Date Format'} />}
@@ -202,32 +254,31 @@ const OrganizationSettingPage = () => {
         </Grid>
         <Grid item xs={12} md={3}>
           <Label>Logo</Label>
-          {!findoutIsStringOrFile(formDetails.logo) ?<>
-          
-            <CustomeFileUpload
-            id="image-upload"
-            type="text"
-            readOnly
-            value={formDetails.logoName}
-            endAdornment={
-              <IconButton color="primary" component="span" onClick={handleButtonClick}>
-                <PhotoCamera />
-              </IconButton>
-            }
-          />
-          <StyledInput
-            id="image-upload-input"
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-          />
-          </>:<Stack spacing={2} direction={"row"}>
-              <Avatar alt="Remy Sharp" src= {(formDetails.logo) instanceof File ? URL.createObjectURL(formDetails.logo):formDetails.logo}/>
-              <ClearIcon onClick ={()=> setFormDetails({...formDetails, logo:null, logoName:''})}></ClearIcon>
-            </Stack>}
-          {formDetails.logoName === '' && isSubmit && (
-            <ErrorMessage>Please enter Attribute Name</ErrorMessage>
+          {!findoutIsStringOrFile(formDetails.logo) ? (
+            <>
+              <CustomeFileUpload
+                id="image-upload"
+                type="text"
+                readOnly
+                value={formDetails.logoName}
+                endAdornment={
+                  <IconButton color="primary" component="span" onClick={handleButtonClick}>
+                    <PhotoCamera />
+                  </IconButton>
+                }
+              />
+              <StyledInput id="image-upload-input" type="file" accept="image/*" onChange={handleFileChange} />
+            </>
+          ) : (
+            <Stack spacing={2} direction={'row'}>
+              <Avatar
+                alt="Remy Sharp"
+                src={formDetails.logo instanceof File ? URL.createObjectURL(formDetails.logo) : formDetails.logo}
+              />
+              <ClearIcon onClick={() => setFormDetails({ ...formDetails, logo: null, logoName: '' })}></ClearIcon>
+            </Stack>
           )}
+          {formDetails.logoName === '' && isSubmit && <ErrorMessage>Please select Logo</ErrorMessage>}
         </Grid>
         <Grid item xs={12}>
           <FlexItemBetweenContent>
@@ -270,11 +321,8 @@ const OrganizationSettingPage = () => {
           )}
         </Grid>
       </Grid>
-      <Grid item xs={12} md={3}>
-        <CustomButton variant="contained" onClick={handleFormSubmittion}>
-          Submit{' '}
-        </CustomButton>
-      </Grid>
+      
+      <FormActionsButtons handleForm={handleFormSubmittion} isFirstButtonEnabled={false} button2Text="Update" />
     </BodyContainer>
   );
 };

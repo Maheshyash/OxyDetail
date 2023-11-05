@@ -1,67 +1,20 @@
-.login_left-side{
-  flex: 1 1 0%;
-  display: flex;
-  position: relative;
-  -webkit-box-align: center;
-  align-items: center;
-  -webkit-box-pack: center;
-  justify-content: center;
-}
-.login_right-side{
-  min-width: 380px;
-}
-.w_100{
-  width: 100%;
-}
-.login_right-side_container{
-  padding: 3rem;
-  height: 100%;
-  display: flex;
-  -webkit-box-align: center;
-  align-items: center;
-  -webkit-box-pack: center;
-  justify-content: center;
-  background-color: rgb(255, 255, 255);
-}
-.user_inputs{
-  margin-bottom: 20px;
-}
+
 .text_center{
   text-align: center;
 }
+
 .header_right_container{
   display: flex;
   gap: 10px;
   justify-content: end;
   align-items: center;
 }
+
 .m-2{
   margin: 20px;
 }
 
 /* index.css */
-
-table {
-  font-family: arial, sans-serif;
-  border-collapse: collapse;
-  width: 100%;
-}
-td,
-th {
-  border: 1px solid #dddddd;
-  text-align: left;
-  padding: 8px;
-}
-tr:nth-child(even) {
-  background-color: #dddddd;
-}
-
-.table-header-sticky {
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  background-color: #ccd3e1; /* Adjust the background color as needed */
-}
 
 ::-webkit-scrollbar {
   width: 5px;
@@ -78,7 +31,7 @@ tr:nth-child(even) {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #000; /* Change the background color to black on hover */
+  background: #000;
 }
 .MuiAutocomplete-listbox{
   font-size: 12px

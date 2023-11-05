@@ -9,7 +9,7 @@ const AttributeTable = ({ data }: { data: AttributeList }) => {
   const navigate = useNavigate();
 
   const columns: GridColDef[] = [
-    { field: 'attributeName', headerName: 'Attribute Name', minWidth: 200, flex: 1, resizable: true },
+    { field: 'attributeName', headerName: 'Attribute Name', minWidth: 200, flex: 1 },
     {
       field: 'isActive',
       headerName: 'Is Active',

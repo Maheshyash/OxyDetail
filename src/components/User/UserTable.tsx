@@ -9,10 +9,10 @@ const UserTable = ({ data }: { data:  usersListItemArray}) => {
   const navigate = useNavigate();
 
   const columns: GridColDef[] = [
-    { field: 'name', headerName: 'Name', minWidth: 200, flex:1,resizable:true },
-    { field: 'emailId', headerName: 'Email Id',minWidth:200, flex: 1,resizable:true  },
-    { field: 'mobileNo', headerName: 'Mobile Number', width: 200,resizable:true },
-    { field: 'timeZoneId', headerName: 'Timezone', minWidth: 200, flex:1,resizable:true },
+    { field: 'name', headerName: 'Name', minWidth: 200, flex:1  },
+    { field: 'emailId', headerName: 'Email Id',minWidth:200, flex: 1   },
+    { field: 'mobileNo', headerName: 'Mobile Number', width: 200  },
+    { field: 'timeZoneId', headerName: 'Timezone', minWidth: 200, flex:1  },
     {
       field: 'isActive',
       headerName: 'Is Active',

@@ -72,6 +72,8 @@ export const fetchMrList = (): Promise<any> => {
           clearAllCookies();
           toaster('warning', 'Token expired please login again');
           window.location.href = '/';
+        }else{
+          toaster('error','Something went wrong')
         }
         reject(error); // Reject the Promise to propagate the error
       });
@@ -99,6 +101,8 @@ export const fetchUsersList = (): Promise<usersListArray> => {
           clearAllCookies();
           toaster('warning', 'Token expired please login again');
           window.location.href = '/';
+        }else{
+          toaster('error','Something went wrong')
         }
         reject(error); // Reject the Promise to propagate the error
       });
@@ -136,6 +140,8 @@ export const fetchProductList = (payload?: {
           clearAllCookies();
           toaster('warning', 'Token expired please login again');
           window.location.href = '/';
+        }else{
+          toaster('error','Something went wrong')
         }
         reject(error); // Reject the Promise to propagate the error
       });
@@ -163,6 +169,8 @@ export const deleteProductItem = (ProductCode?: { ProductCode: string }): Promis
           clearAllCookies();
           toaster('warning', 'Token expired please login again');
           window.location.href = '/';
+        }else{
+          toaster('error','Something went wrong')
         }
         reject(error); // Reject the Promise to propagate the error
       });
@@ -190,6 +198,8 @@ export const fetchCategoryList = (): Promise<categoryListArray> => {
           clearAllCookies();
           toaster('warning', 'Token expired please login again');
           window.location.href = '/';
+        }else{
+          toaster('error','Something went wrong')
         }
         reject(error); // Reject the Promise to propagate the error
       });
@@ -217,6 +227,8 @@ export const insertOrUpdateProductDetail = (payload: any): Promise<insertUpdateA
           clearAllCookies();
           toaster('warning', 'Token expired please login again');
           window.location.href = '/';
+        }else{
+          toaster('error','Something went wrong')
         }
         reject(error); // Reject the Promise to propagate the error
       });
@@ -244,6 +256,8 @@ export const fetchSubCategoryList = (categoryId: number | null): Promise<subCate
           clearAllCookies();
           toaster('warning', 'Token expired please login again');
           window.location.href = '/';
+        }else{
+          toaster('error','Something went wrong')
         }
         reject(error); // Reject the Promise to propagate the error
       });
@@ -297,6 +311,8 @@ export const fetchAttributeList = (AttributeId?: number | null): Promise<Attribu
           clearAllCookies();
           toaster('warning', 'Token expired please login again');
           window.location.href = '/';
+        }else{
+          toaster('error','Something went wrong')
         }
         reject(error); // Reject the Promise to propagate the error
       });
@@ -324,6 +340,8 @@ export const deleteAttributeItem = (AttributeId?: number | null): Promise<delete
           clearAllCookies();
           toaster('warning', 'Token expired please login again');
           window.location.href = '/';
+        }else{
+          toaster('error','Something went wrong')
         }
         reject(error); // Reject the Promise to propagate the error
       });
@@ -356,6 +374,8 @@ export const insertOrUpdateDataMapping = (payload: any): Promise<insertUpdateAtr
           clearAllCookies();
           toaster('warning', 'Token expired please login again');
           window.location.href = '/';
+        }else{
+          toaster('error','Something went wrong')
         }
         reject(error); // Reject the Promise to propagate the error
       });
@@ -384,6 +404,8 @@ export const insertOrUpdateUser = (payload: any): Promise<insertUpdateAtrributeR
           clearAllCookies();
           toaster('warning', 'Token expired please login again');
           window.location.href = '/';
+        }else{
+          toaster('error','Something went wrong')
         }
         reject(error); // Reject the Promise to propagate the error
       });
@@ -413,6 +435,8 @@ export const fetchOrganizationList = (): Promise<organizationListArray> => {
           clearAllCookies();
           toaster('warning', 'Token expired please login again');
           window.location.href = '/';
+        }else{
+          toaster('error','Something went wrong')
         }
         reject(error); // Reject the Promise to propagate the error
       });
@@ -441,6 +465,8 @@ export const fetchStateListDetails = (countryCode: string): Promise<stateListArr
           clearAllCookies();
           toaster('warning', 'Token expired please login again');
           window.location.href = '/';
+        }else{
+          toaster('error','Something went wrong')
         }
         reject(error); // Reject the Promise to propagate the error
       });
@@ -468,6 +494,8 @@ export const fetchCoutryListDetails = (): Promise<countryListArray> => {
           clearAllCookies();
           toaster('warning', 'Token expired please login again');
           window.location.href = '/';
+        }else{
+          toaster('error','Something went wrong')
         }
         reject(error); // Reject the Promise to propagate the error
       });
@@ -495,6 +523,8 @@ export const fetchPlansList = (): Promise<plansListArray> => {
           clearAllCookies();
           toaster('warning', 'Token expired please login again');
           window.location.href = '/';
+        }else{
+          toaster('error','Something went wrong')
         }
         reject(error); // Reject the Promise to propagate the error
       });
@@ -522,6 +552,8 @@ export const insertOrUpdateOrganization = (payload: any): Promise<insertUpdateAt
           clearAllCookies();
           toaster('warning', 'Token expired please login again');
           window.location.href = '/';
+        }else{
+          toaster('error','Something went wrong')
         }
         reject(error); // Reject the Promise to propagate the error
       });
@@ -550,6 +582,8 @@ export const fetchRoleList = (RoleId?: string): Promise<roleListArray> => {
           clearAllCookies();
           toaster('warning', 'Token expired please login again');
           window.location.href = '/';
+        }else{
+          toaster('error','Something went wrong')
         }
         reject(error); // Reject the Promise to propagate the error
       });
@@ -577,6 +611,8 @@ export const fetchOrganizationSettings = (): Promise<organizationSettings> => {
           clearAllCookies();
           toaster('warning', 'Token expired please login again');
           window.location.href = '/';
+        }else{
+          toaster('error','Something went wrong')
         }
         reject(error); // Reject the Promise to propagate the error
       });
@@ -604,6 +640,8 @@ export const insertOrUpdateRole = (payload: any): Promise<insertUpdateAtrributeR
           clearAllCookies();
           toaster('warning', 'Token expired please login again');
           window.location.href = '/';
+        }else{
+          toaster('error','Something went wrong')
         }
         reject(error); // Reject the Promise to propagate the error
       });
@@ -631,6 +669,8 @@ export const updateSettings = (payload: any): Promise<insertUpdateAtrributeRespo
           clearAllCookies();
           toaster('warning', 'Token expired please login again');
           window.location.href = '/';
+        }else{
+          toaster('error','Something went wrong')
         }
         reject(error); // Reject the Promise to propagate the error
       });
