@@ -2,18 +2,18 @@ import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
 import AccountTreeRoundedIcon from '@mui/icons-material/AccountTreeRounded';
 import dayjs from 'dayjs';
 import { useNavigate } from 'react-router-dom';
-import { useMemo } from 'react';
+import React, { Suspense, useMemo } from 'react';
 import { ProductDetails, ProductItem } from '../../types/productTypes';
 import { ActionButtons, CustomParagraph } from '../styledComponents/Common.styles';
 import { GridCellParams, GridColDef } from '@mui/x-data-grid';
-import Table from '../Table';
+const Table = React.lazy(() => import('../Table.tsx'));
 
-const ProductTable = ({ data }: { data: ProductDetails}) => {
+const ProductTable = ({ data }: { data: ProductDetails }) => {
   const navigate = useNavigate();
 
   const columns: GridColDef[] = [
     { field: 'productName', headerName: 'productName', width: 200 },
-    { field: 'productCode', headerName: 'productCode', minWidth:200 , flex:1},
+    { field: 'productCode', headerName: 'productCode', minWidth: 200, flex: 1 },
     { field: 'categoryName', headerName: 'Category', width: 200 },
     { field: 'subCategoryName', headerName: 'Sub Category', width: 250 },
     {
@@ -22,9 +22,9 @@ const ProductTable = ({ data }: { data: ProductDetails}) => {
       width: 200,
       renderCell: (params: GridCellParams) => (
         <CustomParagraph>
-        {(params.row.activationDate  ? dayjs(params.row.activationDate ).format('DD/MM/YYYY') : '')}
-      </CustomParagraph>
-      ),
+          {params.row.activationDate ? dayjs(params.row.activationDate).format('DD/MM/YYYY') : ''}
+        </CustomParagraph>
+      )
     },
     {
       field: 'actions',
@@ -33,11 +33,11 @@ const ProductTable = ({ data }: { data: ProductDetails}) => {
       filterable: false,
       renderCell: (params: GridCellParams) => (
         <ActionButtons>
-        <ModeEditOutlineIcon onClick={() => handleAction(params.row as ProductItem)} />
-        <AccountTreeRoundedIcon onClick={() => handleAttributeMapping(params.row as ProductItem)} />
-      </ActionButtons>
-      ),
-    },
+          <ModeEditOutlineIcon onClick={() => handleAction(params.row as ProductItem)} />
+          <AccountTreeRoundedIcon onClick={() => handleAttributeMapping(params.row as ProductItem)} />
+        </ActionButtons>
+      )
+    }
   ];
 
   const handleAttributeMapping = async (row: any) => {
@@ -51,7 +51,9 @@ const ProductTable = ({ data }: { data: ProductDetails}) => {
   const memoizedData = useMemo(() => data, [data]);
 
   return (
-    <Table columns={columns} rows={memoizedData} getRowId={getRowId} />
+    <Suspense fallback={<div>Loading</div>}>
+      <Table columns={columns} rows={memoizedData} getRowId={getRowId} />
+    </Suspense>
   );
 };
 

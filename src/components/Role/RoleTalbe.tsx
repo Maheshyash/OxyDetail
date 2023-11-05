@@ -1,21 +1,22 @@
 import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
 import { useNavigate } from 'react-router-dom';
-import { useMemo } from 'react';
+import React, { Suspense, useMemo } from 'react';
 import { ActionButtons } from '../styledComponents/Common.styles';
 import { roleListArray, roleListItem } from '../../types/roleTypes';
 import { GridCellParams, GridColDef } from '@mui/x-data-grid';
-import Table from '../Table';
+const Table = React.lazy(() => import('../Table.tsx'));
 
-const RoleTable = ({ data }: { data: roleListArray}) => {
+const RoleTable = ({ data }: { data: roleListArray }) => {
   const navigate = useNavigate();
 
   const columns: GridColDef[] = [
-    { field: 'roleName', headerName: 'Role', flex:1 },
+    { field: 'roleName', headerName: 'Role', flex: 1 },
     {
       field: 'isActive',
       headerName: 'Is Active',
-      width: 150, flex:1,
-      valueFormatter: ({ value }: { value: boolean }) => (value ? 'Active' : 'In Active'),
+      width: 150,
+      flex: 1,
+      valueFormatter: ({ value }: { value: boolean }) => (value ? 'Active' : 'In Active')
     },
     {
       field: 'actions',
@@ -26,8 +27,8 @@ const RoleTable = ({ data }: { data: roleListArray}) => {
         <ActionButtons>
           <ModeEditOutlineIcon onClick={() => handleAction(params.row as roleListItem)} />
         </ActionButtons>
-      ),
-    },
+      )
+    }
   ];
 
   const handleAction = (row: any) => {
@@ -36,9 +37,11 @@ const RoleTable = ({ data }: { data: roleListArray}) => {
 
   const getRowId = (row: roleListItem) => row.roleId;
   const memoizedData = useMemo(() => data, [data]);
-  
+
   return (
-    <Table columns={columns} rows={memoizedData} getRowId={getRowId}/>
+    <Suspense fallback={<div>Loading</div>}>
+      <Table columns={columns} rows={memoizedData} getRowId={getRowId} />
+    </Suspense>
   );
 };
 

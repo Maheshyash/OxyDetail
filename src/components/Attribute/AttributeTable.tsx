@@ -1,10 +1,10 @@
-import { useMemo } from 'react';
+import React, { Suspense, useMemo } from 'react';
 import { AttributeDetails, AttributeList } from '../../types/attributeTypes';
 import { ActionButtons } from '../styledComponents/Common.styles';
 import { useNavigate } from 'react-router-dom';
 import { GridCellParams, GridColDef } from '@mui/x-data-grid';
 import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
-import Table from '../Table';
+const Table = React.lazy(() => import('../Table.tsx'));
 const AttributeTable = ({ data }: { data: AttributeList }) => {
   const navigate = useNavigate();
 
@@ -14,20 +14,20 @@ const AttributeTable = ({ data }: { data: AttributeList }) => {
       field: 'isActive',
       headerName: 'Is Active',
       width: 200,
-      valueFormatter: ({ value }: { value: boolean }) => (value ? 'Active' : 'In Active'),
+      valueFormatter: ({ value }: { value: boolean }) => (value ? 'Active' : 'In Active')
     },
     {
       field: 'actions',
       headerName: 'Actions',
       sortable: false,
       filterable: false,
-      width:200,
+      width: 200,
       renderCell: (params: GridCellParams) => (
         <ActionButtons>
           <ModeEditOutlineIcon onClick={() => handleAction(params.row as AttributeDetails)} />
         </ActionButtons>
-      ),
-    },
+      )
+    }
   ];
 
   const handleAction = (row: any) => {
@@ -38,7 +38,9 @@ const AttributeTable = ({ data }: { data: AttributeList }) => {
   const memoizedData = useMemo(() => data, [data]);
 
   return (
-    <Table columns={columns} rows={memoizedData} getRowId={getRowId} />
+    <Suspense fallback={<div>Loading</div>}>
+      <Table columns={columns} rows={memoizedData} getRowId={getRowId} />
+    </Suspense>
   );
 };
 

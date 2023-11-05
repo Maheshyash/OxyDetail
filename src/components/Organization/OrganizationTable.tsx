@@ -1,11 +1,11 @@
 import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
 import dayjs from 'dayjs';
 import { useNavigate } from 'react-router-dom';
-import { useMemo } from 'react';
+import React, { Suspense, useMemo } from 'react';
 import { ActionButtons, CustomParagraph } from '../styledComponents/Common.styles';
 import { orgalizationListItem, organizationListArray } from '../../types/organizationTypes';
 import { GridCellParams, GridColDef } from '@mui/x-data-grid';
-import Table from '../Table';
+const Table = React.lazy(() => import('../Table.tsx'));
 
 const OrganizationTable = ({ data }: { data: organizationListArray }) => {
   const navigate = useNavigate();
@@ -62,7 +62,11 @@ const OrganizationTable = ({ data }: { data: organizationListArray }) => {
   const getRowId = (row: orgalizationListItem) => row.orgId;
   const memoizedData = useMemo(() => data, [data]);
 
-  return <Table columns={columns} rows={memoizedData} getRowId={getRowId} />;
+  return (
+    <Suspense fallback={<div>Loading</div>}>
+      <Table columns={columns} rows={memoizedData} getRowId={getRowId} />
+    </Suspense>
+  );
 };
 
 export default OrganizationTable;
