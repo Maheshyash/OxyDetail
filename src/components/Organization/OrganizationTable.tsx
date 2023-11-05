@@ -1,115 +1,72 @@
 import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
-import AccountTreeRoundedIcon from '@mui/icons-material/AccountTreeRounded';
 import dayjs from 'dayjs';
 import { useNavigate } from 'react-router-dom';
-import { useTable, useSortBy } from 'react-table';
 import { useMemo } from 'react';
 import { ActionButtons, CustomParagraph } from '../styledComponents/Common.styles';
-import { TD, TH, TableContainer } from '../styledComponents/Table.styles';
-import { organizationListArray } from '../../types/organizationTypes';
+import { orgalizationListItem, organizationListArray } from '../../types/organizationTypes';
+import { GridCellParams, GridColDef } from '@mui/x-data-grid';
+import Table from '../Table';
 
 const OrganizationTable = ({ data }: { data: organizationListArray }) => {
     const navigate = useNavigate();
-    const COLUMNS = [
+
+    const columns: GridColDef[] = [
+        { field: 'orgName', headerName: 'Organization Name', minWidth: 200, flex:1,resizable:true },
+        { field: 'contactNo', headerName: 'Contact Number', minWidth: 200, flex:1,resizable:true },
+        { field: 'countryName', headerName: 'Country Name', minWidth: 200, flex:1,resizable:true },
+        { field: 'stateName', headerName: 'State Name', minWidth: 200, flex:1,resizable:true },
+        { field: 'emailId', headerName: 'Email Id', minWidth: 200, flex:1,resizable:true },
+        { field: 'gstnNo', headerName: 'GST Number',minWidth:200, flex: 1,resizable:true  },
+        { field: 'orgCode', headerName: 'Organization Code',minWidth:200, flex: 1,resizable:true  },
+        { field: 'address', headerName: 'Address', width: 300,resizable:true },
         {
-            Header: 'Organization Name',
-            accessor: 'orgName'
-        },
-        {
-            Header: 'Contact Number',
-            accessor: 'contactNo'
-        },
-        {
-            Header: 'Country',
-            accessor: 'countryName'
-        },
-        {
-            Header: 'State',
-            accessor: 'stateName'
-        },
-        {
-            Header: 'Email Id',
-            accessor: 'emailId'
-        },
-        {
-            Header: 'GST',
-            accessor: 'gstnNo'
-        },
-        {
-            Header: 'Oganization Code',
-            accessor: 'orgCode'
-        },
-        {
-            Header: 'Address',
-            accessor: 'address'
-        },
-        {
-            Header: 'Activation Date',
-            accessor: 'activationDate',
-            Cell: ({ row }: { row: any }) => (
-                <CustomParagraph>
-                    {row.values.activationDate ? dayjs(row.values.activationDate).format('DD/MM/YYYY') : ''}
+          field: 'activationDate',
+          headerName: 'activationDate',
+          sortable: false,
+          filterable: false,
+          width:200,
+          renderCell: (params: GridCellParams) => (
+            <CustomParagraph>
+                    {params.row.activationDate ? dayjs(params.row.activationDate).format('DD/MM/YYYY') : ''}
                 </CustomParagraph>
-            )
+          ),
         },
         {
-            Header: 'Expiration Date',
-            accessor: 'expiryDate',
-            Cell: ({ row }: { row: any }) => (
-                <CustomParagraph>
-                    {row.values.expiryDate ? dayjs(row.values.expiryDate).format('DD/MM/YYYY') : ''}
+          field: 'expiryDate',
+          headerName: 'expiryDate',
+          sortable: false,
+          filterable: false,
+          width:200,
+          renderCell: (params: GridCellParams) => (
+            <CustomParagraph>
+                    {params.row.expiryDate ? dayjs(params.row.expiryDate).format('DD/MM/YYYY') : ''}
                 </CustomParagraph>
-            )
+          ),
         },
         {
-            Header: 'Actions',
-            accessor: 'actions',
-            Cell: ({ row }: { row: any }) => (
-                <>
-                    <ActionButtons>
-                        <ModeEditOutlineIcon onClick={() => handleAction(row)} />
-                        {/* <AccountTreeRoundedIcon onClick={() => handleAttributeMapping(row)} /> */}
-                    </ActionButtons>
-                </>
-            )
-        }
-    ];
+          field: 'actions',
+          headerName: 'Actions',
+          sortable: false,
+          filterable: false,
+          width:200,
+          renderCell: (params: GridCellParams) => (
+            <ActionButtons>
+              <ModeEditOutlineIcon onClick={() => handleAction(params.row as orgalizationListItem)} />
+            </ActionButtons>
+          ),
+        },
+      ];
 
     const handleAction = (row: any) => {
-        navigate('addOrganization', { state: { organizationDetails: row.original } });
+        console.log(row,'row')
+        navigate('addOrganization', { state: { organizationDetails: row } });
     };
-    const columns = useMemo(() => COLUMNS, []);
-    const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({ columns, data }, useSortBy);
-    console.log('hiiii')
+
+    const getRowId = (row: orgalizationListItem) => row.orgId;
+    const memoizedData = useMemo(() => data, [data]);
+
     return (
-        <TableContainer>
-            <table {...getTableProps()}>
-                <thead>
-                    {headerGroups.map((headerGroup: any) => (
-                        <tr {...headerGroup.getHeaderGroupProps()} className="table-header-sticky">
-                            {headerGroup.headers.map((column: any) => (
-                                <TH {...column.getHeaderProps(column.getSortByToggleProps())}>
-                                    {column.render('Header')}
-                                    <span>{column.isSorted ? (column.isSortedDesc ? ' 🔽' : ' 🔼') : ''}</span>
-                                </TH>
-                            ))}
-                        </tr>
-                    ))}
-                </thead>
-                <tbody {...getTableBodyProps()}>
-                    {rows.map((row: any) => {
-                        prepareRow(row);
-                        return (
-                            <tr {...row.getRowProps()}>
-                                {row.cells.map((cell: any) => {
-                                    return <TD {...cell.getCellProps()}>{cell.render('Cell')}</TD>;
-                                })}
-                            </tr>
-                        );
-                    })}
-                </tbody>
-            </table>
-        </TableContainer>
+        <Table columns={columns} rows={memoizedData} getRowId={getRowId} />
     );
 };
 

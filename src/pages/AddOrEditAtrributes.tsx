@@ -56,10 +56,7 @@ const AddOrEditAttributes = () => {
       fileInputRef.current.click();
     }
   };
-  const options = [
-    { label: 'true', value: true },
-    { label: 'false', value: false }
-  ];
+
   useEffect(() => {
     if (location?.state) {
       const { attributeDetails } = location.state;
@@ -67,14 +64,12 @@ const AddOrEditAttributes = () => {
         ...formDetails,
         AttributeName: attributeDetails.attributeName,
         IsActive: attributeDetails.isActive,
-        AttributeIconUpload: ''
+        AttributeIconUpload: attributeDetails.attributeIcon
       });
       // setFileName(attributeDetails.)
     }
   }, []);
-  const handleAddOrUpdateAttribute = async (e:any) => {
-    debugger;
-    e.preventDefault();
+  const handleAddOrUpdateAttribute = async () => {
     if ((fileName.trim() === '' && !location.state) || formDetails.AttributeName.trim() === '') {
       setIsSubmit(true);
       return;
@@ -84,7 +79,7 @@ const AddOrEditAttributes = () => {
     const formData = new FormData();
     formData.append('AttributeName', formDetails.AttributeName);
     formData.append('AttributeIconUpload', formDetails.AttributeIconUpload);
-    formData.append('IsActive', formDetails.IsActive);
+    formData.append('IsActive', String(formDetails.IsActive));
     console.log(formData, 'formdata');
     if (location.state?.attributeDetails) {
       formData.append('AttributeId', location.state.attributeDetails.attributeId);
@@ -122,7 +117,7 @@ const AddOrEditAttributes = () => {
             id="image-upload"
             type="text"
             readOnly
-            value={fileName}
+            value={fileName||formDetails.AttributeIconUpload}
             endAdornment={
               <IconButton color="primary" component="span" onClick={handleButtonClick}>
                 <PhotoCamera />

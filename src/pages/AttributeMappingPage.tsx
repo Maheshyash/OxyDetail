@@ -182,8 +182,7 @@ const AttributeMappingPage = () => {
     setAttributeListArray(dummyArray);
   };
 
-  const handleMediaMappingSubmittion = async (e: any) => {
-    e.preventDefault();
+  const handleMediaMappingSubmittion = async () => {
     let isEverythingFilled: boolean = true;
     attributeListArray.map(ele =>
       ele.media.map(ele1 => {
@@ -212,7 +211,6 @@ const AttributeMappingPage = () => {
     };
     var formData = new FormData();
     formData.append('Data', JSON.stringify(Data));
-    debugger;
     attributeListArray.map((ele: any) =>
       ele.media.map((ele1: any) => {
         if (ele1.imageName && ele1.image) {

@@ -1,5 +1,5 @@
 import {styled} from "@mui/material";
-
+import { DataGrid } from "@mui/x-data-grid";
 export const TableContainer = styled('div')(({theme})=>({
     maxHeight:'70vh',
     overflow:'auto',
@@ -19,3 +19,34 @@ export const TD = styled('td')(({theme})=>({
     textAlign:'center',
     padding:5
 }));
+
+export const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
+    '& .MuiDataGrid-columnHeaders': {
+      background: theme.palette.primary.dark,
+      fontSize: theme.typography.fontSize,
+      padding: 0,
+      margin:0,
+      color:'white',
+    },
+    '& .MuiDataGrid-row': {
+      background: 'white',
+      fontSize: theme.typography.fontSize,
+    },
+    '& .MuiDataGrid-columnHeaderTitle':{
+        fontWeight:600
+    },
+    '& .MuiDataGrid-columnHeader .MuiSvgIcon-root':{
+        color:'white'
+    },
+    '& .MuiDataGrid-cellContent':{
+        // wordBreak:'break-word',
+        // whiteSpace:'break-spaces',
+        // textAlign:'center'
+    },
+    '& .MuiDataGrid-columnHeaderTitleContainer':{
+        justifyContent:'center'
+    },
+    '& .MuiDataGrid-cell':{
+        justifyContent:'center'
+    }
+  }));

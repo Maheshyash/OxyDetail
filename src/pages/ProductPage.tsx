@@ -119,11 +119,7 @@ const ProductPage = () => {
             Add
           </CustomButton>
         </AddButtonContainer>
-        {productList.length === 0 ? (
-          <NoRecordsFound>No records found</NoRecordsFound>
-        ) : (
-          <ProductTable data={productList} />
-        )}
+        <ProductTable data={productList} />
       </BodyContainer>
     </>
   );

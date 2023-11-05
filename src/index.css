@@ -65,6 +65,7 @@ tr:nth-child(even) {
 
 ::-webkit-scrollbar {
   width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-thumb {

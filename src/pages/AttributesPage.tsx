@@ -1,7 +1,7 @@
 import { MouseEvent, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BodyContainer } from '../components/styledComponents/Body.styles';
-import { AddButtonContainer, NoRecordsFound } from '../components/styledComponents/Common.styles';
+import { AddButtonContainer } from '../components/styledComponents/Common.styles';
 import { CustomButton } from '../components/styledComponents/InputBox.styles';
 import { fetchAttributeList } from '../utils/APIActions';
 import {  AttributeList } from '../types/attributeTypes';
@@ -47,11 +47,7 @@ const AttributesPage = () => {
           Add
         </CustomButton>
       </AddButtonContainer>
-      {attributeList.length === 0 ? (
-        <NoRecordsFound>No records found</NoRecordsFound>
-      ) : (
-        <AttributeTable data={attributeList} />
-      )}
+      <AttributeTable data={attributeList} />
     </BodyContainer>
     </>
   );

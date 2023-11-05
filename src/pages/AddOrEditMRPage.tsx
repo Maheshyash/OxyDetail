@@ -77,8 +77,7 @@ const AddOrEditMRPage = () => {
   };
 
 
-  const handleUserCreation = async (event: any) => {
-    event.preventDefault();
+  const handleUserCreation = async () => {
     setIsSubmit(true);
     const isValidEmail = isValidMail(formDetails.email);
 
