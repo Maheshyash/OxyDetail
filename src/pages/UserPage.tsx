@@ -37,7 +37,7 @@ const UserPage = () => {
         </CustomButton>
       </AddButtonContainer>
       {/* {usersList.length === 0 ? <NoRecordsFound>No records found</NoRecordsFound> : <UserTable data={usersList}/>} */}
-      <UserTable data={usersList}/>
+      <UserTable data={usersList} />
     </BodyContainer>
   );
 };

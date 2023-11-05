@@ -24,7 +24,7 @@ const Header = ({ removeAuthToken }: { removeAuthToken: any }) => {
   };
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
-  
+
   return (
     <HeaderContainer>
       <HeaderBody>

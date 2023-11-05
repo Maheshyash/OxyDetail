@@ -28,7 +28,7 @@ const MRPage = () => {
   }, []);
   return (
     <BodyContainer>
-      {isLoader && <Loader/>}
+      {isLoader && <Loader />}
       <AddButtonContainer>
         <CustomButton variant="outlined" onClick={handleAddMR}>
           Add

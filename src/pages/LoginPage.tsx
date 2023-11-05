@@ -7,11 +7,13 @@ import { toaster } from '../components/Toaster/Toaster';
 import Loader from '../components/Loader/Loader';
 import Logo from '../assets/logo.png';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { ErrorMessage, ImgLogo } from '../components/styledComponents/Common.styles';
 import {
-  ErrorMessage,
-  ImgLogo
-} from '../components/styledComponents/Common.styles';
-import { ChangeOrResetPasswordContainer, LoginContainer, LoginRightContainer, Span } from '../components/styledComponents/Login.styles';
+  ChangeOrResetPasswordContainer,
+  LoginContainer,
+  LoginRightContainer,
+  Span
+} from '../components/styledComponents/Login.styles';
 const LoginPage = ({ setAuthToken }: { setAuthToken: any }) => {
   const navigate = useNavigate();
   const [isSubmit, setIsSubmit] = useState<boolean>(false);
@@ -87,7 +89,7 @@ const LoginPage = ({ setAuthToken }: { setAuthToken: any }) => {
               <p style={{ fontSize: 14, marginTop: 0 }}>Please sign-in to your account</p>
             </section>
             {!isForgotPassword ? (
-              <section >
+              <section>
                 <LabelValue
                   label="UserName"
                   value={loginDetails.userName}
@@ -109,9 +111,11 @@ const LoginPage = ({ setAuthToken }: { setAuthToken: any }) => {
                 </ChangeOrResetPasswordContainer>
               </section>
             ) : (
-              <section >
+              <section>
                 <ChangeOrResetPasswordContainer>
-                  <Span onClick={()=>setIsForgotPassword(false)}><ArrowBackIcon  />  Back</Span>
+                  <Span onClick={() => setIsForgotPassword(false)}>
+                    <ArrowBackIcon /> Back
+                  </Span>
                 </ChangeOrResetPasswordContainer>
                 <LabelValue
                   label="Old Password"

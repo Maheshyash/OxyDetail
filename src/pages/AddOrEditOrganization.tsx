@@ -9,15 +9,23 @@ import {
   CustomTextArea,
   DatePickerContainer,
   ErrorMessage,
-  FlexItemBetweenContent,
+  FlexItemBetweenContent
 } from '../components/styledComponents/Common.styles';
+import { CustomeAutoSelect, Label, PhoneNumber } from '../components/styledComponents/InputBox.styles';
 import {
-  CustomeAutoSelect,
-  Label,
-  PhoneNumber
-} from '../components/styledComponents/InputBox.styles';
-import { countryListItem, countryListArray, stateListArray, stateListItem, plansListArray, planItem } from '../types/organizationTypes';
-import { fetchCoutryListDetails, fetchPlansList, fetchStateListDetails, insertOrUpdateOrganization } from '../utils/APIActions';
+  countryListItem,
+  countryListArray,
+  stateListArray,
+  stateListItem,
+  plansListArray,
+  planItem
+} from '../types/organizationTypes';
+import {
+  fetchCoutryListDetails,
+  fetchPlansList,
+  fetchStateListDetails,
+  insertOrUpdateOrganization
+} from '../utils/APIActions';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { isValidMail } from '../utils/common';
 import { toaster } from '../components/Toaster/Toaster';
@@ -96,10 +104,10 @@ const AddOrEditOrganization = () => {
       });
   };
   const fetchPlansDetails = async () => {
-    await fetchPlansList().then(res=>{
+    await fetchPlansList().then(res => {
       setPlansList(res);
-    })
-  }
+    });
+  };
   useEffect(() => {
     fetchCountryDetails();
     fetchPlansDetails();
@@ -142,7 +150,7 @@ const AddOrEditOrganization = () => {
         orgCode: orgCode,
         orgId: orgId,
         orgName: orgName,
-        planId: {planId:planId,planName:planName},
+        planId: { planId: planId, planName: planName },
         pocContactNo: pocContactNo,
         pocEmailId: pocEmailId,
         pocName: pocName,
@@ -200,7 +208,7 @@ const AddOrEditOrganization = () => {
       ...formDetails,
       countryCode: formDetails.countryCode?.countryCode,
       stateCode: formDetails.stateCode?.stateCode,
-      planId:formDetails.planId?.planId,
+      planId: formDetails.planId?.planId,
       forceUpdateIfExists: location.state ? true : isForceUpdate
     };
     const isValid = isValidFields();
@@ -285,7 +293,7 @@ const AddOrEditOrganization = () => {
             type="number"
             value={formDetails.numberOfUser}
             onChange={(event: ChangeEvent<HTMLInputElement>) => {
-              let inputNumber = event.target.value;
+              const inputNumber = event.target.value;
               if (Number(inputNumber) >= 0) {
                 setFormDetails({ ...formDetails, numberOfUser: Number(inputNumber) });
               }
@@ -387,6 +395,7 @@ const AddOrEditOrganization = () => {
               checked={formDetails.isActive}
               onChange={() =>
                 setFormDetails(props => {
+                  // eslint-disable-next-line react/prop-types
                   return { ...formDetails, isActive: !props.isActive };
                 })
               }

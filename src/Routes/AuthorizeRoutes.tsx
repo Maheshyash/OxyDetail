@@ -32,7 +32,7 @@ const AuthorizeRoutes = ({ removeAuthToken }: { removeAuthToken: any }) => {
         <Route path="/user/addUser" Component={AddOrEditUser} />
         <Route path="/role" Component={RolePage} />
         <Route path="/role/addRole" Component={AddOrEditRole} />
-        <Route path='/organization_settings' Component={OrganizationSettingPage}/>
+        <Route path="/organization_settings" Component={OrganizationSettingPage} />
       </Routes>
     </>
   );

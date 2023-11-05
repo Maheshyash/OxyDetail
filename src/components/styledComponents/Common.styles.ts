@@ -7,14 +7,14 @@ export const NoRecordsFound = styled('div')(({ theme }) => ({
   fontSize: `${theme.typography.fontSize}px`
 }));
 
-export const AddButtonContainer = styled('div')(({ theme }) => ({
+export const AddButtonContainer = styled('div')(() => ({
   textAlign: 'end',
   marginBottom: 10
 }));
 export const StyledInput = styled('input')({
   display: 'none'
 });
-export const ActionButtons = styled('div')(theme => ({
+export const ActionButtons = styled('div')(() => ({
   '& .MuiSvgIcon-root:not(:last-child)': {
     marginRight: '5px'
   },
@@ -22,12 +22,12 @@ export const ActionButtons = styled('div')(theme => ({
     cursor: 'pointer'
   }
 }));
-export const FilterContainer = styled('div')(theme => ({
+export const FilterContainer = styled('div')(() => ({
   display: 'flex',
   gap: 10
 }));
 
-export const CustomeFileUpload = styled(Input)(({ theme }) => ({
+export const CustomeFileUpload = styled(Input)(() => ({
   // display:'block',
   width: '100%'
 }));
@@ -36,7 +36,7 @@ const spinAnimation = keyframes`
   50% { transform: rotate(180deg) }
   100% { transform: rotate(360deg) }
 `;
-export const LoaderSpinnerContainer = styled('div')(({ theme }) => ({
+export const LoaderSpinnerContainer = styled('div')(() => ({
   width: '100%',
   height: '100%',
   display: 'inline-block',
@@ -49,7 +49,7 @@ export const LoaderSpinnerContainer = styled('div')(({ theme }) => ({
   bottom: 0,
   top: 0
 }));
-export const LoaderContainer = styled('div')(({ theme }) => ({
+export const LoaderContainer = styled('div')(() => ({
   backfaceVisibility: 'hidden',
   transformOrigin: '0 0',
   width: 'fit-content',
@@ -59,7 +59,7 @@ export const LoaderContainer = styled('div')(({ theme }) => ({
   transform: 'translate(-50%,-50%)'
 }));
 
-export const LoaderContainerInner = styled('div')(({ theme }) => ({
+export const LoaderContainerInner = styled('div')(() => ({
   animation: `${spinAnimation} 1.28s linear infinite`,
   width: '90.62px',
   height: '90.62px',
@@ -142,26 +142,26 @@ export const ErrorMessage = styled('span')(({ theme }) => ({
   fontSize: `${theme.typography.fontSize}px`
 }));
 
-export const ImgLogo = styled('img')(({ theme }) => ({
+export const ImgLogo = styled('img')(() => ({
   width: 200
 }));
 
-export const StyledModalBackdrop = styled('div')(({ theme }) => ({
-  position:'absolute',
-  top:0,
-  left:0,
-  right:0,
-  bottom:0,
-  zIndex:999999999
+export const StyledModalBackdrop = styled('div')(() => ({
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  zIndex: 999999999
 }));
-export const StyledModalBody = styled('div')(({})=>({
+export const StyledModalBody = styled('div')(() => ({
   position: 'relative',
-    top: '50%',
-    left:'50%',
-    transform: 'translate(-50%,-50%)',
-    display: 'flex',
-    justifyContent: 'center'
-}))
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%,-50%)',
+  display: 'flex',
+  justifyContent: 'center'
+}));
 
 export const StyledModalContent = styled('div')(({ theme }) => ({
   background: '#fff',

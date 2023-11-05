@@ -20,7 +20,7 @@ export function useAuth() {
     if (userDetails?.token) {
       addCookie('token', userDetails?.token);
       // addCookie('userDetails', JSON.stringify(userDetails?.userDetails));
-      localStorage.setItem("userDetails",JSON.stringify(userDetails?.userDetails));
+      localStorage.setItem('userDetails', JSON.stringify(userDetails?.userDetails));
     }
   };
 

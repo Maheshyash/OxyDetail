@@ -24,10 +24,10 @@ export const OrganizationURLs = {
   STATELIST: 'Organization/State_GetList',
   ORGANIZATIONSETTINGLIST: 'Organization/OrganizationSetting_GetList',
   ORGANIZATIONSETTINGINSERTUPDATE: 'Organization/OrganizationSetting_InsertUpdate',
-  PLANSLIST: 'Organization/Plan_GetList',
+  PLANSLIST: 'Organization/Plan_GetList'
 };
 
 export const roleURLs = {
   ROLEGETLIST: 'Role/Role_GetList',
   ROLEINSERTUPDATE: 'Role/Role_InsertUpdate'
-}
+};

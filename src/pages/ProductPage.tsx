@@ -1,4 +1,4 @@
-import { MouseEvent, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, Grid, TextField } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -10,10 +10,11 @@ import {
 import { BodyContainer, NormalContainer } from '../components/styledComponents/Body.styles';
 import { CustomButton, CustomeAutoSelect, Label } from '../components/styledComponents/InputBox.styles';
 import { fetchCategoryList, fetchProductList, fetchSubCategoryList } from '../utils/APIActions';
-import { AddButtonContainer, FilterContainer, NoRecordsFound } from '../components/styledComponents/Common.styles';
+import { AddButtonContainer, FilterContainer } from '../components/styledComponents/Common.styles';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import Loader from '../components/Loader/Loader';
 import ProductTable from '../components/Product/ProductTable';
+
 const ProductPage = () => {
   const navigate = useNavigate();
   const [productList, setProductList] = useState<ProductDetails>([]);
@@ -35,7 +36,7 @@ const ProductPage = () => {
       .then(res => {
         setCategoryList(res);
       })
-      .catch(err => {
+      .catch(() => {
         alert('err');
       });
   };
@@ -46,7 +47,7 @@ const ProductPage = () => {
         setSubCategoryList(res);
         setIsLoader(false);
       })
-      .catch(err => {
+      .catch(() => {
         setIsLoader(false);
         alert('err');
       });

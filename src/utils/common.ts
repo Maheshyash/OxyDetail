@@ -11,18 +11,18 @@ export const updateFileName = (fileName: string) => {
 };
 
 export const addCookie = (key: string, value: string, path: string = '/') => {
-  var d = new Date();
+  const d = new Date();
   // d.setMinutes(d.getMinutes() + 30);
-  d.setHours(d.getHours()+24);
-  var expires = d.toUTCString();
+  d.setHours(d.getHours() + 24);
+  const expires = d.toUTCString();
   document.cookie = `${key}=${value}; expires=${expires}; path=${path}`;
 };
 
 export const getCookie = (name: string) => {
-  var cookies = document.cookie.split(';');
-  for (var i = 0; i < cookies.length; i++) {
-    var cookie = cookies[i].trim();
-    var cookieParts = cookie.split('=');
+  const cookies = document.cookie.split(';');
+  for (let i = 0; i < cookies.length; i++) {
+    const cookie = cookies[i].trim();
+    const cookieParts = cookie.split('=');
     if (cookieParts[0] === name) {
       return cookieParts[1];
     }
@@ -31,12 +31,12 @@ export const getCookie = (name: string) => {
 };
 
 export const clearAllCookies = () => {
-  var cookies = document.cookie.split(';');
+  const cookies = document.cookie.split(';');
 
-  for (var i = 0; i < cookies.length; i++) {
-    var cookie = cookies[i];
-    var eqPos = cookie.indexOf('=');
-    var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+  for (let i = 0; i < cookies.length; i++) {
+    const cookie = cookies[i];
+    const eqPos = cookie.indexOf('=');
+    const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
     document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
   }
   localStorage.clear();

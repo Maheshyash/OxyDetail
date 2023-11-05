@@ -15,7 +15,7 @@ const MenusList = () => {
   if (Menus.length === 0) return '';
   return (
     <>
-      {Menus.map((menu,menuIndex) => {
+      {Menus.map((menu, menuIndex) => {
         return (
           <CustomNavLink
             key={`${menu}_${menuIndex}`}

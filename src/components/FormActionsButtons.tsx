@@ -8,7 +8,13 @@ interface props {
   button2Text?: string;
   isFirstButtonEnabled?: boolean;
 }
-const FormActionsButtons = ({ handleForm, handleCancel, button1Text = 'Cancel', button2Text = 'Submit', isFirstButtonEnabled = true }: props) => {
+const FormActionsButtons = ({
+  handleForm,
+  handleCancel,
+  button1Text = 'Cancel',
+  button2Text = 'Submit',
+  isFirstButtonEnabled = true
+}: props) => {
   const navigate = useNavigate();
 
   const handleCancelButton = () => {
@@ -21,9 +27,11 @@ const FormActionsButtons = ({ handleForm, handleCancel, button1Text = 'Cancel', 
 
   return (
     <ActionButtonGroup>
-      {isFirstButtonEnabled && <CustomButton variant="outlined" onClick={handleCancelButton}>
-        {button1Text}
-      </CustomButton>}
+      {isFirstButtonEnabled && (
+        <CustomButton variant="outlined" onClick={handleCancelButton}>
+          {button1Text}
+        </CustomButton>
+      )}
       <CustomButton variant="contained" onClick={() => handleForm()}>
         {button2Text}
       </CustomButton>

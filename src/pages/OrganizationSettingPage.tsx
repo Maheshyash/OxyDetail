@@ -1,10 +1,9 @@
 import { ChangeEvent, useEffect, useState } from 'react';
 import { BodyContainer } from '../components/styledComponents/Body.styles';
 import { fetchOrganizationSettings, updateSettings } from '../utils/APIActions';
-import { organizationSettings } from '../types/organizationTypes';
 import { Grid, IconButton, TextField } from '@mui/material';
 import LabelValue from '../components/LabelValue';
-import { CustomButton, CustomeAutoSelect, Label, PhoneNumber } from '../components/styledComponents/InputBox.styles';
+import { CustomeAutoSelect, Label, PhoneNumber } from '../components/styledComponents/InputBox.styles';
 import { Timezone } from '../types/timezoneTypes';
 import timezones from '../Data/timezones.json';
 import dateformats from '../Data/dateformats.json';
@@ -44,7 +43,6 @@ export interface dateFormatType {
   value: string;
 }
 const OrganizationSettingPage = () => {
-  const [organizationDetails, setOrganizationDetials] = useState<organizationSettings | {}>({});
   const [isSubmit, setIsSubmit] = useState(false);
   const [isLoader, setIsLoader] = useState(false);
   const [formDetails, setFormDetails] = useState<formDetailsType>({
@@ -70,7 +68,17 @@ const OrganizationSettingPage = () => {
     await fetchOrganizationSettings()
       .then(res => {
         setFormDetails({
-          ...res,
+          ...formDetails,
+          orgSettingId: res.orgSettingId,
+          orgCode: res.orgCode,
+          language: res.language,
+          currency: res.currency,
+          logo: res.logo,
+          pocName: res.pocName,
+          pocContactNo: res.pocContactNo,
+          pocEmailId: res.pocEmailId,
+          designation: res.designation,
+          isActive: res.isActive,
           dateFormat: { label: 'DD/MM/YYYY', value: 'DD/MM/YYYY' },
           timeZone: getTimezoneDetails(res.timeZone)
         });
@@ -83,7 +91,7 @@ const OrganizationSettingPage = () => {
   };
 
   const getTimezoneDetails = (timezoneId: string | number) => {
-    let result: undefined | Timezone = timezones.find((ele: Timezone) => ele.text === timezoneId);
+    const result: undefined | Timezone = timezones.find((ele: Timezone) => ele.text === timezoneId);
     if (result) {
       return result;
     }
@@ -119,7 +127,7 @@ const OrganizationSettingPage = () => {
     }
 
     setIsLoader(true);
-    var formData = new FormData();
+    const formData = new FormData();
 
     const payload = {
       orgSettingId: formDetails.orgSettingId,
@@ -151,7 +159,7 @@ const OrganizationSettingPage = () => {
           toaster('error', res.statusMessage);
         }
       })
-      .catch(res => {
+      .catch(() => {
         setIsLoader(false);
       });
   };
@@ -176,7 +184,7 @@ const OrganizationSettingPage = () => {
   };
 
   const handleButtonClick = () => {
-    let imageInput = document.getElementById('image-upload-input');
+    const imageInput = document.getElementById('image-upload-input');
     imageInput?.click();
   };
 
@@ -321,7 +329,7 @@ const OrganizationSettingPage = () => {
           )}
         </Grid>
       </Grid>
-      
+
       <FormActionsButtons handleForm={handleFormSubmittion} isFirstButtonEnabled={false} button2Text="Update" />
     </BodyContainer>
   );

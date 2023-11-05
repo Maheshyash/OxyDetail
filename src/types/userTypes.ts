@@ -1,21 +1,21 @@
 export interface usersListArray {
-    data: userListItem[]
+  data: userListItem[];
 }
 
 export type usersListItemArray = Array<userListItem> | [];
 
 export interface userListItem {
-    userId: number
-    loginId: string
-    name: string
-    mobileNo: string
-    emailId: string
-    password: any
-    passwordSalt: any
-    orgCode: string
-    isActive: boolean
-    timeZoneId: string
-    roleId: number
-    categoryId: number
-    categoryName: string
+  userId: number;
+  loginId: string;
+  name: string;
+  mobileNo: string;
+  emailId: string;
+  password: string | null;
+  passwordSalt: string | null;
+  orgCode: string;
+  isActive: boolean;
+  timeZoneId: string;
+  roleId: number;
+  categoryId: number;
+  categoryName: string;
 }

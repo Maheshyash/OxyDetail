@@ -1,18 +1,11 @@
 import { useState, ChangeEvent, useEffect } from 'react';
 import Grid from '@mui/material/Grid';
-import {
-  CustomeAutoSelect,
-  Label,
-  PhoneNumber
-} from '../components/styledComponents/InputBox.styles';
+import { CustomeAutoSelect, Label, PhoneNumber } from '../components/styledComponents/InputBox.styles';
 import LabelValue from '../components/LabelValue';
 import TextField from '@mui/material/TextField';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { BodyContainer } from '../components/styledComponents/Body.styles';
-import {
-  CustomSwitch,
-  ErrorMessage,
-} from '../components/styledComponents/Common.styles';
+import { CustomSwitch, ErrorMessage } from '../components/styledComponents/Common.styles';
 import { toaster } from '../components/Toaster/Toaster';
 import { isValidMail } from '../utils/common';
 import { fetchCategoryList, insertOrUpdateUser } from '../utils/APIActions';
@@ -70,12 +63,10 @@ const AddOrEditMRPage = () => {
         setCategoryList(res);
         setIsLoader(false);
       })
-      .catch(err => {
-        alert('err');
+      .catch(() => {
         setIsLoader(false);
       });
   };
-
 
   const handleUserCreation = async () => {
     setIsSubmit(true);
@@ -153,7 +144,7 @@ const AddOrEditMRPage = () => {
     }
   }, [categoryList]);
   const getCategoryDetails = (categoryId: number) => {
-    let result = categoryList.find(ele => ele.categoryId === categoryId);
+    const result = categoryList.find(ele => ele.categoryId === categoryId);
     if (result) {
       return result;
     }
@@ -161,7 +152,7 @@ const AddOrEditMRPage = () => {
   };
 
   const getTimezoneDetails = (timezoneId: string | number) => {
-    let result: undefined | Timezone = timezones.find((ele: Timezone) => ele.text === timezoneId);
+    const result: undefined | Timezone = timezones.find((ele: Timezone) => ele.text === timezoneId);
     if (result) {
       return result;
     }
@@ -228,6 +219,7 @@ const AddOrEditMRPage = () => {
               checked={formDetails.isActive}
               onChange={() =>
                 setFormDetails(props => {
+                  // eslint-disable-next-line react/prop-types
                   return { ...formDetails, isActive: !props.isActive };
                 })
               }

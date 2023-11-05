@@ -93,7 +93,7 @@ const AddOrEditAttributes = () => {
           toaster('error', res.statusMessage);
         }
       })
-      .catch(err => {
+      .catch(() => {
         toaster('error', 'Something went wrong');
       });
   };
@@ -117,7 +117,7 @@ const AddOrEditAttributes = () => {
             id="image-upload"
             type="text"
             readOnly
-            value={fileName||formDetails.AttributeIconUpload}
+            value={fileName || formDetails.AttributeIconUpload}
             endAdornment={
               <IconButton color="primary" component="span" onClick={handleButtonClick}>
                 <PhotoCamera />
@@ -142,6 +142,7 @@ const AddOrEditAttributes = () => {
               checked={formDetails.IsActive}
               onChange={() =>
                 setFormDetails(props => {
+                  // eslint-disable-next-line react/prop-types
                   return { ...formDetails, IsActive: !props.IsActive };
                 })
               }

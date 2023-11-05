@@ -40,7 +40,7 @@ export const Label = styled('label')(({ theme }) => ({
   display: 'block'
 }));
 
-export const ActionButtonGroup = styled('section')(({ theme }) => ({
+export const ActionButtonGroup = styled('section')(() => ({
   textAlign: 'end',
   marginTop: 10,
   '& > *:not(:last-child)': {
@@ -68,21 +68,21 @@ export const CustomeAutoSelect = styled(Autocomplete)(({ theme }) => ({
   }
 }));
 
-export const PlainButton = styled('button')(({ theme }) => ({
+export const PlainButton = styled('button')(() => ({
   border: 'none',
   background: 'transparent'
 }));
-export const Layout = styled('div')(({ theme }) => ({
+export const Layout = styled('div')(() => ({
   marginTop: '20px',
   padding: '20px'
 }));
-export const HeaderTag = styled('header')(({ theme }) => ({
+export const HeaderTag = styled('header')(() => ({
   marginBottom: '10px',
   '& .MuiPaper-root': {
     padding: '5px'
   }
 }));
-export const CustomButton = styled(Button)(({ theme }) => ({
+export const CustomButton = styled(Button)(() => ({
   textTransform: 'inherit',
   cursor: 'pointer'
 }));

@@ -7,7 +7,7 @@ interface TableProps {
   rows: GridRowsProp;
 }
 
-const Table: React.FC<TableProps> = ({ columns, rows, ...rest }) => {
+const Table: React.FC<TableProps> = ({ columns, rows, ...rest }: TableProps) => {
   return (
     <TableContainer style={{ height: 300 }}>
       <StyledDataGrid

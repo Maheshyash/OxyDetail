@@ -14,7 +14,7 @@ export const TimeoutLogic = () => {
 
     const createTimeout2 = () =>
       setTimeout(() => {
-        clearAllCookies()
+        clearAllCookies();
         window.location.href = '/';
       }, IdealTiming.AUTOSIGNOFF);
 

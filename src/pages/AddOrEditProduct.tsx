@@ -4,10 +4,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { BodyContainer } from '../components/styledComponents/Body.styles';
 import LabelValue from '../components/LabelValue';
 import { ChangeEvent, useEffect, useState } from 'react';
-import {
-  CustomeAutoSelect,
-  Label
-} from '../components/styledComponents/InputBox.styles';
+import { CustomeAutoSelect, Label } from '../components/styledComponents/InputBox.styles';
 import {
   fetchAttributeList,
   fetchCategoryList,
@@ -87,10 +84,12 @@ const AddOrEditProduct = () => {
         // setAttributeList(res.map(ele=>{label:ele.attributeId, value:ele.attributeName}));
         const list = res.map(ele => ({ label: ele.attributeName, value: ele.attributeId }));
         if (location.state) {
-          const list1 = location.state.productDetails.attributes.map((ele:AttributeDetails) => ele.attributeId);
+          const list1 = location.state.productDetails.attributes.map((ele: AttributeDetails) => ele.attributeId);
           const info = list1
-            .map((ele:number|string) => (list.find(ele1 => ele1.value === ele) ? list.find(ele1 => ele1.value === ele) : null))
-            .filter((ele:any) => ele !== null && ele !== undefined);
+            .map((ele: number | string) =>
+              list.find(ele1 => ele1.value === ele) ? list.find(ele1 => ele1.value === ele) : null
+            )
+            .filter((ele: any) => ele !== null && ele !== undefined);
           // const info = list.filter(ele => list.findIndex(ele1 => ele1.value === ele) && list.find(ele1 => ele1.value === ele) );
           console.log(info, 'info');
           setSelected(info);
@@ -111,7 +110,7 @@ const AddOrEditProduct = () => {
         setCategoryList(res);
         setIsLoader(false);
       })
-      .catch(err => {
+      .catch(() => {
         alert('err');
         setIsLoader(false);
       });
@@ -123,7 +122,7 @@ const AddOrEditProduct = () => {
         setSubCategoryList(res);
         setIsLoader(false);
       })
-      .catch(err => {
+      .catch(() => {
         alert('err');
         setIsLoader(false);
       });
@@ -214,7 +213,7 @@ const AddOrEditProduct = () => {
           navigate(-1);
         } else if (statusCode === -1) {
           setIsConfirmPopUp(true);
-          setIsLoader(false)
+          setIsLoader(false);
         } else {
           toaster('error', statusMessage);
           setIsLoader(false);
@@ -269,7 +268,7 @@ const AddOrEditProduct = () => {
           <Label>Sub Category Name</Label>
           <CustomeAutoSelect
             options={subCategoryList}
-            onChange={(event: React.SyntheticEvent<Element, Event>, data: subCategoryListType|any) => {
+            onChange={(event: React.SyntheticEvent<Element, Event>, data: subCategoryListType | any) => {
               setSubCategoryId(data);
             }}
             value={subCategoryId}
@@ -314,6 +313,7 @@ const AddOrEditProduct = () => {
             checked={formDetails.isNewProduct}
             onChange={() =>
               setFormDetails(props => {
+                // eslint-disable-next-line react/prop-types
                 return { ...formDetails, isNewProduct: !props.isNewProduct };
               })
             }
@@ -325,6 +325,7 @@ const AddOrEditProduct = () => {
             checked={formDetails.isFocusedProduct}
             onChange={() =>
               setFormDetails(props => {
+                // eslint-disable-next-line react/prop-types
                 return { ...formDetails, isFocusedProduct: !props.isFocusedProduct };
               })
             }
@@ -364,6 +365,7 @@ const AddOrEditProduct = () => {
               checked={formDetails.isActive}
               onChange={() =>
                 setFormDetails(props => {
+                  // eslint-disable-next-line react/prop-types
                   return { ...formDetails, isActive: !props.isActive };
                 })
               }
@@ -371,14 +373,12 @@ const AddOrEditProduct = () => {
           </Grid>
         )}
       </Grid>
-      <FormActionsButtons
-        handleForm={handleProductSubmittion}
-      />
+      <FormActionsButtons handleForm={handleProductSubmittion} />
       {isConfirmPopUp && (
         <CustomModal
           handleForm={() => {
             handleProductSubmittion(true);
-                  setIsConfirmPopUp(false);
+            setIsConfirmPopUp(false);
           }}
           handleCancel={() => setIsConfirmPopUp(false)}
           heading="Confirm Popup"

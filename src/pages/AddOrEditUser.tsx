@@ -43,16 +43,10 @@ const AddOrEditUser = () => {
     timezone: null,
     userId: 0
   });
-  const handleName = (e: ChangeEvent<HTMLInputElement>) => {
-    setFormDetails({ ...formDetails, name: e.target.value });
-  };
-  const handleEmail = (e: ChangeEvent<HTMLInputElement>) => {
-    setFormDetails({ ...formDetails, emailId: e.target.value });
-  };
 
-  const handleFormDetails = (event:ChangeEvent<HTMLInputElement>, variable:string) => {
+  const handleFormDetails = (event: ChangeEvent<HTMLInputElement>, variable: string) => {
     setFormDetails({ ...formDetails, [variable]: event.target.value });
-  }
+  };
   const handlePhone = (e: ChangeEvent<HTMLInputElement>) => {
     const validPhoneNumber = e.target.value.replace(/[^0-9]/g, '');
     const trimmedPhoneNumber = validPhoneNumber.substring(0, 10);
@@ -66,7 +60,7 @@ const AddOrEditUser = () => {
         setRoleList(res);
         setIsLoader(false);
       })
-      .catch(err => {
+      .catch(() => {
         alert('err');
         setIsLoader(false);
       });
@@ -149,7 +143,7 @@ const AddOrEditUser = () => {
   }, [roleList]);
 
   const getListDetails = (roleId: number) => {
-    let result = roleList.find(ele => ele.roleId === roleId);
+    const result = roleList.find(ele => ele.roleId === roleId);
     if (result) {
       return result;
     }
@@ -157,7 +151,7 @@ const AddOrEditUser = () => {
   };
 
   const getTimezoneDetails = (timezoneId: string | number) => {
-    let result: undefined | Timezone = timezones.find((ele: Timezone) => ele.text === timezoneId);
+    const result: undefined | Timezone = timezones.find((ele: Timezone) => ele.text === timezoneId);
     if (result) {
       return result;
     }
@@ -169,14 +163,19 @@ const AddOrEditUser = () => {
       {isLoader && <Loader />}
       <Grid container spacing={2}>
         <Grid item xs={12} md={3}>
-          <LabelValue label="Name" value={formDetails.name} onChange={(event:ChangeEvent<HTMLInputElement>)=>handleFormDetails(event,'name')} placeholder="Enter Name" />
+          <LabelValue
+            label="Name"
+            value={formDetails.name}
+            onChange={(event: ChangeEvent<HTMLInputElement>) => handleFormDetails(event, 'name')}
+            placeholder="Enter Name"
+          />
           {formDetails.name.trim() === '' && isSubmit && <ErrorMessage>Please User Name</ErrorMessage>}
         </Grid>
         <Grid item xs={12} md={3}>
           <LabelValue
             label="Email Id"
             value={formDetails.emailId}
-            onChange={(event:ChangeEvent<HTMLInputElement>)=>handleFormDetails(event,'emailId')}
+            onChange={(event: ChangeEvent<HTMLInputElement>) => handleFormDetails(event, 'emailId')}
             placeholder="Enter Email Id"
           />
           {(formDetails.emailId.trim() === '' || !isValidMail(formDetails.emailId)) && isSubmit && (
@@ -230,6 +229,7 @@ const AddOrEditUser = () => {
               checked={formDetails.isActive}
               onChange={() =>
                 setFormDetails(props => {
+                  // eslint-disable-next-line react/prop-types
                   return { ...formDetails, isActive: !props.isActive };
                 })
               }

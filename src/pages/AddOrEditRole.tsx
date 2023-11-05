@@ -29,35 +29,37 @@ const AddOrEditRole = () => {
     setFormeDtails({ ...formDetails, roleName: event.target.value });
   };
   const handleRoleSubmittion = async () => {
-    if (formDetails.roleName.trim() === "") {
+    if (formDetails.roleName.trim() === '') {
       setIsSubmit(true);
       return;
     }
     setIsLoader(true);
-    await insertOrUpdateRole(formDetails).then(res => {
-      if (res.statusCode == 0 || res.statusCode === 1) {
-        toaster('success', res.statusMessage);
+    await insertOrUpdateRole(formDetails)
+      .then(res => {
+        if (res.statusCode == 0 || res.statusCode === 1) {
+          toaster('success', res.statusMessage);
+          setIsLoader(false);
+          navigate(-1);
+        } else {
+          setIsLoader(false);
+          toaster('error', res.statusMessage);
+        }
+      })
+      .catch(err => {
+        console.log(err);
         setIsLoader(false);
-        navigate(-1);
-      } else {
-        setIsLoader(false);
-        toaster('error', res.statusMessage);
-      }
-    }).catch(err => {
-      console.log(err)
-      setIsLoader(false)
-    })
-  }
+      });
+  };
   useEffect(() => {
-    if(location.state){
-      const {roleId, roleName, isActive} = location.state.roleDetails;
+    if (location.state) {
+      const { roleId, roleName, isActive } = location.state.roleDetails;
       setFormeDtails({
         roleId: roleId,
-        roleName:roleName,
-        isActive:isActive
-      })
+        roleName: roleName,
+        isActive: isActive
+      });
     }
-  }, [])
+  }, []);
   return (
     <BodyContainer>
       {isLoader && <Loader />}
@@ -73,6 +75,7 @@ const AddOrEditRole = () => {
               checked={formDetails.isActive}
               onChange={() =>
                 setFormeDtails(props => {
+                  // eslint-disable-next-line react/prop-types
                   return { ...formDetails, isActive: !props.isActive };
                 })
               }

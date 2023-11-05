@@ -3,6 +3,7 @@ import CustomModal from './CustomModal';
 interface TimeoutWarningModalProps {
   onRequestClose: () => void;
 }
+// eslint-disable-next-line react/prop-types
 export const TimeoutWarningModal: React.FC<TimeoutWarningModalProps> = ({ onRequestClose }) => {
   const onLogOffCall = () => {
     clearAllCookies();
