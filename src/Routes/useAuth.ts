@@ -21,6 +21,7 @@ export function useAuth() {
       addCookie('token', userDetails?.token);
       // addCookie('userDetails', JSON.stringify(userDetails?.userDetails));
       localStorage.setItem('userDetails', JSON.stringify(userDetails?.userDetails));
+      localStorage.setItem('menu', JSON.stringify(userDetails?.menu));
     }
   };
 

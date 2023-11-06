@@ -47,7 +47,4 @@ const RoleTable = ({ data }: { data: roleListArray }) => {
 };
 
 export default RoleTable;
-function handleMapping(arg0: roleListItem) {
-  throw new Error('Function not implemented.');
-}
 

@@ -18,7 +18,8 @@ export const TD = styled('td')(({ theme }) => ({
   background: '#ffffff',
   fontSize: `${theme.typography.fontSize}px`,
   textAlign: 'center',
-  padding: 5
+  padding: 5,
+  verticalAlign: 'baseline'
 }));
 
 export const StyledDataGrid = styled(DataGrid)(({ theme }) => ({

@@ -1,6 +1,6 @@
 import { ChangeEvent, useEffect, useState } from 'react';
 import { BodyContainer } from '../components/styledComponents/Body.styles';
-import { fetchOrganizationSettings, updateSettings } from '../utils/APIActions';
+import { fetchCurrencyList, fetchLanguageList, fetchOrganizationSettings, updateSettings } from '../utils/APIActions';
 import { Grid, IconButton, TextField } from '@mui/material';
 import LabelValue from '../components/LabelValue';
 import { CustomeAutoSelect, Label, PhoneNumber } from '../components/styledComponents/InputBox.styles';
@@ -22,13 +22,14 @@ import Stack from '@mui/material/Stack';
 import ClearIcon from '@mui/icons-material/Clear';
 import Loader from '../components/Loader/Loader';
 import FormActionsButtons from '../components/FormActionsButtons';
+import { currencyArrayType, currencyItemType, languageArrayType, languageItemType } from '../types/organizationTypes';
 
 export interface formDetailsType {
   orgSettingId: number;
   orgCode: string;
-  language: string; //backend dropdown
+  language: languageItemType | null; //backend dropdown
   timeZone: Timezone | null;
-  currency: string; // backend dropdown
+  currency: currencyItemType | null; // backend dropdown
   dateFormat: { label: string; value: string } | null;
   logo: string | any | null;
   logoName: string;
@@ -45,12 +46,14 @@ export interface dateFormatType {
 const OrganizationSettingPage = () => {
   const [isSubmit, setIsSubmit] = useState(false);
   const [isLoader, setIsLoader] = useState(false);
+  const [languageList, setLanguageList] = useState<languageArrayType>([]);
+  const [currencyList, setCurrencyList] = useState<currencyArrayType>([]);
   const [formDetails, setFormDetails] = useState<formDetailsType>({
     orgSettingId: 0,
     orgCode: '',
-    language: '',
+    language: null,
     timeZone: null,
-    currency: '',
+    currency: null,
     dateFormat: null,
     logo: null,
     logoName: '',
@@ -62,7 +65,33 @@ const OrganizationSettingPage = () => {
   });
   useEffect(() => {
     fetchSettingDetials();
+    fetchLanguageDetails();
+    fetchCurrencyDetails();
   }, []);
+  const fetchLanguageDetails = async () => {
+    setIsLoader(true);
+    await fetchLanguageList()
+      .then(res => {
+        setIsLoader(false);
+        setLanguageList(res);
+      })
+      .catch(err => {
+        console.log(err);
+        setIsLoader(false);
+      });
+  };
+  const fetchCurrencyDetails = async () => {
+    setIsLoader(true);
+    await fetchCurrencyList()
+      .then(res => {
+        setIsLoader(false);
+        setCurrencyList(res);
+      })
+      .catch(err => {
+        console.log(err);
+        setIsLoader(false);
+      });
+  };
   const fetchSettingDetials = async () => {
     setIsLoader(true);
     await fetchOrganizationSettings()
@@ -71,8 +100,8 @@ const OrganizationSettingPage = () => {
           ...formDetails,
           orgSettingId: res.orgSettingId,
           orgCode: res.orgCode,
-          language: res.language,
-          currency: res.currency,
+          language: { languageId: res.languageId, languageName: res.languageName },
+          currency: { currencyId: res.currencyId, currencyName: res.currencyName },
           logo: res.logo,
           pocName: res.pocName,
           pocContactNo: res.pocContactNo,
@@ -111,7 +140,7 @@ const OrganizationSettingPage = () => {
   const handleFormSubmittion = async () => {
     if (
       formDetails.orgCode.trim() === '' ||
-      formDetails.language.trim() === '' ||
+      !formDetails.language ||
       !formDetails.dateFormat ||
       !formDetails.currency ||
       formDetails.designation.trim() === '' ||
@@ -120,7 +149,8 @@ const OrganizationSettingPage = () => {
       !isValidMail(formDetails.pocEmailId) ||
       !formDetails.timeZone ||
       !formDetails.logo ||
-      formDetails.logo === ''
+      formDetails.logo === '' ||
+      !formDetails.currency
     ) {
       setIsSubmit(true);
       return;
@@ -132,9 +162,9 @@ const OrganizationSettingPage = () => {
     const payload = {
       orgSettingId: formDetails.orgSettingId,
       orgCode: formDetails.orgCode,
-      language: formDetails.language,
+      languageId: formDetails.language.languageId,
       timeZone: formDetails.timeZone.text,
-      currency: formDetails.currency,
+      currencyId: formDetails.currency.currencyId,
       dateFormat: formDetails.dateFormat.value,
       logo: typeof formDetails.logo === 'string' ? formDetails.logo : formDetails.logoName,
       pocName: formDetails.pocName,
@@ -201,14 +231,18 @@ const OrganizationSettingPage = () => {
           {formDetails.orgCode.trim() === '' && isSubmit && <ErrorMessage>Please enter Organization Code</ErrorMessage>}
         </Grid>
         <Grid item xs={12} md={3}>
-          <LabelValue
-            label="Language"
-            onChange={(event: ChangeEvent<HTMLInputElement>) => handleFormDetails(event, 'language')}
+        <Label>Language</Label>
+          <CustomeAutoSelect
+            options={languageList}
+            onChange={(event, data:languageArrayType | any) => {
+              setFormDetails({ ...formDetails, language: data });
+            }}
+            getOptionLabel={(option: languageArrayType | any) => option.languageName}
+            size="small"
             value={formDetails.language}
+            renderInput={params => <TextField {...params} placeholder={'Select Currency'} />}
           />
-          {formDetails.language.trim() === '' && isSubmit && (
-            <ErrorMessage>Please enter Organization Code</ErrorMessage>
-          )}
+          {!formDetails.language && isSubmit && <ErrorMessage>Please select Currency</ErrorMessage>}
         </Grid>
         <Grid item xs={12} md={3}>
           <Label>Timezone</Label>
@@ -227,12 +261,16 @@ const OrganizationSettingPage = () => {
           )}
         </Grid>
         <Grid item xs={12} md={3}>
-          <LabelValue
-            label="Currency"
-            onChange={(event: ChangeEvent<HTMLInputElement>) => {
-              handleFormDetails(event, 'currency');
+          <Label>Currency</Label>
+          <CustomeAutoSelect
+            options={currencyList}
+            onChange={(event, data:currencyArrayType | any) => {
+              setFormDetails({ ...formDetails, currency: data });
             }}
+            getOptionLabel={(option: currencyItemType | any) => option.currencyName}
+            size="small"
             value={formDetails.currency}
+            renderInput={params => <TextField {...params} placeholder={'Select Currency'} />}
           />
           {!formDetails.currency && isSubmit && <ErrorMessage>Please select Currency</ErrorMessage>}
         </Grid>

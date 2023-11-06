@@ -24,6 +24,7 @@ const LoginPage = ({ setAuthToken }: { setAuthToken: any }) => {
     password: ''
   });
   const [resetPasswordDetails, setResetPasswordDetails] = useState({
+    userName:'',
     oldPassword: '',
     newPassword: ''
   });
@@ -118,13 +119,22 @@ const LoginPage = ({ setAuthToken }: { setAuthToken: any }) => {
                   </Span>
                 </ChangeOrResetPasswordContainer>
                 <LabelValue
+                  label="UserName"
+                  placeholder="Enter Username"
+                  value={resetPasswordDetails.userName}
+                  onChange={(event: ChangeEvent<HTMLInputElement>) => handleChangePassword(event, 'userName')}
+                />
+                {resetPasswordDetails.userName.trim() === '' && isSubmit && (
+                  <ErrorMessage>Please enter UserName</ErrorMessage>
+                )}
+                <LabelValue
                   label="Old Password"
                   placeholder="Old Password"
                   value={resetPasswordDetails.oldPassword}
                   onChange={(event: ChangeEvent<HTMLInputElement>) => handleChangePassword(event, 'oldPassword')}
                 />
                 {resetPasswordDetails.oldPassword.trim() === '' && isSubmit && (
-                  <ErrorMessage>Please enter UserName</ErrorMessage>
+                  <ErrorMessage>Please enter Old Password</ErrorMessage>
                 )}
                 <LabelValue
                   label="New Password"
@@ -134,7 +144,7 @@ const LoginPage = ({ setAuthToken }: { setAuthToken: any }) => {
                   placeholder="New Password"
                 />
                 {resetPasswordDetails.newPassword.trim() === '' && isSubmit && (
-                  <ErrorMessage>Please enter Password</ErrorMessage>
+                  <ErrorMessage>Please enter New Password</ErrorMessage>
                 )}
                 {/* <CustomParagraph onClick={() => console.log()}>Forgot Password</CustomParagraph> */}
               </section>

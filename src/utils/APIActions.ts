@@ -13,13 +13,15 @@ import { toaster } from '../components/Toaster/Toaster';
 import { clearAllCookies } from './common';
 import {
   countryListArray,
+  currencyArrayType,
+  languageArrayType,
   organizationListArray,
   organizationSettings,
   plansListArray,
   stateListArray
 } from '../types/organizationTypes';
 import { usersListArray } from '../types/userTypes';
-import { roleListArray } from '../types/roleTypes';
+import { roleListArray, roleMenuArrayType } from '../types/roleTypes';
 
 const multiFormHeaders = {
   headers: {
@@ -506,6 +508,63 @@ export const fetchCoutryListDetails = (): Promise<countryListArray> => {
   });
 };
 
+export const fetchLanguageList = (): Promise<languageArrayType> => {
+  return new Promise<languageArrayType>((resolve, reject) => {
+    OxyDetailInstaceWithToken.get(OrganizationURLs.LANGUAGELIST)
+      .then((response: AxiosResponse<languageArrayType>) => {
+        // Handle the successful response here
+        const responseData = response.data;
+        resolve(responseData);
+      })
+      .catch((error: AxiosError) => {
+        if (axios.isAxiosError(error)) {
+          // Axios error (e.g., network error)
+          console.error('Axios error:', error);
+        } else {
+          // Non-Axios error (e.g., JSON parsing error)
+          console.error('Non-Axios error:', error);
+        }
+        if (error.response && error.response.status === 401) {
+          // localStorage.clear();
+          clearAllCookies();
+          toaster('warning', 'Token expired please login again');
+          window.location.href = '/';
+        } else {
+          toaster('error', 'Something went wrong');
+        }
+        reject(error); // Reject the Promise to propagate the error
+      });
+  });
+};
+export const fetchCurrencyList = (): Promise<currencyArrayType> => {
+  return new Promise<currencyArrayType>((resolve, reject) => {
+    OxyDetailInstaceWithToken.get(OrganizationURLs.CURRENCYLIST)
+      .then((response: AxiosResponse<currencyArrayType>) => {
+        // Handle the successful response here
+        const responseData = response.data;
+        resolve(responseData);
+      })
+      .catch((error: AxiosError) => {
+        if (axios.isAxiosError(error)) {
+          // Axios error (e.g., network error)
+          console.error('Axios error:', error);
+        } else {
+          // Non-Axios error (e.g., JSON parsing error)
+          console.error('Non-Axios error:', error);
+        }
+        if (error.response && error.response.status === 401) {
+          // localStorage.clear();
+          clearAllCookies();
+          toaster('warning', 'Token expired please login again');
+          window.location.href = '/';
+        } else {
+          toaster('error', 'Something went wrong');
+        }
+        reject(error); // Reject the Promise to propagate the error
+      });
+  });
+};
+
 export const fetchPlansList = (): Promise<plansListArray> => {
   return new Promise<plansListArray>((resolve, reject) => {
     OxyDetailInstaceWithToken.get(OrganizationURLs.PLANSLIST)
@@ -655,6 +714,36 @@ export const updateSettings = (payload: any): Promise<insertUpdateAtrributeRespo
   return new Promise<insertUpdateAtrributeResponse>((resolve, reject) => {
     OxyDetailInstaceWithToken.post(OrganizationURLs.ORGANIZATIONSETTINGINSERTUPDATE, payload, multiFormHeaders)
       .then((response: AxiosResponse<insertUpdateAtrributeResponse>) => {
+        // Handle the successful response here
+        const responseData = response.data;
+        resolve(responseData);
+      })
+      .catch((error: AxiosError) => {
+        if (axios.isAxiosError(error)) {
+          // Axios error (e.g., network error)
+          console.error('Axios error:', error);
+        } else {
+          // Non-Axios error (e.g., JSON parsing error)
+          console.error('Non-Axios error:', error);
+        }
+        if (error.response && error.response.status === 401) {
+          // localStorage.clear();
+          clearAllCookies();
+          toaster('warning', 'Token expired please login again');
+          window.location.href = '/';
+        } else {
+          toaster('error', 'Something went wrong');
+        }
+        reject(error); // Reject the Promise to propagate the error
+      });
+  });
+};
+
+
+export const fetchMenuList = (RoleId?: number | null): Promise<roleMenuArrayType> => {
+  return new Promise<roleMenuArrayType>((resolve, reject) => {
+    OxyDetailInstaceWithToken.get(roleURLs.ROLEMENULIST, { params: { RoleId: RoleId } })
+      .then((response: AxiosResponse<roleMenuArrayType>) => {
         // Handle the successful response here
         const responseData = response.data;
         resolve(responseData);

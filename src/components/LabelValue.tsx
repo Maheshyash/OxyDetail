@@ -9,12 +9,8 @@ interface lableKey {
 const LabelValue = ({ label, value, onChange, type = 'text', placeholder, ...rest }: lableKey) => {
   return (
     <div>
-      <div>
-        <Label>{label}</Label>
-      </div>
-      <div>
-        <InputBox value={value} size="small" type={type} onChange={onChange} placeholder={placeholder} {...rest} />
-      </div>
+      <Label>{label}</Label>
+      <InputBox value={value} size="small" type={type} onChange={onChange} placeholder={placeholder} {...rest} />
     </div>
   );
 };
