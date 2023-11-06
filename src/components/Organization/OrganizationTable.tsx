@@ -59,12 +59,11 @@ const OrganizationTable = ({ data }: { data: organizationListArray }) => {
     navigate('addOrganization', { state: { organizationDetails: row } });
   };
 
-  const getRowId = (row: orgalizationListItem) => row.orgId;
   const memoizedData = useMemo(() => data, [data]);
 
   return (
     <Suspense fallback={<div>Loading</div>}>
-      <Table columns={columns} rows={memoizedData} getRowId={getRowId} />
+      <Table columns={columns} rows={memoizedData} idName={'orgId'} />
     </Suspense>
   );
 };

@@ -9,6 +9,7 @@ const MenusList = () => {
     { menu: 'Role', to: '/role' },
     { menu: 'Product', to: '/Product' },
     { menu: 'Attribute', to: '/attribute' },
+    { menu: 'Category', to: '/category' },
     { menu: 'Organization', to: '/organization' },
     { menu: 'Organization Settings', to: '/organization_settings' }
   ];

@@ -14,6 +14,8 @@ import AddOrEditUser from '../pages/AddOrEditUser';
 import RolePage from '../pages/RolePage';
 import AddOrEditRole from '../pages/AddOrEditRole';
 import OrganizationSettingPage from '../pages/OrganizationSettingPage';
+import CategoryPage from '../pages/CategoryPage';
+import RoleMapping from '../pages/RoleMapping';
 const AuthorizeRoutes = ({ removeAuthToken }: { removeAuthToken: any }) => {
   return (
     <>
@@ -32,7 +34,9 @@ const AuthorizeRoutes = ({ removeAuthToken }: { removeAuthToken: any }) => {
         <Route path="/user/addUser" Component={AddOrEditUser} />
         <Route path="/role" Component={RolePage} />
         <Route path="/role/addRole" Component={AddOrEditRole} />
+        <Route path="/role/roleMapping" Component={RoleMapping} />
         <Route path="/organization_settings" Component={OrganizationSettingPage} />
+        <Route path="/category" Component={CategoryPage} />
       </Routes>
     </>
   );

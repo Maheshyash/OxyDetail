@@ -1,4 +1,4 @@
-import { styled } from '@mui/material';
+import styled from '@mui/material/styles/styled';
 
 export const BodyContainer = styled('main')(() => ({
   // borderBottom:`1px solid ${theme.palette.grey['50']}`

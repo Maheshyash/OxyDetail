@@ -1,4 +1,6 @@
-import { Grid, styled } from '@mui/material';
+
+import Grid from '@mui/material/Grid'
+import styled from '@mui/material/styles/styled';
 import { NavLink } from 'react-router-dom';
 
 export const HeaderContainer = styled('header')(({ theme }) => ({

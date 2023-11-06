@@ -33,26 +33,22 @@ const ProductTable = ({ data }: { data: ProductDetails }) => {
       filterable: false,
       renderCell: (params: GridCellParams) => (
         <ActionButtons>
-          <ModeEditOutlineIcon onClick={() => handleAction(params.row as ProductItem)} />
-          <AccountTreeRoundedIcon onClick={() => handleAttributeMapping(params.row as ProductItem)} />
+          <ModeEditOutlineIcon onClick={() => handleAction(params.row as ProductItem, 'addProduct')} />
+          <AccountTreeRoundedIcon onClick={() => handleAction(params.row as ProductItem, 'attributeMapping')} />
         </ActionButtons>
       )
     }
   ];
 
-  const handleAttributeMapping = async (row: any) => {
-    navigate('attributeMapping', { state: { attributeDetails: row } });
-  };
-  const handleAction = (row: any) => {
-    navigate('addProduct', { state: { productDetails: row } });
+  const handleAction = (row: ProductItem, to:string) => {
+    navigate(to, { state: { productDetails: row } });
   };
 
-  const getRowId = (row: ProductItem) => row.productCode;
   const memoizedData = useMemo(() => data, [data]);
 
   return (
     <Suspense fallback={<div>Loading</div>}>
-      <Table columns={columns} rows={memoizedData} getRowId={getRowId} />
+      <Table columns={columns} rows={memoizedData} idName={'productCode'} />
     </Suspense>
   );
 };

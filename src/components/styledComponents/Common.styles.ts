@@ -1,4 +1,8 @@
-import { Input, styled, keyframes, Switch, alpha, Stack } from '@mui/material';
+import styled from '@mui/material/styles/styled';
+import Input from '@mui/material/Input';
+import Switch from '@mui/material/Switch';
+import Stack from '@mui/material/Stack';
+import { keyframes, alpha } from '@mui/material';
 import { MultiSelect } from 'react-multi-select-component';
 import { TextareaAutosize } from '@mui/base/TextareaAutosize';
 import { DatePicker } from '@mui/x-date-pickers';

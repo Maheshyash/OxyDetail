@@ -1,5 +1,4 @@
-import { styled } from '@mui/material/styles';
-
+import styled from '@mui/material/styles/styled';
 export const ChangeOrResetPasswordContainer = styled('div')(({ theme }) => ({
   marginTop: 10,
   display: 'flex',

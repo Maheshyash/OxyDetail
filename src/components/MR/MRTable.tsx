@@ -37,12 +37,11 @@ const MRTable = ({ data }: { data: MRListItem[] }) => {
     }
   ];
 
-  const getRowId = (row: MRListItem) => row.userId;
   const memoizedData = useMemo(() => data, [data]);
 
   return (
     <Suspense fallback={<div>Loading</div>}>
-      <Table columns={columns} rows={memoizedData} getRowId={getRowId} />
+      <Table columns={columns} rows={memoizedData} idName={'userId'} />
     </Suspense>
   );
 };

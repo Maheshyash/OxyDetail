@@ -37,14 +37,11 @@ const UserTable = ({ data }: { data: usersListItemArray }) => {
     navigate('addUser', { state: { userDetails: row } });
   };
 
-  // const columns = useMemo(() => COLUMNS, []);
-  const getRowId = (row: userListItem) => row.userId;
   const memoizedData = useMemo(() => data, [data]);
 
-  // const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({ columns, data }, useSortBy);
   return (
     <Suspense fallback={<div>Loading</div>}>
-      <Table columns={columns} rows={memoizedData} getRowId={getRowId} />
+      <Table columns={columns} rows={memoizedData} idName={'userId'}/>
     </Suspense>
   );
 };

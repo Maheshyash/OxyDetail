@@ -1,4 +1,4 @@
-import { styled } from '@mui/material/styles';
+import styled from '@mui/material/styles/styled';
 import TextField from '@mui/material/TextField';
 import Paper from '@mui/material/Paper';
 import Autocomplete from '@mui/material/Autocomplete';

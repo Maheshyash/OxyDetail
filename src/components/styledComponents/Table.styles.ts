@@ -1,5 +1,6 @@
-import { styled } from '@mui/material';
+import styled from '@mui/material/styles/styled';
 import { DataGrid } from '@mui/x-data-grid';
+
 export const TableContainer = styled('div')(() => ({
   maxHeight: '70vh',
   overflow: 'auto',
@@ -39,6 +40,7 @@ export const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
     color: 'white'
   },
   '& .MuiDataGrid-cellContent': {
+    fontSize: theme.typography.fontSize,
     // wordBreak:'break-word',
     // whiteSpace:'break-spaces',
     // textAlign:'center'

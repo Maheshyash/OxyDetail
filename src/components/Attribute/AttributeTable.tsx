@@ -34,12 +34,12 @@ const AttributeTable = ({ data }: { data: AttributeList }) => {
     console.log(row);
     navigate('addAttribute', { state: { attributeDetails: row } });
   };
-  const getRowId = (row: AttributeDetails) => row.attributeId;
+  
   const memoizedData = useMemo(() => data, [data]);
 
   return (
     <Suspense fallback={<div>Loading</div>}>
-      <Table columns={columns} rows={memoizedData} getRowId={getRowId} />
+      <Table columns={columns} rows={memoizedData} idName={'attributeId'} />
     </Suspense>
   );
 };
