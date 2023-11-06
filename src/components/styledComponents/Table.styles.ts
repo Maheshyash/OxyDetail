@@ -12,14 +12,16 @@ export const TH = styled('th')(({ theme }) => ({
   fontSize: `${theme.typography.fontSize}px`,
   fontWeight: 500,
   color: '#ffffff',
-  textAlign: 'center'
+  textAlign: 'center',
+  border: `1px solid ${theme.palette.primary.light}`
 }));
 export const TD = styled('td')(({ theme }) => ({
   background: '#ffffff',
   fontSize: `${theme.typography.fontSize}px`,
   textAlign: 'center',
   padding: 5,
-  verticalAlign: 'baseline'
+  verticalAlign: 'baseline',
+  border: `1px solid grey`
 }));
 
 export const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
@@ -41,7 +43,7 @@ export const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
     color: 'white'
   },
   '& .MuiDataGrid-cellContent': {
-    fontSize: theme.typography.fontSize,
+    fontSize: theme.typography.fontSize
     // wordBreak:'break-word',
     // whiteSpace:'break-spaces',
     // textAlign:'center'

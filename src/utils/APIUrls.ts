@@ -25,17 +25,13 @@ export const OrganizationURLs = {
   ORGANIZATIONSETTINGLIST: 'Organization/OrganizationSetting_GetList',
   ORGANIZATIONSETTINGINSERTUPDATE: 'Organization/OrganizationSetting_InsertUpdate',
   PLANSLIST: 'Organization/Plan_GetList',
-  CURRENCYLIST:'Organization/Currency_GetList',
+  CURRENCYLIST: 'Organization/Currency_GetList',
   LANGUAGELIST: 'Organization/Language_GetList'
 };
 
 export const roleURLs = {
   ROLEGETLIST: 'Role/Role_GetList',
   ROLEINSERTUPDATE: 'Role/Role_InsertUpdate',
-  ROLEMENULIST :'Role/Menu_GetList',
-  ROLEMENUMAPPING:'Role/Role_MenuMapping'
+  ROLEMENULIST: 'Role/Menu_GetList',
+  ROLEMENUMAPPING: 'Role/Role_MenuMapping'
 };
-
-export const roleMappingURLs = {
-  
-}

@@ -6,6 +6,8 @@ import { keyframes, alpha } from '@mui/material';
 import { MultiSelect } from 'react-multi-select-component';
 import { TextareaAutosize } from '@mui/base/TextareaAutosize';
 import { DatePicker } from '@mui/x-date-pickers';
+import Checkbox from '@mui/material/Checkbox';
+
 export const NoRecordsFound = styled('div')(({ theme }) => ({
   textAlign: 'center',
   fontSize: `${theme.typography.fontSize}px`
@@ -45,8 +47,9 @@ export const LoaderSpinnerContainer = styled('div')(() => ({
   height: '100%',
   display: 'inline-block',
   overflow: 'hidden',
-  position: 'absolute',
+  position: 'fixed',
   background: 'rgb(228 191 191 / 50%)',
+  // background: theme.palette.primary.light,
   zIndex: 1000,
   left: 0,
   right: 0,
@@ -63,12 +66,12 @@ export const LoaderContainer = styled('div')(() => ({
   transform: 'translate(-50%,-50%)'
 }));
 
-export const LoaderContainerInner = styled('div')(() => ({
+export const LoaderContainerInner = styled('div')(({ theme }) => ({
   animation: `${spinAnimation} 1.28s linear infinite`,
   width: '90.62px',
   height: '90.62px',
   borderRadius: '50%',
-  boxShadow: '0 2.955px 0 0 #df5959',
+  boxShadow: `0 2.955px 0 0 ${theme.palette.primary.dark}`,
   transformOrigin: '45.31px 46.7875px',
   boxSizing: 'content-box',
   transform: 'translate(-50%, -50%)'
@@ -199,3 +202,10 @@ CustomDatepicker.defaultProps = {
 export const DatePickerContainer = styled(Stack)({
   width: '100%'
 });
+
+export const CustomCheckBox = styled(Checkbox)(({ theme }) => ({
+  color: theme.palette.error.main,
+  '&.Mui-checked': {
+    color: theme.palette.success.dark
+  }
+}));

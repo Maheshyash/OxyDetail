@@ -739,11 +739,39 @@ export const updateSettings = (payload: any): Promise<insertUpdateAtrributeRespo
   });
 };
 
-
 export const fetchMenuList = (RoleId?: number | null): Promise<roleMenuArrayType> => {
   return new Promise<roleMenuArrayType>((resolve, reject) => {
     OxyDetailInstaceWithToken.get(roleURLs.ROLEMENULIST, { params: { RoleId: RoleId } })
       .then((response: AxiosResponse<roleMenuArrayType>) => {
+        // Handle the successful response here
+        const responseData = response.data;
+        resolve(responseData);
+      })
+      .catch((error: AxiosError) => {
+        if (axios.isAxiosError(error)) {
+          // Axios error (e.g., network error)
+          console.error('Axios error:', error);
+        } else {
+          // Non-Axios error (e.g., JSON parsing error)
+          console.error('Non-Axios error:', error);
+        }
+        if (error.response && error.response.status === 401) {
+          // localStorage.clear();
+          clearAllCookies();
+          toaster('warning', 'Token expired please login again');
+          window.location.href = '/';
+        } else {
+          toaster('error', 'Something went wrong');
+        }
+        reject(error); // Reject the Promise to propagate the error
+      });
+  });
+};
+
+export const updateRoleMapping = (payload: any): Promise<insertUpdateAtrributeResponse> => {
+  return new Promise<insertUpdateAtrributeResponse>((resolve, reject) => {
+    OxyDetailInstaceWithToken.post(roleURLs.ROLEMENUMAPPING + `?RoleId=${payload.RoleId}&MenuIds=${payload.MenuIds}`)
+      .then((response: AxiosResponse<insertUpdateAtrributeResponse>) => {
         // Handle the successful response here
         const responseData = response.data;
         resolve(responseData);
