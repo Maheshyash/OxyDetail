@@ -66,19 +66,7 @@ const RoleMapping = () => {
     await updateRoleMapping(payload)
       .then(async res => {
         if (res.statusCode === 0 || res.statusCode === 1) {
-          let userDetails: userListItem | string | any = localStorage.getItem('userDetails');
-          if (userDetails) {
-            userDetails = JSON.parse(userDetails);
-          }
-          await fetchMenuList(userDetails.roleId)
-            .then(res => {
-              localStorage.setItem('menu', JSON.stringify(res));
-              window.dispatchEvent(new Event('storage'));
-            })
-            .catch(err => {
-              console.log(err, 'err');
-              setIsLoader(false);
-            });
+          fetchMenus();
           toaster('success', res.statusMessage);
           setIsLoader(false);
           navigate(-1);
@@ -91,6 +79,23 @@ const RoleMapping = () => {
         console.log(err, 'err');
         setIsLoader(false);
       });
+  };
+  const fetchMenus = async () => {
+    let userDetails: userListItem | string | any = localStorage.getItem('userDetails');
+    if (userDetails) {
+      userDetails = JSON.parse(userDetails);
+    }
+    if (userDetails && userDetails.roleId === location.state.roleDetails.roleId) {
+      await fetchMenuList(userDetails.roleId)
+        .then(res => {
+          localStorage.setItem('menu', JSON.stringify(res));
+          window.dispatchEvent(new Event('storage'));
+        })
+        .catch(err => {
+          console.log(err, 'err');
+          setIsLoader(false);
+        });
+    }
   };
   return (
     <BodyContainer>

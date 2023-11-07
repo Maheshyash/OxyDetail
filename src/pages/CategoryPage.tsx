@@ -9,6 +9,7 @@ const CategoryPage = () => {
   const [isLoader, setIsLoader] = useState<boolean>(false);
   const [categoryList, setCategoryList] = useState<categoryListArray>([]);
   useEffect(() => {
+    setIsLoader(true);
     fetchCategoryList()
       .then(res => {
         setCategoryList(res);

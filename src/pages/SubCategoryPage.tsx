@@ -9,6 +9,7 @@ const SubCategoryPage = () => {
   const [isLoader, setIsLoader] = useState<boolean>(false);
   const [subCategory, setSubCategory] = useState<subCategoryListTypeArray>([]);
   useEffect(() => {
+    setIsLoader(true);
     fetchSubCategoryList()
       .then(res => {
         setSubCategory(res);
