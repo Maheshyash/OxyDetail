@@ -54,7 +54,7 @@ const AttributeMappingPage = () => {
 
   useEffect(() => {
     if (location.state) {
-      const modifiedData = location.state.attributeDetails.attributes.map((ele: listItem) => ({
+      const modifiedData = location.state.productDetails.attributes.map((ele: listItem) => ({
         ...ele,
         media: ele.media.map((ele1: listItemMedia) => ({ ...ele1, isNewRow: false }))
       }));
@@ -191,7 +191,7 @@ const AttributeMappingPage = () => {
       })
     );
     if (!isEverythingFilled) return;
-    const ProductCode = location.state.attributeDetails.productCode;
+    const ProductCode = location.state.productDetails.productCode;
     const Data = {
       productCode: ProductCode,
       Media: attributeListArray.flatMap(ele =>
@@ -246,28 +246,28 @@ const AttributeMappingPage = () => {
         <Grid container>
           <Grid md={3}>
             <Label style={{ fontWeight: 600 }}>Product Codes</Label>
-            <CustomParagraph>{location.state.attributeDetails.productCode}</CustomParagraph>
+            <CustomParagraph>{location.state.productDetails.productCode}</CustomParagraph>
           </Grid>
           <Grid md={3}>
             <Label style={{ fontWeight: 600 }}>Product Name</Label>
-            <CustomParagraph>{location.state.attributeDetails.productName}</CustomParagraph>
+            <CustomParagraph>{location.state.productDetails.productName}</CustomParagraph>
           </Grid>
           <Grid md={3}>
             <Label style={{ fontWeight: 600 }}>Category</Label>
-            <CustomParagraph>{location.state.attributeDetails.categoryName}</CustomParagraph>
+            <CustomParagraph>{location.state.productDetails.categoryName}</CustomParagraph>
           </Grid>
           <Grid md={3}>
             <Label style={{ fontWeight: 600 }}>Sub Category</Label>
-            <CustomParagraph>{location.state.attributeDetails.subCategoryName}</CustomParagraph>
+            <CustomParagraph>{location.state.productDetails.subCategoryName}</CustomParagraph>
           </Grid>
           <Grid md={3}>
             <Label style={{ fontWeight: 600 }}>Product Description</Label>
-            <CustomParagraph>{location.state.attributeDetails.productDescription}</CustomParagraph>
+            <CustomParagraph>{location.state.productDetails.productDescription}</CustomParagraph>
           </Grid>
           <Grid md={3}>
             <Label style={{ fontWeight: 600 }}>Activation Date</Label>
             <CustomParagraph>
-              {dayjs(location.state.attributeDetails.activationDate).format('DD/MM/YYYY')}
+              {dayjs(location.state.productDetails.activationDate).format('DD/MM/YYYY')}
             </CustomParagraph>
           </Grid>
         </Grid>

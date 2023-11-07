@@ -58,7 +58,10 @@ const LoginPage = ({ setAuthToken }: { setAuthToken: any }) => {
           setAuthToken(res);
           toaster('success', 'Successfully Logged in.');
           setIsLoader(false);
-          navigate('/', { replace: true });
+          const haveAccessFirstMenu = res?.menu ? res.menu.filter(ele=>ele.haveAccess) : [];
+          if(haveAccessFirstMenu.length>0){
+            navigate(`/${haveAccessFirstMenu[0].menuUrl}`, { replace: true });
+          }
         }
       })
       .catch(err => {

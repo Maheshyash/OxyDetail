@@ -35,7 +35,6 @@ const OrganizationPage = () => {
         </CustomButton>
       </AddButtonContainer>
 
-      {/* {organizationList.length === 0 ? <NoRecordsFound>No records found</NoRecordsFound> : <OrganizationTable data={organizationList}/>} */}
       <OrganizationTable data={organizationList} />
     </BodyContainer>
   );

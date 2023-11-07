@@ -20,9 +20,13 @@ export type categoryListArray = Array<categoryListType> | [];
 export interface categoryListType {
   categoryId: number;
   categoryName: string;
+  createdBy: string;
+  createdOn: string;
 }
 export type subCategoryListTypeArray = Array<subCategoryListType> | [];
 export interface subCategoryListType {
   subCategoryId: number;
   subCategoryName: string;
+  createdBy: string;
+  createdOn: string;
 }

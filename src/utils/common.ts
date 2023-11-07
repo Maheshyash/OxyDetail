@@ -1,3 +1,5 @@
+import { roleMenuArrayType } from "../types/roleTypes";
+
 export const updateFileName = (fileName: string) => {
   if (fileName && fileName.trim() === '') return '';
   const currentTimestamp = new Date().getTime();
@@ -49,3 +51,18 @@ export const isValidMail = (email: string) => {
   const isValidEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
   return isValidEmail;
 };
+
+
+export const haveSubMenuAccess = (menu:string, subMenu:string) =>{
+  const localData = localStorage.getItem("menu");
+  const localMenuDetails:roleMenuArrayType = localData ? JSON.parse(localData):[]
+  const result = localMenuDetails.filter(ele=>ele.menuName === menu ).flatMap(ele1=>ele1.subMenus.filter(ele2 => ele2.subMenuName===subMenu));
+  return result[0]?.haveAccess;
+}
+
+export const haveMenuAccess = (menu:string) =>{
+  const localData = localStorage.getItem("menu");
+  const localMenuDetails:roleMenuArrayType = localData ? JSON.parse(localData):[]
+  const result = localMenuDetails.filter(ele=>ele.menuName === menu );
+  return result[0]?.haveAccess;
+}

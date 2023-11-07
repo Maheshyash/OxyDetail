@@ -1,13 +1,13 @@
 import { Suspense, useMemo } from 'react';
 import Table from '../Table';
-import { categoryListArray } from '../../types/productTypes.ts';
+import { subCategoryListTypeArray } from '../../types/productTypes.ts';
 import { GridCellParams, GridColDef } from '@mui/x-data-grid';
 import { CustomParagraph } from '../styledComponents/Common.styles.ts';
 import dayjs from 'dayjs';
 
-const CategoryTable = ({ data }: { data: categoryListArray }) => {
+const SubCategoryTable = ({ data }: { data: subCategoryListTypeArray }) => {
   const columns: GridColDef[] = [
-    { field: 'categoryName', headerName: 'CategoryName', minWidth: 200, flex: 1 },
+    { field: 'subCategoryName', headerName: 'Sub Category', minWidth: 200, flex: 1 },
     { field: 'createdBy', headerName: 'Created By', width: 250 },
     {
       field: 'createdOn',
@@ -25,8 +25,8 @@ const CategoryTable = ({ data }: { data: categoryListArray }) => {
 
   return (
     <Suspense fallback={<div>Loading</div>}>
-      <Table columns={columns} rows={memoizedData} idName={'categoryId'} />
+      <Table columns={columns} rows={memoizedData} idName={'subCategoryId'} />
     </Suspense>
   );
 };
-export default CategoryTable;
+export default SubCategoryTable;

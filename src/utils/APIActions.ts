@@ -243,7 +243,7 @@ export const insertOrUpdateProductDetail = (payload: any): Promise<insertUpdateA
   });
 };
 
-export const fetchSubCategoryList = (categoryId: number | null): Promise<subCategoryListTypeArray> => {
+export const fetchSubCategoryList = (categoryId?: number | null): Promise<subCategoryListTypeArray> => {
   return new Promise<subCategoryListTypeArray>((resolve, reject) => {
     OxyDetailInstaceWithToken.get(ProductURLs.SUBCATEGORYLIST, { params: { CategoryId: categoryId } })
       .then((response: AxiosResponse<subCategoryListTypeArray>) => {

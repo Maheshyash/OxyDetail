@@ -34,6 +34,7 @@ const ProductTable = ({ data }: { data: ProductDetails }) => {
       renderCell: (params: GridCellParams) => (
         <ActionButtons>
           <ModeEditOutlineIcon onClick={() => handleAction(params.row as ProductItem, 'addProduct')} />
+          {/* {haveSubMenuAccess('Product','Attribute Mapping') &&<AccountTreeRoundedIcon onClick={() => handleAction(params.row as ProductItem, 'attributeMapping')} />} */}
           <AccountTreeRoundedIcon onClick={() => handleAction(params.row as ProductItem, 'attributeMapping')} />
         </ActionButtons>
       )
