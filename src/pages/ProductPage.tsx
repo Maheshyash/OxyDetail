@@ -82,7 +82,7 @@ const ProductPage = () => {
               <Label>Category</Label>
               <CustomeAutoSelect
                 options={categoryList}
-                onChange={(event: React.SyntheticEvent<Element, Event>, data: any) => {
+                onChange={(_event: React.SyntheticEvent<Element, Event>, data: any) => {
                   setCategoryId(data.categoryId);
                   fetchSubCategoryDetails(data.categoryId);
                   setSubCategoryId(null);
@@ -97,7 +97,7 @@ const ProductPage = () => {
               <Label>Sub Category Name</Label>
               <CustomeAutoSelect
                 options={subCategoryList}
-                onChange={(event: React.SyntheticEvent<Element, Event>, data: any) => {
+                onChange={(_event: React.SyntheticEvent<Element, Event>, data: any) => {
                   setSubCategoryId(data);
                 }}
                 value={subCategoryId}

@@ -34,7 +34,7 @@ const AttributeTable = ({ data }: { data: AttributeList }) => {
     console.log(row);
     navigate('addAttribute', { state: { attributeDetails: row } });
   };
-  
+
   const memoizedData = useMemo(() => data, [data]);
 
   return (

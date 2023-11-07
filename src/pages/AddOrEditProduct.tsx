@@ -224,7 +224,7 @@ const AddOrEditProduct = () => {
         setIsLoader(false);
       });
   };
-  const [selected, setSelected] = useState<Array<any> | []>([]);
+  const [selected, setSelected] = useState<Array<attributeTypes> | []>([]);
   return (
     <BodyContainer>
       {isLoader && <Loader />}
@@ -251,7 +251,7 @@ const AddOrEditProduct = () => {
           <Label>Category</Label>
           <CustomeAutoSelect
             options={categoryList}
-            onChange={(event: React.SyntheticEvent<Element, Event>, data: any) => {
+            onChange={(_event: React.SyntheticEvent<Element, Event>, data: any) => {
               setFormDetails({ ...formDetails, categoryId: data });
               fetchSubCategoryDetails(data.categoryId);
               setSubCategoryId(null);
@@ -268,7 +268,7 @@ const AddOrEditProduct = () => {
           <Label>Sub Category Name</Label>
           <CustomeAutoSelect
             options={subCategoryList}
-            onChange={(event: React.SyntheticEvent<Element, Event>, data: subCategoryListType | any) => {
+            onChange={(_event: React.SyntheticEvent<Element, Event>, data: subCategoryListType | any) => {
               setSubCategoryId(data);
             }}
             value={subCategoryId}

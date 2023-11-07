@@ -143,6 +143,7 @@ const AddOrEditMRPage = () => {
       });
     }
   }, [categoryList]);
+
   const getCategoryDetails = (categoryId: number) => {
     const result = categoryList.find(ele => ele.categoryId === categoryId);
     if (result) {
@@ -188,7 +189,7 @@ const AddOrEditMRPage = () => {
           <Label>Timezone</Label>
           <CustomeAutoSelect
             options={timezones}
-            onChange={(event, data: Timezone | any) => {
+            onChange={(_event, data: Timezone | any) => {
               setFormDetails({ ...formDetails, timezone: data });
             }}
             getOptionLabel={(option: Timezone | any) => option.value}
@@ -204,7 +205,7 @@ const AddOrEditMRPage = () => {
             options={categoryList}
             value={formDetails.category}
             getOptionLabel={(option: categoryListType | any) => option.categoryName}
-            onChange={(event: any, data: categoryListType | any) => {
+            onChange={(_event: any, data: categoryListType | any) => {
               setFormDetails({ ...formDetails, category: data });
             }}
             size="small"

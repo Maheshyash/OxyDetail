@@ -47,4 +47,3 @@ const RoleTable = ({ data }: { data: roleListArray }) => {
 };
 
 export default RoleTable;
-

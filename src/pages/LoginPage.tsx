@@ -24,7 +24,7 @@ const LoginPage = ({ setAuthToken }: { setAuthToken: any }) => {
     password: ''
   });
   const [resetPasswordDetails, setResetPasswordDetails] = useState({
-    userName:'',
+    userName: '',
     oldPassword: '',
     newPassword: ''
   });
@@ -58,8 +58,8 @@ const LoginPage = ({ setAuthToken }: { setAuthToken: any }) => {
           setAuthToken(res);
           toaster('success', 'Successfully Logged in.');
           setIsLoader(false);
-          const haveAccessFirstMenu = res?.menu ? res.menu.filter(ele=>ele.haveAccess) : [];
-          if(haveAccessFirstMenu.length>0){
+          const haveAccessFirstMenu = res?.menu ? res.menu.filter(ele => ele.haveAccess) : [];
+          if (haveAccessFirstMenu.length > 0) {
             navigate(`/${haveAccessFirstMenu[0].menuUrl}`, { replace: true });
           }
         }

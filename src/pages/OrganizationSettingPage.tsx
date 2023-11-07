@@ -231,10 +231,10 @@ const OrganizationSettingPage = () => {
           {formDetails.orgCode.trim() === '' && isSubmit && <ErrorMessage>Please enter Organization Code</ErrorMessage>}
         </Grid>
         <Grid item xs={12} md={3}>
-        <Label>Language</Label>
+          <Label>Language</Label>
           <CustomeAutoSelect
             options={languageList}
-            onChange={(event, data:languageArrayType | any) => {
+            onChange={(_event, data: languageArrayType | any) => {
               setFormDetails({ ...formDetails, language: data });
             }}
             getOptionLabel={(option: languageArrayType | any) => option.languageName}
@@ -248,7 +248,7 @@ const OrganizationSettingPage = () => {
           <Label>Timezone</Label>
           <CustomeAutoSelect
             options={timezones}
-            onChange={(event, data: Timezone | any) => {
+            onChange={(_event, data: Timezone | any) => {
               setFormDetails({ ...formDetails, timeZone: data });
             }}
             getOptionLabel={(option: Timezone | any) => option.value}
@@ -264,7 +264,7 @@ const OrganizationSettingPage = () => {
           <Label>Currency</Label>
           <CustomeAutoSelect
             options={currencyList}
-            onChange={(event, data:currencyArrayType | any) => {
+            onChange={(_event, data: currencyArrayType | any) => {
               setFormDetails({ ...formDetails, currency: data });
             }}
             getOptionLabel={(option: currencyItemType | any) => option.currencyName}

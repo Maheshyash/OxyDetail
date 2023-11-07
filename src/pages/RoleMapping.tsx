@@ -19,7 +19,7 @@ const RoleMapping = () => {
   useEffect(() => {
     fetchMenuDetails();
   }, []);
-  const fetchMenuDetails = async() => {
+  const fetchMenuDetails = async () => {
     setIsLoader(true);
     await fetchMenuList(location.state.roleDetails.roleId)
       .then(res => {
@@ -64,21 +64,21 @@ const RoleMapping = () => {
     };
     setIsLoader(true);
     await updateRoleMapping(payload)
-      .then(async (res) => {
+      .then(async res => {
         if (res.statusCode === 0 || res.statusCode === 1) {
-          let userDetails:userListItem | string | any  = localStorage.getItem('userDetails');
-          if(userDetails){
+          let userDetails: userListItem | string | any = localStorage.getItem('userDetails');
+          if (userDetails) {
             userDetails = JSON.parse(userDetails);
           }
           await fetchMenuList(userDetails.roleId)
-          .then(res => {
-            localStorage.setItem('menu',JSON.stringify(res));
-            window.dispatchEvent(new Event('storage'));
-          })
-          .catch(err => {
-            console.log(err,'err');
-            setIsLoader(false);
-          });
+            .then(res => {
+              localStorage.setItem('menu', JSON.stringify(res));
+              window.dispatchEvent(new Event('storage'));
+            })
+            .catch(err => {
+              console.log(err, 'err');
+              setIsLoader(false);
+            });
           toaster('success', res.statusMessage);
           setIsLoader(false);
           navigate(-1);
@@ -110,7 +110,7 @@ const RoleMapping = () => {
                 <>
                   <tr key={menuItem.menuId}>
                     {/* <TD rowSpan={menuItem.subMenus.length + 1}>{menuItem.menuName}</TD> */}
-                    <TD >{menuItem.menuName}</TD>
+                    <TD>{menuItem.menuName}</TD>
                     {/* <TD></TD> */}
                     <TD>
                       <CustomCheckBox

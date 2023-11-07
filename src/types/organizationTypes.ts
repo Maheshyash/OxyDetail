@@ -53,20 +53,20 @@ export interface stateListItem {
 //   isActive: boolean;
 // }
 export interface organizationSettings {
-  orgSettingId: number
-  orgCode: string
-  languageId: number
-  languageName: string
-  timeZone: string
-  currencyId: number
-  currencyName: string
-  dateFormat: string
-  logo: string
-  pocName: string
-  pocContactNo: string
-  pocEmailId: string
-  designation: string
-  isActive: boolean
+  orgSettingId: number;
+  orgCode: string;
+  languageId: number;
+  languageName: string;
+  timeZone: string;
+  currencyId: number;
+  currencyName: string;
+  dateFormat: string;
+  logo: string;
+  pocName: string;
+  pocContactNo: string;
+  pocEmailId: string;
+  designation: string;
+  isActive: boolean;
 }
 
 export type plansListArray = Array<planItem> | [];
@@ -76,17 +76,16 @@ export interface planItem {
   planName: string;
 }
 
-
-export type languageArrayType = Array<languageItemType>| []
+export type languageArrayType = Array<languageItemType> | [];
 
 export interface languageItemType {
-  languageId: number
-  languageName: string
+  languageId: number;
+  languageName: string;
 }
 
-export type currencyArrayType = Array<currencyItemType>| []
+export type currencyArrayType = Array<currencyItemType> | [];
 
 export interface currencyItemType {
-  currencyId: number
-  currencyName: string
+  currencyId: number;
+  currencyName: string;
 }

@@ -18,7 +18,7 @@ const CategoryTable = ({ data }: { data: categoryListArray }) => {
           {params.row.createdOn ? dayjs(params.row.createdOn).format('DD/MM/YYYY') : ''}
         </CustomParagraph>
       )
-    },
+    }
   ];
 
   const memoizedData = useMemo(() => data, [data]);

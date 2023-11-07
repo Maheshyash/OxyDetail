@@ -49,7 +49,7 @@ export const LoginRightContainer = styled('main')(() => ({
   '& section:not(.logo)': {
     marginBottom: 20
   },
-  '& section>div':{
-    marginBottom:5
+  '& section>div': {
+    marginBottom: 5
   }
 }));

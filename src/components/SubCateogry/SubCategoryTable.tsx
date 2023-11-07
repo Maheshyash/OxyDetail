@@ -18,7 +18,7 @@ const SubCategoryTable = ({ data }: { data: subCategoryListTypeArray }) => {
           {params.row.createdOn ? dayjs(params.row.createdOn).format('DD/MM/YYYY') : ''}
         </CustomParagraph>
       )
-    },
+    }
   ];
 
   const memoizedData = useMemo(() => data, [data]);

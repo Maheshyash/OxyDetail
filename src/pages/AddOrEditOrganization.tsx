@@ -262,7 +262,7 @@ const AddOrEditOrganization = () => {
           <Label>Country</Label>
           <CustomeAutoSelect
             options={countryList}
-            onChange={(event: React.SyntheticEvent<Element, Event>, data: countryListItem | any) => {
+            onChange={(_event: React.SyntheticEvent<Element, Event>, data: countryListItem | any) => {
               setFormDetails({ ...formDetails, countryCode: data, stateCode: null });
               fetchStateDetails(data.countryCode);
             }}
@@ -277,7 +277,7 @@ const AddOrEditOrganization = () => {
           <Label>State</Label>
           <CustomeAutoSelect
             options={stateList}
-            onChange={(event: React.SyntheticEvent<Element, Event>, data: any) => {
+            onChange={(_event: React.SyntheticEvent<Element, Event>, data: any) => {
               setFormDetails({ ...formDetails, stateCode: data });
             }}
             value={formDetails.stateCode}
@@ -378,7 +378,7 @@ const AddOrEditOrganization = () => {
           <Label>Plan</Label>
           <CustomeAutoSelect
             options={plansList}
-            onChange={(event: React.SyntheticEvent<Element, Event>, data: planItem | any) => {
+            onChange={(_event: React.SyntheticEvent<Element, Event>, data: planItem | any) => {
               setFormDetails({ ...formDetails, planId: data });
             }}
             value={formDetails.planId}

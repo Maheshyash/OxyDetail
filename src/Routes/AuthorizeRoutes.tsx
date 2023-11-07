@@ -1,4 +1,4 @@
-import { Routes, Route, RouteMatch, RouteObject, RouteProps } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import Header from '../components/Header';
 import MRPage from '../pages/MRPage';
 import ProductPage from '../pages/ProductPage';
@@ -48,7 +48,7 @@ const AuthorizeRoutes = ({ removeAuthToken }: { removeAuthToken: any }) => {
   ];
   const generateRoutesFromUserRoutes = (userRoutes: Array<routeType>) => {
     const routes: any = [];
-    var haveAccessMenuList: roleMenuArrayType = [];
+    let haveAccessMenuList: roleMenuArrayType = [];
     let roleMenusList: roleMenuArrayType | string | null = localStorage.getItem('menu');
     if (roleMenusList) {
       roleMenusList = JSON.parse(roleMenusList);
@@ -57,7 +57,7 @@ const AuthorizeRoutes = ({ removeAuthToken }: { removeAuthToken: any }) => {
       haveAccessMenuList = roleMenusList.filter(ele => ele.haveAccess);
     }
     haveAccessMenuList.map(ele => {
-      let data = userRoutes.filter(ele1 => ele1.ele === ele.menuName);
+      const data = userRoutes.filter(ele1 => ele1.ele === ele.menuName);
       if (data.length > 0) {
         data.map(ele => routes.push(<Route path={ele.path} Component={ele.component} key={ele.path} />));
       }
@@ -98,7 +98,7 @@ const AuthorizeRoutes = ({ removeAuthToken }: { removeAuthToken: any }) => {
         <Route path="/category" Component={CategoryPage} />
         <Route path="/subCategory" Component={SubCategoryPage} /> */}
         {routes}
-        <Route path="*" Component={NotFound}/>
+        <Route path="*" Component={NotFound} />
       </Routes>
     </>
   );
@@ -106,10 +106,6 @@ const AuthorizeRoutes = ({ removeAuthToken }: { removeAuthToken: any }) => {
 
 export default AuthorizeRoutes;
 
-const NotFound = () =>{
-  return(
-    <div>
-      Not Found 
-    </div>
-  )
-}
+const NotFound = () => {
+  return <div>Page Not Found</div>;
+};

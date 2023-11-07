@@ -41,7 +41,7 @@ const ProductTable = ({ data }: { data: ProductDetails }) => {
     }
   ];
 
-  const handleAction = (row: ProductItem, to:string) => {
+  const handleAction = (row: ProductItem, to: string) => {
     navigate(to, { state: { productDetails: row } });
   };
 

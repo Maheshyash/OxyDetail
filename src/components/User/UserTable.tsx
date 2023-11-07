@@ -41,7 +41,7 @@ const UserTable = ({ data }: { data: usersListItemArray }) => {
 
   return (
     <Suspense fallback={<div>Loading</div>}>
-      <Table columns={columns} rows={memoizedData} idName={'userId'}/>
+      <Table columns={columns} rows={memoizedData} idName={'userId'} />
     </Suspense>
   );
 };

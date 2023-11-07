@@ -1,4 +1,4 @@
-import { roleMenuArrayType } from "../types/roleTypes";
+import { roleMenuArrayType } from '../types/roleTypes';
 
 export const updateFileName = (fileName: string) => {
   if (fileName && fileName.trim() === '') return '';
@@ -52,17 +52,18 @@ export const isValidMail = (email: string) => {
   return isValidEmail;
 };
 
-
-export const haveSubMenuAccess = (menu:string, subMenu:string) =>{
-  const localData = localStorage.getItem("menu");
-  const localMenuDetails:roleMenuArrayType = localData ? JSON.parse(localData):[]
-  const result = localMenuDetails.filter(ele=>ele.menuName === menu ).flatMap(ele1=>ele1.subMenus.filter(ele2 => ele2.subMenuName===subMenu));
+export const haveSubMenuAccess = (menu: string, subMenu: string) => {
+  const localData = localStorage.getItem('menu');
+  const localMenuDetails: roleMenuArrayType = localData ? JSON.parse(localData) : [];
+  const result = localMenuDetails
+    .filter(ele => ele.menuName === menu)
+    .flatMap(ele1 => ele1.subMenus.filter(ele2 => ele2.subMenuName === subMenu));
   return result[0]?.haveAccess;
-}
+};
 
-export const haveMenuAccess = (menu:string) =>{
-  const localData = localStorage.getItem("menu");
-  const localMenuDetails:roleMenuArrayType = localData ? JSON.parse(localData):[]
-  const result = localMenuDetails.filter(ele=>ele.menuName === menu );
+export const haveMenuAccess = (menu: string) => {
+  const localData = localStorage.getItem('menu');
+  const localMenuDetails: roleMenuArrayType = localData ? JSON.parse(localData) : [];
+  const result = localMenuDetails.filter(ele => ele.menuName === menu);
   return result[0]?.haveAccess;
-}
+};
